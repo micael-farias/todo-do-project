@@ -13,3 +13,20 @@
  *= require_tree .
  *= require_self
  */
+ @import "bootstrap";
+ .list {
+    background-color: #f4f4f4;
+    border-radius: 5px;
+  }
+  
+  .card {
+    background-color: white;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    cursor: grab;
+  }
+  
+  .card:hover {
+    background-color: #f0f0f0;
+  }
+  
