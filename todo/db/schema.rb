@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2024_10_15_234223) do
+ActiveRecord::Schema[7.2].define(version: 2024_10_17_020210) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -40,6 +40,17 @@ ActiveRecord::Schema[7.2].define(version: 2024_10_15_234223) do
     t.index ["user_id"], name: "index_boards_on_user_id"
   end
 
+  create_table "cards", force: :cascade do |t|
+    t.string "title"
+    t.text "description"
+    t.bigint "board_item_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.integer "position"
+    t.boolean "completed"
+    t.index ["board_item_id"], name: "index_cards_on_board_item_id"
+  end
+
   create_table "parameters", force: :cascade do |t|
     t.string "name"
     t.bigint "user_id", null: false
@@ -66,5 +77,6 @@ ActiveRecord::Schema[7.2].define(version: 2024_10_15_234223) do
   add_foreign_key "board_item_tags", "board_items"
   add_foreign_key "board_items", "boards"
   add_foreign_key "boards", "users"
+  add_foreign_key "cards", "board_items"
   add_foreign_key "parameters", "users"
 end

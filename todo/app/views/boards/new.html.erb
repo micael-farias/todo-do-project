@@ -1,0 +1,76 @@
+<!-- app/views/boards/new.html.erb -->
+
+<h1>Novo Board</h1>
+
+<%= form_with(model: @board, local: true) do |form| %>
+  <% if @board.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@board.errors.count, "erro") %> impedem este board de ser salvo:</h2>
+      <ul>
+        <% @board.errors.full_messages.each do |message| %>
+          <li><%= message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <!-- Campo para o título do board -->
+  <div class="field">
+    <%= form.label :title %>
+    <%= form.text_field :title %>
+  </div>
+
+  <!-- Campos para os board_items -->
+  <h3>Itens do Board</h3>
+  <div id="board_items">
+    <%= form.fields_for :board_items do |bi_form| %>
+      <div class="board_item_fields">
+        <div class="field">
+          <%= bi_form.label :name, "Título da Coluna" %>
+          <%= bi_form.text_field :name %>
+        </div>
+        <!-- Botão para remover o item (se necessário) -->
+        <%= bi_form.check_box :_destroy %>
+        <%= bi_form.label :_destroy, "Remover coluna" %>
+      </div>
+    <% end %>
+  </div>
+
+  <!-- Botão para adicionar mais itens via JavaScript (opcional) -->
+  <%= link_to 'Adicionar Coluna', '#', id: 'add_board_item' %>
+
+  <div class="actions">
+    <%= form.submit 'Criar Board' %>
+  </div>
+<% end %>
+
+<%= link_to 'Voltar', boards_path %>
+
+<!-- Adicionar JavaScript para adicionar/remover itens dinamicamente -->
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const addBoardItemLink = document.getElementById('add_board_item');
+    const boardItemsDiv = document.getElementById('board_items');
+
+    let index = <%= @board.board_items.size %>;
+
+    addBoardItemLink.addEventListener('click', (e) => {
+      e.preventDefault();
+
+      const newBoardItem = document.createElement('div');
+      newBoardItem.classList.add('board_item_fields');
+
+      newBoardItem.innerHTML = `
+        <div class="field">
+          <label for="board_board_items_attributes_${index}_title">Título da Coluna</label>
+          <input type="text" name="board[board_items_attributes][${index}][title]" id="board_board_items_attributes_${index}_title">
+        </div>
+        <input type="checkbox" name="board[board_items_attributes][${index}][_destroy]" id="board_board_items_attributes_${index}__destroy">
+        <label for="board_board_items_attributes_${index}__destroy">Remover coluna</label>
+      `;
+
+      boardItemsDiv.appendChild(newBoardItem);
+      index++;
+    });
+  });
+</script>

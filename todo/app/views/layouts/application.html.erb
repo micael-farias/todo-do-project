@@ -15,6 +15,8 @@
     <link rel="icon" href="/icon.svg" type="image/svg+xml">
     <link rel="apple-touch-icon" href="/icon.png">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.14.0/Sortable.min.js" integrity="sha512-w1mqU4f7Igzpduq9hJ01CpIKnWpl9kcLwRUXLBfYHACyugVp5isO4r1mTrYHLU1kC2tFk5mFEYHmpuQuKZyaHw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
     <style>
@@ -27,6 +29,7 @@
         #kanban-board {
             display: flex;
             overflow-x: auto;
+            padding-bottom: 20px;
         }
         .column {
             background-color: #f4f5f7;
@@ -35,6 +38,9 @@
             margin: 0 10px;
             padding: 10px;
             flex-shrink: 0;
+              display: flex;
+    flex-direction: column;
+    position: relative;
         }
         .column h3 {
             margin-top: 0;
@@ -43,6 +49,7 @@
         }
         .cards {
             min-height: 100px;
+                flex-grow: 1;
         }
         .card {
             background-color: white;
@@ -59,8 +66,13 @@
         .card-placeholder {
             border: 2px dashed #ccc;
             margin-bottom: 10px;
-            height: 30px;
+            background-color: #f9f9f9;
         }
+        .ui-sortable-helper {
+            transform: rotate(3deg);
+            cursor: grabbing;
+        }
+
     </style>
     <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
     <%= javascript_importmap_tags %>
@@ -68,30 +80,26 @@
 
   <body>
     <!-- Navbar -->
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
-      <div class="container-fluid">
-        <a class="navbar-brand" href="#">MyApp</a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-          <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarNav">
-          <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-            <li class="nav-item">
-              <a class="nav-link active" aria-current="page" href="#">Home</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="#">Features</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="#">Pricing</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
-            </li>
-          </ul>
-        </div>
-      </div>
-    </nav>
+   <nav class="navbar navbar-expand-lg navbar-light bg-light">
+  <div class="container-fluid">
+    <!-- Link para a página inicial -->
+    <a class="navbar-brand" href="<%= root_path %>">MyApp</a>
+    <!-- Botão de colapso para dispositivos móveis (pode ser removido se não for necessário) -->
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Alternar navegação">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <!-- Conteúdo do menu de navegação -->
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        <!-- Item único do menu que direciona para o root -->
+        <li class="nav-item">
+          <a class="nav-link" href="<%= root_path %>">Menu</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
 
     <!-- Container principal -->
     <div class="container mt-4">

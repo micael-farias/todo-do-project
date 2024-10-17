@@ -1,0 +1,12 @@
+version: '3'
+services:
+  db:
+    image: postgres:14.2
+    container_name: myapp-postgres-14.2
+    command: "postgres -c 'max_connections=500'"
+    environment:
+      POSTGRES_DB: todo_development
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: todo_pass_123
+    ports:
+      - "5432:5432"

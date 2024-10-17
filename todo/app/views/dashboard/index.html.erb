@@ -1,40 +1,53 @@
 <div id="kanban-board">
-    <div class="column">
-        <h3>A fazer</h3>
-        <div class="cards">
-            <div class="card">Tarefa 1</div>
-            <div class="card">Tarefa 2</div>
-            <div class="card">Tarefa 3</div>
+        <div class="column">
+            <h3>A fazer</h3>
+            <div class="cards">
+                <div class="card">Tarefa 1</div>
+                <div class="card">Tarefa 2</div>
+                <div class="card">Tarefa 3</div>
+            </div>
+        </div>
+        <div class="column">
+            <h3>Em andamento</h3>
+            <div class="cards">
+                <div class="card">Tarefa 4</div>
+                <div class="card">Tarefa 5</div>
+            </div>
+        </div>
+        <div class="column">
+            <h3>Concluído</h3>
+            <div class="cards">
+                <div class="card">Tarefa 6</div>
+            </div>
         </div>
     </div>
-    <div class="column">
-        <h3>Em andamento</h3>
-        <div class="cards">
-            <div class="card">Tarefa 4</div>
-            <div class="card">Tarefa 5</div>
-        </div>
-    </div>
-    <div class="column">
-        <h3>Concluído</h3>
-        <div class="cards">
-            <div class="card">Tarefa 6</div>
-        </div>
-    </div>
-</div>
 
-<script>
-    $(document).ready(function() {
-        $(".cards").sortable({
-            connectWith: ".cards",
-            placeholder: "card-placeholder",
-            start: function(e, ui) {
-                ui.placeholder.height(ui.item.height());
-            },
-            update: function(e, ui) {
-                // Aqui você pode adicionar lógica para atualizar o backend
-                console.log("Card movido: " + ui.item.text());
-                console.log("Nova coluna: " + ui.item.closest(".column").find("h3").text());
-            }
-        }).disableSelection();
-    });
-</script>
+    <script>
+      $(document).ready(function() {
+    $(".cards").sortable({
+        connectWith: ".cards",
+        placeholder: "card-placeholder",
+        cursor: "move",
+        revert: 300,
+        delay: 150,
+        tolerance: "pointer",
+
+        // Modifique o helper para 'clone'
+        helper: "clone",
+
+        start: function(e, ui) {
+            ui.placeholder.height(ui.item.height());
+            ui.helper.css('transform', 'rotate(3deg)');
+            ui.helper.css('z-index', 100);
+        },
+        stop: function(e, ui) {
+            ui.item.css('transform', '');
+        },
+        update: function(e, ui) {
+            console.log("Card movido: " + ui.item.text());
+            console.log("Nova coluna: " + ui.item.closest(".column").find("h3").text());
+        }
+    }).disableSelection();
+});
+
+    </script>

@@ -11,6 +11,17 @@ Rails.application.routes.draw do
 
   # Rota para a dashboard após login
   authenticated :user do
-    root 'dashboard#index', as: :authenticated_root
+    root 'boards#index'
   end
+
+  resources :boards do
+    resources :board_items, only: [:create, :update, :destroy] do
+      resources :cards, only: [:create, :update, :destroy] do
+        member do
+          patch :move
+        end
+      end
+    end
+  end
+                      
 end

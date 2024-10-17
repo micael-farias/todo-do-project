@@ -1,0 +1,18 @@
+// app/views/cards/create.js.erb
+
+<% if @card.persisted? %>
+  // Adicionar o novo card à lista
+  var cardHtml = '<div class="card" data-card-id="<%= @card.id %>"><%= j @card.title %></div>';
+  $('[data-board-item-id="<%= @board_item.id %>"] .cards').prepend(cardHtml);
+
+  // Limpar o formulário e ocultá-lo
+  $('[data-board-item-id="<%= @board_item.id %>"] .new-card-form').hide();
+  $('[data-board-item-id="<%= @board_item.id %>"] .new-card-form input.card-title-input').val('');
+  $('[data-board-item-id="<%= @board_item.id %>"] .add-card-button').show();
+
+  // Reativar o sortable
+  $(".cards").sortable("refresh");
+<% else %>
+  // Exibir erros (implementar conforme necessário)
+  alert('Erro ao criar o card.');
+<% end %>

@@ -1,0 +1,200 @@
+/* app/assets/stylesheets/boards.css */
+
+.board-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    padding: 20px;
+  }
+  
+  .board-card {
+    background-color: #005a8c; /* Azul mais escuro */
+    color: #fff;
+    border-radius: 15px; /* Aumenta o arredondamento dos cantos */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    width: 220px;
+    height: 120px;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+    position: relative; /* Para posicionamento absoluto interno */
+  }
+  
+  .board-card:hover {
+    transform: scale(1.05);
+    box-shadow: 0 8px 12px rgba(0, 0, 0, 0.2);
+  }
+  
+  .board-link {
+    text-decoration: none;
+    color: inherit;
+    display: block;
+    height: 100%;
+  }
+  
+  .board-card .card-body {
+    padding: 15px;
+    height: 100%;
+  }
+  
+  .board-card .card-title {
+    font-size: 1.2em;
+    position: absolute;
+    bottom: 10px;
+    right: 15px;
+    margin: 0;
+  }
+  
+  .new-board-card {
+    background-color: #dfe3e6; /* Cor diferente para o card de novo board */
+    color: #172b4d;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .new-board-card .card-body {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .new-board-card i {
+    font-size: 2.5em;
+  }
+  
+  .new-board-card:hover {
+    background-color: #cdd2d4;
+  }
+  
+
+  /* app/assets/stylesheets/boards.css */
+
+/* Estilos para o kanban board */
+/* Estilos para o kanban board */
+#kanban-board {
+  display: flex;
+  overflow-x: auto;
+  padding: 20px;
+  height: calc(100vh - 100px); /* Ajuste para ocupar a altura total da janela menos a altura do header */
+}
+
+.column {
+  background-color: #f4f5f7;
+  border-radius: 3px;
+  margin-right: 20px;
+  width: 300px;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.column h3 {
+  padding: 10px;
+}
+
+.column-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.cards {
+  flex: 1;
+  min-height: 50px;
+  padding: 0 10px 10px;
+  overflow-y: auto;
+}
+
+.card-placeholder {
+  background-color: #dfe3e6;
+  border: 2px dashed #c1c7d0;
+  margin-bottom: 10px;
+  height: 50px;
+}
+
+/* Estilo para os cards */
+.card {
+  background-color: #fff;
+  border-radius: 3px;
+  padding: 10px;
+  margin-bottom: 10px;
+  cursor: pointer;
+  box-shadow: 0 1px 0 rgba(9,30,66,.25);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 50px;
+}
+
+/* Estilo para o conteúdo do card */
+.card .card-content {
+  flex: 1;
+}
+
+
+/* Estilo para o botão de "Concluído" */
+.complete-card-button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #5e6c84;
+}
+.complete-card-button i {
+  font-size: 20px;
+}
+.complete-card-button:hover {
+  color: #0079bf;
+}
+.completed-card {
+  opacity: 0.6;
+  text-decoration: line-through;
+}
+
+/* Ajustes no card para posicionar o botão */
+
+.card .card-content {
+  flex-grow: 1;
+}
+
+
+.card i {
+  font-size: 24px;
+  color: #5e6c84;
+}
+
+/* Estilo específico para o botão de adicionar card */
+.add-card-button {
+  padding: 10px;
+}
+
+.add-card-button .card.new-card {
+  background-color: #f4f5f7;
+  border: 2px dashed #dfe1e6;
+}
+
+.add-card-button .card.new-card:hover {
+  background-color: #e1e2e6;
+}
+
+.add-card-button .card.new-card i {
+  color: #5e6c84;
+}
+
+/* Estilo para o formulário de novo card */
+.new-card-form {
+  padding: 10px;
+}
+
+.new-card-form .card-title-input {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #dfe1e6;
+  border-radius: 3px;
+  box-sizing: border-box;
+}
+
+.new-card-form .card-title-input:focus {
+  outline: none;
+  border-color: #0079bf;
+  box-shadow: 0 0 0 1px #0079bf;
+}

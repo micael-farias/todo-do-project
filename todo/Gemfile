@@ -22,6 +22,10 @@ gem 'devise'
 gem 'pg', '~> 1.5.8'
 gem "bootstrap"
 gem "sassc-rails"
+gem 'rails-ujs'
+gem 'jquery-rails'
+gem 'jquery-ui-rails'
+gem 'acts_as_list'
 
 # Use Kredis to get higher-level data types in Redis [https://github.com/rails/kredis]
 # gem "kredis"

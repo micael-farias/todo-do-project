@@ -1,0 +1,221 @@
+<!-- app/views/boards/show.html.erb -->
+
+<h1><%= @board.title %></h1>
+
+<div id="kanban-board">
+  <% last_column_id = @board.board_items.last.id %> <!-- Identifica o ID da última coluna -->
+  
+  <% @board.board_items.each do |item| %>
+    <div class="column" data-board-item-id="<%= item.id %>">
+      <h3><%= item.name %></h3>
+      <div class="column-content">
+        <div class="cards">
+          <% item.cards.order(:position).each do |card| %>
+            <div class="card" data-card-id="<%= card.id %>">
+              <%= card.title %>
+              <!-- Botão de Concluir Adicionado Condicionalmente -->
+              <% unless item.id == last_column_id %>
+                <button class="complete-card-button" title="Concluir">
+                  <i class="bi bi-check-circle"></i>
+                </button>
+              <% end %>
+            </div>
+          <% end %>
+        </div>
+        <!-- Formulário oculto para adicionar um novo card -->
+        <div class="new-card-form" style="display: none;">
+          <%= form_with(model: Card.new, url: board_board_item_cards_path(@board, item), html: { class: 'create-card-form' }) do |form| %>
+            <div class="field">
+              <%= form.text_field :title, placeholder: "Título do card", class: 'card-title-input' %>
+            </div>
+          <% end %>
+        </div>
+        <!-- Botão para adicionar um novo card -->
+        <div class="add-card-button">
+          <a href="#" class="show-new-card-form">
+            <div class="card new-card">
+              <i class="bi bi-plus-lg"></i>
+            </div>
+          </a>
+        </div>
+      </div>
+    </div>
+  <% end %>
+</div>
+
+<%= link_to 'Voltar', boards_path %>
+
+<!-- Scripts necessários -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<!-- Inclua o jQuery UI para o sortable -->
+<script src="https://code.jquery.com/ui/1.13.1/jquery-ui.min.js"></script>
+
+<script>
+  // Configurar AJAX para incluir o token CSRF
+  $.ajaxSetup({
+    headers: {
+      'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content')
+    }
+  });
+
+  $(document).ready(function() {
+    // Configuração do sortable
+    $(".cards").sortable({
+      connectWith: ".cards",
+      placeholder: "card-placeholder",
+      cursor: "move",
+      revert: 300,
+      delay: 150,
+      tolerance: "pointer",
+      helper: "clone",
+      items: "> .card:not(.new-card)", // Exclui o botão de adicionar card
+      start: function(e, ui) {
+        ui.placeholder.height(ui.item.height());
+        ui.helper.css('transform', 'rotate(3deg)');
+        ui.helper.css('z-index', 100);
+      },
+      stop: function(e, ui) {
+        ui.item.css('transform', '');
+      },
+      update: function(event, ui) {
+        if (this === ui.item.parent()[0]) {
+          // Obter IDs necessários
+          var cardId = ui.item.data('card-id');
+          var newPosition = ui.item.index();
+          var newBoardItemId = ui.item.closest('.column').data('board-item-id');
+          var boardId = <%= @board.id %>;
+
+          // Construir a URL para a rota move
+          var moveUrl = '/boards/' + boardId + '/board_items/' + newBoardItemId + '/cards/' + cardId + '/move';
+
+          // Enviar a requisição AJAX
+          $.ajax({
+            url: moveUrl,
+            method: 'PATCH',
+            data: {
+              position: newPosition + 1, // acts_as_list começa em 1
+              board_item_id: newBoardItemId
+            },
+            success: function() {
+              console.log('Card movido com sucesso.');
+              // Verificar se a nova coluna é a última coluna
+              var lastColumnId = <%= last_column_id %>;
+              if (newBoardItemId == lastColumnId) {
+                // Remover o botão de concluir do card movido
+                ui.item.find('.complete-card-button').remove();
+                // Adicionar a classe de concluído
+                ui.item.addClass('completed-card');
+              } else {
+                // Garantir que o botão de concluir esteja presente
+                if (ui.item.find('.complete-card-button').length === 0) {
+                  ui.item.append(`
+                    <button class="complete-card-button" title="Concluir">
+                      <i class="bi bi-check-circle"></i>
+                    </button>
+                  `);
+                }
+                ui.item.removeClass('completed-card');
+              }
+            },
+            error: function() {
+              alert('Erro ao mover o card.');
+            }
+          });
+        }
+      }
+    }).disableSelection();
+
+    // Mostrar o formulário de novo card ao clicar no botão
+    $('.show-new-card-form').on('click', function(e) {
+      e.preventDefault();
+      var column = $(this).closest('.column');
+      column.find('.add-card-button').hide();
+      column.find('.new-card-form').show();
+      column.find('.card-title-input').focus();
+    });
+
+    // Submeter o formulário ao pressionar Enter
+    $(document).on('keypress', '.card-title-input', function(e) {
+      if (e.which == 13) { // Código da tecla Enter
+        e.preventDefault();
+        var form = $(this).closest('form');
+        form.submit();
+      }
+    });
+
+    // Fechar o formulário ao clicar fora
+    $(document).on('click', function(e) {
+      var target = $(e.target);
+      if (!target.closest('.new-card-form').length && !target.closest('.show-new-card-form').length) {
+        $('.new-card-form').hide();
+        $('.add-card-button').show();
+      }
+    });
+
+    // Handler para o botão de concluir
+    $(document).on('click', '.complete-card-button', function(e) {
+      e.stopPropagation(); // Evita que o evento de clique seja propagado para outros handlers
+      var button = $(this);
+      var card = button.closest('.card');
+      var lastColumn = $('.column').last();
+      var lastColumnId = lastColumn.data('board-item-id');
+      var boardId = <%= @board.id %>;
+      var cardId = card.data('card-id');
+
+      // Construir a URL para a rota move
+      var moveUrl = '/boards/' + boardId + '/board_items/' + lastColumnId + '/cards/' + cardId + '/move';
+
+      // Calcular a posição final na última coluna
+      var newPosition = lastColumn.find('.card').not('.new-card').length + 1;
+
+      // Criar uma cópia do card para animação
+      var cardClone = card.clone();
+      cardClone.css({
+        position: 'absolute',
+        top: card.offset().top,
+        left: card.offset().left,
+        width: card.width(),
+        zIndex: 1000,
+        opacity: 0.8
+      });
+      $('body').append(cardClone);
+
+      // Obter a posição do destino
+      var targetPosition = lastColumn.find('.cards').offset();
+
+      // Animar a cópia do card até a última coluna
+      cardClone.animate({
+        top: targetPosition.top,
+        left: targetPosition.left,
+        width: lastColumn.find('.cards').width()
+      }, 500, function() {
+        cardClone.remove(); // Remove a cópia após a animação
+      });
+
+      // Enviar a requisição AJAX para mover o card no servidor
+      $.ajax({
+        url: moveUrl,
+        method: 'PATCH',
+        data: {
+          board_item_id: lastColumnId,
+          position: newPosition
+        },
+        success: function() {
+          // Remover o card da posição original e adicioná-lo à última coluna
+          card.fadeOut(300, function() {
+            card.remove();
+            lastColumn.find('.cards').append(card);
+            card.fadeIn(300);
+            card.addClass('completed-card'); // Adicionar classe para estilização (opcional)
+            // Remover o botão de concluir, já que está na última coluna
+            card.find('.complete-card-button').remove();
+          });
+          console.log('Card concluído e movido com sucesso.');
+        },
+        error: function() {
+          alert('Erro ao concluir o card.');
+        }
+      });
+    });
+  });
+</script>

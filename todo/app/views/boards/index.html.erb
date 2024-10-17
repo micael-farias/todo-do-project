@@ -1,0 +1,25 @@
+<!-- app/views/boards/index.html.erb -->
+
+<h1>Boards</h1>
+
+<div class="board-container">
+  <!-- Card para adicionar novo board -->
+  <div class="board-card new-board-card">
+    <%= link_to new_board_path, class: 'board-link' do %>
+      <div class="card-body">
+        <i class="bi bi-plus-lg" aria-label="Adicionar Novo Board"></i>
+      </div>
+    <% end %>
+  </div>
+
+  <!-- Cards dos boards existentes -->
+  <% @boards.each do |board| %>
+    <div class="board-card">
+      <%= link_to board_path(board), class: 'board-link' do %>
+        <div class="card-body">
+          <h5 class="card-title"><%= board.title %></h5>
+        </div>
+      <% end %>
+    </div>
+  <% end %>
+</div>
