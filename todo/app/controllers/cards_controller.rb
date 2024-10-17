@@ -5,15 +5,9 @@ class CardsController < ApplicationController
     def create
       @card = @board_item.cards.new(card_params)
       if @card.save
-        respond_to do |format|
-          format.html { redirect_to @board_item.board, notice: 'Card criado com sucesso.' }
-          format.js   # Renderiza create.js.erb
-        end
+        render json: { success: true, card: @card }
       else
-        respond_to do |format|
-          format.html { redirect_to @board_item.board, alert: 'Não foi possível criar o card.' }
-          format.js   # Renderiza create.js.erb com erros
-        end
+        render json: { success: false, message: @card.errors.full_messages.join(", ") }
       end
     end
   

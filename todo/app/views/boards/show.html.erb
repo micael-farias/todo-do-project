@@ -125,7 +125,7 @@
       }
     }).disableSelection();
 
-    // Mostrar o formulário de novo card ao clicar no botão
+  // Mostrar o formulário de novo card ao clicar no botão
     $('.show-new-card-form').on('click', function(e) {
       e.preventDefault();
       var column = $(this).closest('.column');
@@ -134,14 +134,62 @@
       column.find('.card-title-input').focus();
     });
 
+
     // Submeter o formulário ao pressionar Enter
-    $(document).on('keypress', '.card-title-input', function(e) {
-      if (e.which == 13) { // Código da tecla Enter
-        e.preventDefault();
-        var form = $(this).closest('form');
-        form.submit();
-      }
-    });
+$(document).on('keypress', '.card-title-input', function(e) {
+    if (e.which == 13) { // Código da tecla Enter
+      e.preventDefault();
+      var form = $(this).closest('form');
+      var column = form.closest('.column');
+      var columnId = column.data('board-item-id');
+      var cardTitle = $(this).val();
+      
+      // Enviar requisição AJAX para criar o card
+      $.ajax({
+        url: form.attr('action'),
+        method: 'POST',
+        data: form.serialize(),
+        dataType: 'json',
+        success: function(response) {
+          if (response.success) {
+            // Criar o novo elemento do card
+            var newCard = $('<div>', {
+              class: 'card',
+              'data-card-id': response.card.id,
+              style: 'display: none;' // Inicialmente oculto para o efeito fade in
+            }).text(cardTitle);
+
+            // Adicionar o botão de concluir se não for a última coluna
+            var lastColumnId = $('.column').last().data('board-item-id');
+            if (columnId != lastColumnId) {
+              newCard.append(`
+                <button class="complete-card-button" title="Concluir">
+                  <i class="bi bi-check-circle"></i>
+                </button>
+              `);
+            }
+
+            // Adicionar o novo card à última posição da coluna e aplicar fade in
+            column.find('.cards').append(newCard);
+            newCard.fadeIn(300);
+
+            // Limpar e esconder o formulário
+            form.find('.card-title-input').val('');
+            form.closest('.new-card-form').hide();
+            column.find('.add-card-button').show();
+
+            // Reativar o sortable
+            $(".cards").sortable("refresh");
+          } else {
+            alert('Erro ao criar o card: ' + response.message);
+          }
+        },
+        error: function() {
+          alert('Erro ao criar o card. Por favor, tente novamente.');
+        }
+      });
+    }
+  });
 
     // Fechar o formulário ao clicar fora
     $(document).on('click', function(e) {

@@ -1,0 +1,8 @@
+<div class="card" data-card-id="<%= card.id %>">
+  <%= card.title %>
+  <% unless card.board_item_id == @board.board_items.last.id %>
+    <button class="complete-card-button" title="Concluir">
+      <i class="bi bi-check-circle"></i>
+    </button>
+  <% end %>
+</div>
