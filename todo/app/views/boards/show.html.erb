@@ -5,115 +5,110 @@
 <!-- Seção do Kanban Board -->
 <div id="kanban-board">
   <% last_column_id = @board.board_items.last.id %> <!-- Identifica o ID da última coluna -->
-  
+
   <% @board.board_items.each do |item| %>
     <div class="column" data-board-item-id="<%= item.id %>">
       <h3><%= item.name %></h3>
       <div class="column-content">
         <div class="cards">
 
+          <% if @board.title.include?('Board Diário') %>
+            <!-- Exibir os cards na primeira ou segunda coluna do Board Diário -->
 
-<% if @board.title.include?('Board Diário') %>
-  <!-- Exibir os cards na primeira ou segunda coluna do Board Diário -->
-  
-  <!-- Primeira Coluna: Cards filtrados por humor -->
-  <% if @board.board_items.first == item %>
-    <% @daily_board_cards.each do |card| %>
-      <div class="card" data-card-id="<%= card.id %>">
-        <div class="card-content">
-          <%= card.title %>
-          <p><%= card.description %></p>
-          <p><strong>Humor:</strong> <%= card.mood&.name || 'Não definido' %></p>
-          <% if card.due_date.present? %>
-            <p><strong>Data de Vencimento:</strong> <%= card.due_date.strftime('%d/%m/%Y') %></p>
+            <!-- Primeira Coluna: Cards filtrados por humor -->
+            <% if @board.board_items.first == item %>
+              <% @daily_board_cards.each do |card| %>
+                <div class="card" data-card-id="<%= card.id %>">
+                  <div class="card-content">
+                    <%= card.title %>
+                    <p><%= card.description %></p>
+                    <p><strong>Humor:</strong> <%= card.mood&.name || 'Não definido' %></p>
+                    <% if card.due_date.present? %>
+                      <p><strong>Data de Vencimento:</strong> <%= card.due_date.strftime('%d/%m/%Y') %></p>
+                    <% end %>
+                  </div>
+                  <div class="card-actions">
+                    <% unless item.id == last_column_id %>
+                      <button class="complete-card-button" title="Concluir">
+                        <i class="bi bi-check-circle"></i>
+                      </button>
+                    <% end %>
+                    <button class="delete-card-button" title="Excluir">
+                      <i class="bi bi-trash"></i>
+                    </button>
+                  </div>
+                </div>
+              <% end %>
+
+            <!-- Segunda Coluna: Todos os cards finalizados hoje -->
+            <% elsif @board.board_items.second == item %>
+              <% Card.where(completed_at: Date.today.all_day).each do |card| %> <!-- Busca todos os cards finalizados hoje -->
+                <div class="card" data-card-id="<%= card.id %>">
+                  <div class="card-content">
+                    <%= card.title %>
+                    <p><%= card.description %></p>
+                    <p><strong>Humor:</strong> <%= card.mood&.name || 'Não definido' %></p>
+                    <p><strong>Completado em:</strong> <%= card.completed_at.strftime('%d/%m/%Y %H:%M') %></p>
+                  </div>
+                  <div class="card-actions">
+                    <% unless item.id == last_column_id %>
+                      <button class="complete-card-button" title="Concluir">
+                        <i class="bi bi-check-circle"></i>
+                      </button>
+                    <% end %>
+                    <button class="delete-card-button" title="Excluir">
+                      <i class="bi bi-trash"></i>
+                    </button>
+                  </div>
+                </div>
+              <% end %>
+            <% end %>
+
+          <% else %>
+            <!-- Para boards normais, exibe os cards normalmente nas colunas -->
+            <% item.cards.order(:position).each do |card| %>
+              <div class="card" data-card-id="<%= card.id %>">
+                <div class="card-content">
+                  <%= card.title %>
+                  <p><%= card.description %></p>
+                  <p><strong>Humor:</strong> <%= card.mood&.name || 'Não definido' %></p>
+                </div>
+                <div class="card-actions">
+                  <% unless item.id == last_column_id %>
+                    <button class="complete-card-button" title="Concluir">
+                      <i class="bi bi-check-circle"></i>
+                    </button>
+                  <% end %>
+                  <button class="delete-card-button" title="Excluir">
+                    <i class="bi bi-trash"></i>
+                  </button>
+                </div>
+              </div>
+            <% end %>
           <% end %>
-        </div>
-        <div class="card-actions">
-      <% unless item.id == last_column_id %>
-          <button class="complete-card-button" title="Concluir">
-            <i class="bi bi-check-circle"></i>
-          </button>
-        <% end %>
-          <button class="delete-card-button" title="Excluir">
-            <i class="bi bi-trash"></i>
-          </button>
-        </div>
-      </div>
-    <% end %>
-
-  <!-- Segunda Coluna: Todos os cards finalizados hoje -->
-  <% elsif @board.board_items.second == item %>
-    <% Card.where(completed_at: Date.today.all_day).each do |card| %> <!-- Busca todos os cards finalizados hoje -->
-      <div class="card" data-card-id="<%= card.id %>">
-        <div class="card-content">
-          <%= card.title %>
-          <p><%= card.description %></p>
-          <p><strong>Humor:</strong> <%= card.mood&.name || 'Não definido' %></p>
-          <p><strong>Completado em:</strong> <%= card.completed_at.strftime('%d/%m/%Y %H:%M') %></p>
-        </div>
-        <div class="card-actions">
-        <% unless item.id == last_column_id %>
-          <button class="complete-card-button" title="Concluir">
-            <i class="bi bi-check-circle"></i>
-          </button>
-        <% end %>
-          <button class="delete-card-button" title="Excluir">
-            <i class="bi bi-trash"></i>
-          </button>
-        </div>
-      </div>
-    <% end %>
-  <% end %>
-
-<% else %>
-  <!-- Para boards normais, exibe os cards normalmente nas colunas -->
-  <% item.cards.order(:position).each do |card| %>
-    <div class="card" data-card-id="<%= card.id %>">
-      <div class="card-content">
-        <%= card.title %>
-        <p><%= card.description %></p>
-        <p><strong>Humor:</strong> <%= card.mood&.name || 'Não definido' %></p>
-      </div>
-      <div class="card-actions">
-        <% unless item.id == last_column_id %>
-          <button class="complete-card-button" title="Concluir">
-            <i class="bi bi-check-circle"></i>
-          </button>
-        <% end %>
-        <button class="delete-card-button" title="Excluir">
-          <i class="bi bi-trash"></i>
-        </button>
-      </div>
-    </div>
-  <% end %>
-<% end %>
-
-
-
 
         </div>
-
 
         <% unless @board.title.include?('Board Diário') %>
 
-        <!-- Formulário oculto para adicionar um novo card -->
-        <div class="new-card-form" style="display: none;">
-          <%= form_with(model: Card.new, url: board_board_item_cards_path(@board, item), html: { class: 'create-card-form' }) do |form| %>
-            <div class="field">
-              <%= form.text_field :title, placeholder: "Título do card", class: 'card-title-input' %>
-            </div>
-          <% end %>
-        </div>
-        <!-- Botão para adicionar um novo card -->
-        <div class="add-card-button">
-          <a href="#" class="show-new-card-form">
-            <div class="card new-card">
-              <i class="bi bi-plus-lg"></i>
-            </div>
-          </a>
-        </div>
+          <!-- Formulário oculto para adicionar um novo card -->
+          <div class="new-card-form" style="display: none;">
+            <%= form_with(model: Card.new, url: board_board_item_cards_path(@board, item), html: { class: 'create-card-form' }) do |form| %>
+              <div class="field">
+                <%= form.text_field :title, placeholder: "Título do card", class: 'card-title-input' %>
+              </div>
+            <% end %>
+          </div>
+          <!-- Botão para adicionar um novo card -->
+          <div class="add-card-button">
+            <a href="#" class="show-new-card-form">
+              <div class="card new-card">
+                <i class="bi bi-plus-lg"></i>
+              </div>
+            </a>
+          </div>
 
-      <%end %>
+        <% end %>
 
       </div>
     </div>
@@ -127,6 +122,35 @@
 <!-- Inclua o jQuery UI para o sortable -->
 <script src="https://code.jquery.com/ui/1.13.1/jquery-ui.min.js"></script>
 
+<!-- Opcional: Inclua ícones do Bootstrap se ainda não estiverem incluídos -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+
+<!-- CSS para Melhor Desempenho e Estilização -->
+<style>
+  /* Placeholder estilizado para Sortable */
+  .card-placeholder {
+    background-color: #f0f0f0;
+    border: 2px dashed #ccc;
+    height: 80px; /* Ajuste conforme necessário */
+    margin-bottom: 10px;
+    /* Utilizar transform para hardware acceleration */
+    transform: translate3d(0, 0, 0);
+    transition: all 0.3s ease; /* Aumento da duração da transição */
+  }
+
+  /* Transições suaves para cards */
+  .card {
+    transition: transform 0.3s ease, opacity 0.3s ease; /* Aumento da duração da transição */
+  }
+
+  /* Classe para cards concluídos */
+  .completed-card {
+    opacity: 0.6;
+  }
+
+  /* Outras estilizações conforme necessário */
+</style>
+
 <script>
   // Configurar AJAX para incluir o token CSRF
   $.ajaxSetup({
@@ -136,73 +160,64 @@
   });
 
   $(document).ready(function() {
-    // Configuração do sortable
-    $(".cards").sortable({
-      connectWith: ".cards",
-      placeholder: "card-placeholder",
-      cursor: "move",
-      revert: 300,
-      delay: 150,
-      tolerance: "pointer",
-      helper: "clone",
-      items: "> .card:not(.new-card)", // Exclui o botão de adicionar card
-      start: function(e, ui) {
-        ui.placeholder.height(ui.item.height());
-        ui.helper.css('transform', 'rotate(3deg)');
-        ui.helper.css('z-index', 100);
-      },
-      stop: function(e, ui) {
-        ui.item.css('transform', '');
-      },
-      update: function(event, ui) {
-        if (this === ui.item.parent()[0]) {
-          // Obter IDs necessários
-          var cardId = ui.item.data('card-id');
-          var newPosition = ui.item.index();
-          var newBoardItemId = ui.item.closest('.column').data('board-item-id');
-          var boardId = <%= @board.id %>;
+    // Configuração otimizada do sortable
+ $(".cards").sortable({
+    connectWith: ".cards",
+    placeholder: "card-placeholder",
+    cursor: "move",
+    revert: 300,  // Aumentamos o tempo de reversão para 300ms
+    delay: 0,   // Adicionamos um pequeno atraso antes de iniciar o drag
+    tolerance: "pointer",
+    helper: "clone",  // Usamos um clone como helper
+    opacity: 0.8,     // Tornamos o item arrastado levemente transparente
+    start: function(e, ui) {
+      ui.placeholder.height(ui.item.height());
+      ui.helper.css('z-index', 100);
+    },
+    stop: function(e, ui) {
+      ui.item.css('transform', '');
+    },
+    update: function(event, ui) {
+      if (this === ui.item.parent()[0]) {
+        var cardId = ui.item.data('card-id');
+        var newPosition = ui.item.index();
+        var newBoardItemId = ui.item.closest('.column').data('board-item-id');
+        var boardId = <%= @board.id %>;
+        var moveUrl = '/boards/' + boardId + '/board_items/' + newBoardItemId + '/cards/' + cardId + '/move';
 
-          // Construir a URL para a rota move
-          var moveUrl = '/boards/' + boardId + '/board_items/' + newBoardItemId + '/cards/' + cardId + '/move';
-
-          // Enviar a requisição AJAX
-          $.ajax({
-            url: moveUrl,
-            method: 'PATCH',
-            data: {
-              position: newPosition + 1, // acts_as_list começa em 1
-              board_item_id: newBoardItemId
-            },
-            success: function() {
-              console.log('Card movido com sucesso.');
-              // Verificar se a nova coluna é a última coluna
-              var lastColumnId = <%= last_column_id %>;
-              if (newBoardItemId == lastColumnId) {
-                // Remover o botão de concluir do card movido
-                ui.item.find('.complete-card-button').remove();
-                // Adicionar a classe de concluído
-                ui.item.addClass('completed-card');
-              } else {
-                // Garantir que o botão de concluir esteja presente
-                if (ui.item.find('.complete-card-button').length === 0) {
-                  ui.item.append(`
-                    <button class="complete-card-button" title="Concluir">
-                      <i class="bi bi-check-circle"></i>
-                    </button>
-                  `);
-                }
-                ui.item.removeClass('completed-card');
+        $.ajax({
+          url: moveUrl,
+          method: 'PATCH',
+          data: {
+            position: newPosition + 1,
+            board_item_id: newBoardItemId
+          },
+          success: function() {
+            console.log('Card movido com sucesso.');
+            var lastColumnId = <%= last_column_id %>;
+            if (newBoardItemId == lastColumnId) {
+              ui.item.find('.complete-card-button').remove();
+              ui.item.addClass('completed-card');
+            } else {
+              if (ui.item.find('.complete-card-button').length === 0) {
+                ui.item.append(`
+                  <button class="complete-card-button" title="Concluir">
+                    <i class="bi bi-check-circle"></i>
+                  </button>
+                `);
               }
-            },
-            error: function() {
-              alert('Erro ao mover o card.');
+              ui.item.removeClass('completed-card');
             }
-          });
-        }
+          },
+          error: function() {
+            alert('Erro ao mover o card.');
+          }
+        });
       }
-    }).disableSelection();
+    }
+  }).disableSelection();
 
-  // Mostrar o formulário de novo card ao clicar no botão
+    // Mostrar o formulário de novo card ao clicar no botão
     $('.show-new-card-form').on('click', function(e) {
       e.preventDefault();
       var column = $(this).closest('.column');
@@ -211,62 +226,65 @@
       column.find('.card-title-input').focus();
     });
 
-
     // Submeter o formulário ao pressionar Enter
-$(document).on('keypress', '.card-title-input', function(e) {
-    if (e.which == 13) { // Código da tecla Enter
-      e.preventDefault();
-      var form = $(this).closest('form');
-      var column = form.closest('.column');
-      var columnId = column.data('board-item-id');
-      var cardTitle = $(this).val();
-      
-      // Enviar requisição AJAX para criar o card
-      $.ajax({
-        url: form.attr('action'),
-        method: 'POST',
-        data: form.serialize(),
-        dataType: 'json',
-        success: function(response) {
-          if (response.success) {
-            // Criar o novo elemento do card
-            var newCard = $('<div>', {
-              class: 'card',
-              'data-card-id': response.card.id,
-              style: 'display: none;' // Inicialmente oculto para o efeito fade in
-            }).text(cardTitle);
+    $(document).on('keypress', '.card-title-input', function(e) {
+      if (e.which == 13) { // Código da tecla Enter
+        e.preventDefault();
+        var form = $(this).closest('form');
+        var column = form.closest('.column');
+        var columnId = column.data('board-item-id');
+        var cardTitle = $(this).val();
 
-            // Adicionar o botão de concluir se não for a última coluna
-            var lastColumnId = $('.column').last().data('board-item-id');
-            if (columnId != lastColumnId) {
-              newCard.append(`
-                <button class="complete-card-button" title="Concluir">
-                  <i class="bi bi-check-circle"></i>
-                </button>
+        // Enviar requisição AJAX para criar o card
+        $.ajax({
+          url: form.attr('action'),
+          method: 'POST',
+          data: form.serialize(),
+          dataType: 'json',
+          success: function(response) {
+            if (response.success) {
+              // Criar o novo elemento do card
+              var newCard = $(`
+                <div class="card" data-card-id="${response.card.id}" style="display: none;">
+                  <div class="card-content">
+                    ${response.card.title}
+                    <p>${response.card.description || ''}</p>
+                    <p><strong>Humor:</strong> ${response.card.mood ? response.card.mood.name : 'Não definido'}</p>
+                  </div>
+                  <div class="card-actions">
+                    ${columnId != <%= last_column_id %> ? `
+                      <button class="complete-card-button" title="Concluir">
+                        <i class="bi bi-check-circle"></i>
+                      </button>
+                    ` : ''}
+                    <button class="delete-card-button" title="Excluir">
+                      <i class="bi bi-trash"></i>
+                    </button>
+                  </div>
+                </div>
               `);
+
+              // Adicionar o novo card à última posição da coluna e aplicar fade in
+              column.find('.cards').append(newCard);
+              newCard.fadeIn(300);
+
+              // Limpar e esconder o formulário
+              form.find('.card-title-input').val('');
+              form.closest('.new-card-form').hide();
+              column.find('.add-card-button').show();
+
+              // Reativar o sortable
+              $(".cards").sortable("refresh");
+            } else {
+              alert('Erro ao criar o card: ' + response.message);
             }
-
-            // Adicionar o novo card à última posição da coluna e aplicar fade in
-            column.find('.cards').append(newCard);
-            newCard.fadeIn(300);
-
-            // Limpar e esconder o formulário
-            form.find('.card-title-input').val('');
-            form.closest('.new-card-form').hide();
-            column.find('.add-card-button').show();
-
-            // Reativar o sortable
-            $(".cards").sortable("refresh");
-          } else {
-            alert('Erro ao criar o card: ' + response.message);
+          },
+          error: function() {
+            alert('Erro ao criar o card. Por favor, tente novamente.');
           }
-        },
-        error: function() {
-          alert('Erro ao criar o card. Por favor, tente novamente.');
-        }
-      });
-    }
-  });
+        });
+      }
+    });
 
     // Fechar o formulário ao clicar fora
     $(document).on('click', function(e) {
@@ -277,7 +295,7 @@ $(document).on('keypress', '.card-title-input', function(e) {
       }
     });
 
-  // Novo handler para o botão de excluir
+    // Handler para o botão de excluir
     $(document).on('click', '.delete-card-button', function(e) {
       e.stopPropagation();
       var card = $(this).closest('.card');
@@ -301,7 +319,7 @@ $(document).on('keypress', '.card-title-input', function(e) {
         });
       }
     });
-  
+
     // Handler para o botão de concluir
     $(document).on('click', '.complete-card-button', function(e) {
       e.stopPropagation(); // Evita que o evento de clique seja propagado para outros handlers
@@ -384,6 +402,4 @@ $(document).on('keypress', '.card-title-input', function(e) {
       });
     });
   });
-
-  
 </script>

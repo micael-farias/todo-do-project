@@ -1,0 +1,55 @@
+<!-- app/views/cards/edit.html.erb -->
+
+<%= form_with(model: [@board, @board_item, @card], local: true) do |form| %>
+  <% if @card.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@card.errors.count, "error") %> proibiu este card de ser salvo:</h2>
+
+      <ul>
+        <% @card.errors.full_messages.each do |message| %>
+          <li><%= message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="mb-3">
+    <%= form.label :title, class: "form-label" %>
+    <%= form.text_field :title, class: "form-control" %>
+  </div>
+
+  <div class="mb-3">
+    <%= form.label :description, class: "form-label" %>
+    <%= form.text_area :description, class: "form-control", rows: 3 %>
+  </div>
+
+  <div class="mb-3">
+    <%= form.label :priority, class: "form-label" %>
+    <%= form.select :priority, options_for_select([['Alta', 3], ['Média', 2], ['Baixa', 1]], @card.priority), { prompt: "Selecione a Prioridade" }, class: "form-select" %>
+  </div>
+
+  <div class="mb-3">
+    <%= form.label :tags, class: "form-label" %><br>
+    <%= form.collection_check_boxes :tag_ids, Tag.where(card: @card), :id, :name do |b| %>
+      <div class="form-check form-check-inline">
+        <%= b.check_box(class: "form-check-input") %>
+        <%= b.label(class: "form-check-label") %>
+      </div>
+    <% end %>
+  </div>
+
+  <div class="mb-3">
+    <%= form.label :due_date, class: "form-label" %>
+    <%= form.datetime_select :due_date, class: "form-control" %>
+  </div>
+
+  <div class="mb-3">
+    <%= form.label :mood_id, "Humor", class: "form-label" %>
+    <%= form.collection_select :mood_id, Mood.all, :id, :name, { prompt: "Selecione o Humor" }, class: "form-select" %>
+  </div>
+
+  <div class="modal-footer">
+    <%= button_to 'Cancelar', '#', class: 'btn btn-secondary', data: { bs-dismiss: "modal" } %>
+    <%= form.submit 'Salvar Alterações', class: "btn btn-primary" %>
+  </div>
+<% end %>
