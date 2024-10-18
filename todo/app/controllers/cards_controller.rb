@@ -4,6 +4,8 @@ class CardsController < ApplicationController
   
     def create
       @card = @board_item.cards.new(card_params)
+      @card.completed = @card.board_item_id == (@card.board_item.board.board_items.order(:position).last).id
+      @card.completed_at = Time.current
       if @card.save
         render json: { success: true, card: @card }
       else
@@ -27,13 +29,68 @@ class CardsController < ApplicationController
     end
   
     def move
-      @card = Card.find(params[:id])
-      @card.update(
-        board_item_id: params[:board_item_id],
-        position: params[:position]
-      )
+      @board = Board.find(params[:board_id])  # Obtém o board a partir do parâmetro
+      @card  = Card.find(params[:id])
+      Rails.logger.info "Movendo card ID: #{@card.id} - Título: #{@card.title}"
+    
+      if @board.title.include?('Board Diário')
+        Rails.logger.info "Card está em um Board Diário"
+    
+        daily_board = Board.where("title LIKE ?", "%Board Diário%").first
+        Rails.logger.info "Encontrado Board Diário: #{daily_board.title} - ID: #{daily_board.id}"
+    
+        last_board_item = daily_board.board_items.order(:position).last
+        Rails.logger.info "Último item do Board Diário: #{last_board_item.name} - ID: #{last_board_item.id}"
+    
+        card_in_last_column = params[:board_item_id].to_i == last_board_item.id
+        Rails.logger.info "Card na última coluna do Board Diário: #{card_in_last_column}"
+    
+        if card_in_last_column
+          Rails.logger.info "Card está na última coluna. Movendo para o último item do Board original."
+    
+          original_board_last_item = @card.board_item.board.board_items.order(:position).last
+          last_position = original_board_last_item.cards.maximum(:position) || 0
+          Rails.logger.info "Movendo para o último Board Item original: #{original_board_last_item.name} - ID: #{original_board_last_item.id}, na posição #{last_position + 1}"
+    
+          @card.update(
+            board_item_id: original_board_last_item.id,
+            position: last_position + 1,
+            completed: card_in_last_column,
+            completed_at: Time.current
+          )
+        else
+          Rails.logger.info "Card NÃO está na última coluna. Movendo para o primeiro item do Board original."
+    
+          original_board_first_item = @card.board_item.board.board_items.order(:position).first
+          last_position_first_item = original_board_first_item.cards.maximum(:position) || 0
+          Rails.logger.info "Movendo para o primeiro Board Item original: #{original_board_first_item.name} - ID: #{original_board_first_item.id}, na posição #{last_position_first_item + 1}"
+    
+          @card.update(
+            board_item_id: original_board_first_item.id,
+            position: last_position_first_item + 1,
+            completed: false,
+            completed_at: nil
+          )
+        end
+      else
+        Rails.logger.info "Card NÃO está em um Board Diário. Movendo normalmente."
+    
+        last_board_item = @card.board_item.board.board_items.order(:position).last
+        card_in_last_column = params[:board_item_id].to_i == last_board_item.id
+        Rails.logger.info "Card na última coluna do Board: #{card_in_last_column}"
+    
+        @card.update(
+          board_item_id: params[:board_item_id],
+          position: params[:position],
+          completed: card_in_last_column,
+          completed_at: (card_in_last_column) ? Time.current : nil
+        )
+      end
+    
+      Rails.logger.info "Movimento finalizado para o card ID: #{@card.id}"
       head :ok
     end
+    
     
     private
   

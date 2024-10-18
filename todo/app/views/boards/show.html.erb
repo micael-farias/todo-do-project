@@ -2,6 +2,7 @@
 
 <h1><%= @board.title %></h1>
 
+<!-- Seção do Kanban Board -->
 <div id="kanban-board">
   <% last_column_id = @board.board_items.last.id %> <!-- Identifica o ID da última coluna -->
   
@@ -10,18 +11,91 @@
       <h3><%= item.name %></h3>
       <div class="column-content">
         <div class="cards">
-          <% item.cards.order(:position).each do |card| %>
-            <div class="card" data-card-id="<%= card.id %>">
-              <%= card.title %>
-              <!-- Botão de Concluir Adicionado Condicionalmente -->
-              <% unless item.id == last_column_id %>
-                <button class="complete-card-button" title="Concluir">
-                  <i class="bi bi-check-circle"></i>
-                </button>
-              <% end %>
-            </div>
+
+
+<% if @board.title.include?('Board Diário') %>
+  <!-- Exibir os cards na primeira ou segunda coluna do Board Diário -->
+  
+  <!-- Primeira Coluna: Cards filtrados por humor -->
+  <% if @board.board_items.first == item %>
+    <% @daily_board_cards.each do |card| %>
+      <div class="card" data-card-id="<%= card.id %>">
+        <div class="card-content">
+          <%= card.title %>
+          <p><%= card.description %></p>
+          <p><strong>Humor:</strong> <%= card.mood&.name || 'Não definido' %></p>
+          <% if card.due_date.present? %>
+            <p><strong>Data de Vencimento:</strong> <%= card.due_date.strftime('%d/%m/%Y') %></p>
           <% end %>
         </div>
+        <div class="card-actions">
+      <% unless item.id == last_column_id %>
+          <button class="complete-card-button" title="Concluir">
+            <i class="bi bi-check-circle"></i>
+          </button>
+        <% end %>
+          <button class="delete-card-button" title="Excluir">
+            <i class="bi bi-trash"></i>
+          </button>
+        </div>
+      </div>
+    <% end %>
+
+  <!-- Segunda Coluna: Todos os cards finalizados hoje -->
+  <% elsif @board.board_items.second == item %>
+    <% Card.where(completed_at: Date.today.all_day).each do |card| %> <!-- Busca todos os cards finalizados hoje -->
+      <div class="card" data-card-id="<%= card.id %>">
+        <div class="card-content">
+          <%= card.title %>
+          <p><%= card.description %></p>
+          <p><strong>Humor:</strong> <%= card.mood&.name || 'Não definido' %></p>
+          <p><strong>Completado em:</strong> <%= card.completed_at.strftime('%d/%m/%Y %H:%M') %></p>
+        </div>
+        <div class="card-actions">
+        <% unless item.id == last_column_id %>
+          <button class="complete-card-button" title="Concluir">
+            <i class="bi bi-check-circle"></i>
+          </button>
+        <% end %>
+          <button class="delete-card-button" title="Excluir">
+            <i class="bi bi-trash"></i>
+          </button>
+        </div>
+      </div>
+    <% end %>
+  <% end %>
+
+<% else %>
+  <!-- Para boards normais, exibe os cards normalmente nas colunas -->
+  <% item.cards.order(:position).each do |card| %>
+    <div class="card" data-card-id="<%= card.id %>">
+      <div class="card-content">
+        <%= card.title %>
+        <p><%= card.description %></p>
+        <p><strong>Humor:</strong> <%= card.mood&.name || 'Não definido' %></p>
+      </div>
+      <div class="card-actions">
+        <% unless item.id == last_column_id %>
+          <button class="complete-card-button" title="Concluir">
+            <i class="bi bi-check-circle"></i>
+          </button>
+        <% end %>
+        <button class="delete-card-button" title="Excluir">
+          <i class="bi bi-trash"></i>
+        </button>
+      </div>
+    </div>
+  <% end %>
+<% end %>
+
+
+
+
+        </div>
+
+
+        <% unless @board.title.include?('Board Diário') %>
+
         <!-- Formulário oculto para adicionar um novo card -->
         <div class="new-card-form" style="display: none;">
           <%= form_with(model: Card.new, url: board_board_item_cards_path(@board, item), html: { class: 'create-card-form' }) do |form| %>
@@ -38,12 +112,15 @@
             </div>
           </a>
         </div>
+
+      <%end %>
+
       </div>
     </div>
   <% end %>
 </div>
 
-<%= link_to 'Voltar', boards_path %>
+<%= link_to 'Voltar', boards_path, class: 'btn btn-link mt-3' %>
 
 <!-- Scripts necessários -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -200,6 +277,31 @@ $(document).on('keypress', '.card-title-input', function(e) {
       }
     });
 
+  // Novo handler para o botão de excluir
+    $(document).on('click', '.delete-card-button', function(e) {
+      e.stopPropagation();
+      var card = $(this).closest('.card');
+      var cardId = card.data('card-id');
+      var boardItemId = card.closest('.column').data('board-item-id');
+      var boardId = <%= @board.id %>;
+
+      if (confirm('Tem certeza que deseja excluir este card?')) {
+        $.ajax({
+          url: `/boards/${boardId}/board_items/${boardItemId}/cards/${cardId}`,
+          method: 'DELETE',
+          success: function() {
+            card.fadeOut(300, function() {
+              card.remove();
+              console.log('Card excluído com sucesso.');
+            });
+          },
+          error: function() {
+            alert('Erro ao excluir o card.');
+          }
+        });
+      }
+    });
+  
     // Handler para o botão de concluir
     $(document).on('click', '.complete-card-button', function(e) {
       e.stopPropagation(); // Evita que o evento de clique seja propagado para outros handlers
@@ -265,5 +367,23 @@ $(document).on('keypress', '.card-title-input', function(e) {
         }
       });
     });
+
+    $('#daily-board-form').on('submit', function(e) {
+      e.preventDefault();
+      $.ajax({
+        url: $(this).attr('action'),
+        method: $(this).attr('method'),
+        data: $(this).serialize(),
+        dataType: 'script',
+        success: function() {
+          // Sucesso tratado em create_daily_board.js.erb
+        },
+        error: function() {
+          alert('Erro ao criar o board diário.');
+        }
+      });
+    });
   });
+
+  
 </script>

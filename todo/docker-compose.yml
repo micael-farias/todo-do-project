@@ -10,3 +10,19 @@ services:
       POSTGRES_PASSWORD: todo_pass_123
     ports:
       - "5432:5432"
+
+  sidekiq:
+    build: .
+    command: bundle exec sidekiq --verbose
+    volumes:
+      - .:/app
+    environment:
+      - REDIS_URL=redis://redis:6379/0
+    depends_on:
+      - redis
+   
+  redis:
+    image: redis:6.2-alpine
+    container_name: myapp-redis
+    ports:
+      - "6379:6379"  

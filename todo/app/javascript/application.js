@@ -1,7 +1,12 @@
+//= require chartkick
+//= require Chart.bundle
+
+
 // Configure your import map in config/importmap.rb. Read more: https://github.com/rails/importmap-rails
 import "popper"
 import "bootstrap"
 import Sortable from 'sortablejs';
+import "chartkick/chart.js"
 
 document.addEventListener('turbo:load', () => {
   const lists = document.querySelectorAll('.cards');

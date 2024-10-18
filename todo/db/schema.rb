@@ -10,9 +10,19 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2024_10_17_020210) do
+ActiveRecord::Schema[7.2].define(version: 2024_10_18_014414) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "board_cards", force: :cascade do |t|
+    t.bigint "board_id", null: false
+    t.bigint "card_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["board_id", "card_id"], name: "index_board_cards_on_board_id_and_card_id", unique: true
+    t.index ["board_id"], name: "index_board_cards_on_board_id"
+    t.index ["card_id"], name: "index_board_cards_on_card_id"
+  end
 
   create_table "board_item_tags", force: :cascade do |t|
     t.bigint "board_item_id", null: false
@@ -29,6 +39,7 @@ ActiveRecord::Schema[7.2].define(version: 2024_10_17_020210) do
     t.datetime "due_date"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "position"
     t.index ["board_id"], name: "index_board_items_on_board_id"
   end
 
@@ -37,6 +48,7 @@ ActiveRecord::Schema[7.2].define(version: 2024_10_17_020210) do
     t.bigint "user_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.datetime "last_access"
     t.index ["user_id"], name: "index_boards_on_user_id"
   end
 
@@ -48,7 +60,19 @@ ActiveRecord::Schema[7.2].define(version: 2024_10_17_020210) do
     t.datetime "updated_at", null: false
     t.integer "position"
     t.boolean "completed"
+    t.bigint "mood_id"
+    t.datetime "completed_at"
+    t.datetime "due_date"
+    t.integer "priority"
+    t.integer "reminders_sent", default: [], array: true
     t.index ["board_item_id"], name: "index_cards_on_board_item_id"
+    t.index ["mood_id"], name: "index_cards_on_mood_id"
+  end
+
+  create_table "moods", force: :cascade do |t|
+    t.string "name"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "parameters", force: :cascade do |t|
@@ -61,6 +85,14 @@ ActiveRecord::Schema[7.2].define(version: 2024_10_17_020210) do
     t.index ["user_id"], name: "index_parameters_on_user_id"
   end
 
+  create_table "tags", force: :cascade do |t|
+    t.string "name"
+    t.bigint "card_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["card_id"], name: "index_tags_on_card_id"
+  end
+
   create_table "users", force: :cascade do |t|
     t.string "email", default: "", null: false
     t.string "name", default: "", null: false
@@ -70,13 +102,20 @@ ActiveRecord::Schema[7.2].define(version: 2024_10_17_020210) do
     t.datetime "remember_created_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.bigint "mood_id"
     t.index ["email"], name: "index_users_on_email", unique: true
+    t.index ["mood_id"], name: "index_users_on_mood_id"
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
 
+  add_foreign_key "board_cards", "boards"
+  add_foreign_key "board_cards", "cards"
   add_foreign_key "board_item_tags", "board_items"
   add_foreign_key "board_items", "boards"
   add_foreign_key "boards", "users"
   add_foreign_key "cards", "board_items"
+  add_foreign_key "cards", "moods"
   add_foreign_key "parameters", "users"
+  add_foreign_key "tags", "cards"
+  add_foreign_key "users", "moods"
 end

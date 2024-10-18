@@ -1,0 +1,15 @@
+# config/sidekiq.yml
+
+:concurrency: 5
+
+:queues:
+  - default
+  - mailers
+
+:logfile: ./log/sidekiq.log
+
+:schedule:
+  card_reminder_job:
+    cron: "*/1 * * * *" # Executa a cada minuto (para desenvolvimento; ajuste conforme necessário)
+    class: CardReminderJob
+    queue: default

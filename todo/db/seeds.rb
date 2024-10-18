@@ -7,3 +7,7 @@
 #   ["Action", "Comedy", "Drama", "Horror"].each do |genre_name|
 #     MovieGenre.find_or_create_by!(name: genre_name)
 #   end
+moods = ['Feliz', 'Triste', 'Motivado', 'Estressado', 'Calmo', 'Ansioso']
+moods.each do |mood|
+  Mood.find_or_create_by(name: mood)
+end
