@@ -1,7 +1,8 @@
 # app/controllers/cards_controller.rb
 class CardsController < ApplicationController
-    before_action :set_board_item
-  
+    before_action :set_board_and_board_item
+    before_action :set_card, only: [:edit, :update]
+
     def create
       @card = @board_item.cards.new(card_params)
       @card.completed = @card.board_item_id == (@card.board_item.board.board_items.order(:position).last).id
@@ -13,14 +14,43 @@ class CardsController < ApplicationController
       end
     end
   
-    def update
-      @card = @board_item.cards.find(params[:id])
-      if @card.update(card_params)
-        redirect_to @board_item.board, notice: 'Card atualizado com sucesso.'
-      else
-        redirect_to @board_item.board, alert: 'Não foi possível atualizar o card.'
+    
+    def edit
+      respond_to do |format|
+        format.json { render json: @card }
+        format.html # se você tiver uma view HTML para edit
       end
     end
+  
+# PATCH/PUT /boards/:board_id/board_items/:board_item_id/cards/:id
+def update
+  if @card.update(card_params)
+    # Atualizar tags
+    if params[:card][:tags].present?
+      tag_names = params[:card][:tags].split(',').map(&:strip).reject(&:blank?).uniq
+      # Remove tags que não estão mais na lista
+      @card.tags.where.not(name: tag_names).destroy_all
+      # Adiciona novas tags
+      tag_names.each do |tag_name|
+        @card.tags.find_or_create_by(name: tag_name)
+      end
+    else
+      # Se nenhuma tag for fornecida, remove todas as tags existentes
+      @card.tags.destroy_all
+    end
+
+    respond_to do |format|
+      format.json { render json: { success: true, card: @card.as_json(include: :tags) }, status: :ok }
+      format.html { redirect_to board_path(@board), notice: 'Card was successfully updated.' }
+    end
+  else
+    respond_to do |format|
+      format.json { render json: { success: false, message: @card.errors.full_messages.join(', ') }, status: :unprocessable_entity }
+      format.html { render :edit }
+    end
+  end
+end
+
   
     def destroy
       @card = @board_item.cards.find(params[:id])
@@ -77,7 +107,7 @@ class CardsController < ApplicationController
     
         last_board_item = @card.board_item.board.board_items.order(:position).last
         card_in_last_column = params[:board_item_id].to_i == last_board_item.id
-        Rails.logger.info "Card na última coluna do Board: #{card_in_last_column}"
+        Rails.logger.info "Card na última coluna do Board:#{last_board_item.id} #{params[:board_item_id]}  #{card_in_last_column}"
     
         @card.update(
           board_item_id: params[:board_item_id],
@@ -94,14 +124,19 @@ class CardsController < ApplicationController
     
     private
   
-    def set_board_item
-      @board_item = BoardItem.find(params[:board_item_id])
+    def set_board_and_board_item
+      @board = Board.find(params[:board_id])
+      @board_item = @board.board_items.find(params[:board_item_id])
     end
   
     def card_params
-      params.require(:card).permit(:title, :description)
+      params.require(:card).permit(:title, :description, :mood_id, :due_date, :priority)
     end
 
+    def set_card
+      Rails.logger.info @board_item
+      @card = @board_item.cards.find(params[:id])
+    end
 
       
   end

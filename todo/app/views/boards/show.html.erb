@@ -3,7 +3,7 @@
 <h1><%= @board.title %></h1>
 
 <!-- Seção do Kanban Board -->
-<div id="kanban-board">
+<div id="kanban-board" data-board-id="<%= @board.id %>">
   <% last_column_id = @board.board_items.last.id %> <!-- Identifica o ID da última coluna -->
 
   <% @board.board_items.each do |item| %>
@@ -26,11 +26,22 @@
                     <% if card.due_date.present? %>
                       <p><strong>Data de Vencimento:</strong> <%= card.due_date.strftime('%d/%m/%Y') %></p>
                     <% end %>
+                    <!-- Exibir Tags -->
+                    <% if card.tags.any? %>
+                      <div class="tags mt-2">
+                        <% card.tags.each do |tag| %>
+                          <span class="badge bg-secondary tag-badge"><%= tag.name %></span>
+                        <% end %>
+                      </div>
+                    <% end %>
                   </div>
                   <div class="card-actions">
                     <% unless item.id == last_column_id %>
                       <button class="complete-card-button" title="Concluir">
                         <i class="bi bi-check-circle"></i>
+                      </button>
+                      <button class="edit-card-button" title="Editar">
+                        <i class="bi bi-pencil-square"></i>
                       </button>
                     <% end %>
                     <button class="delete-card-button" title="Excluir">
@@ -49,11 +60,22 @@
                     <p><%= card.description %></p>
                     <p><strong>Humor:</strong> <%= card.mood&.name || 'Não definido' %></p>
                     <p><strong>Completado em:</strong> <%= card.completed_at.strftime('%d/%m/%Y %H:%M') %></p>
+                    <!-- Exibir Tags -->
+                    <% if card.tags.any? %>
+                      <div class="tags mt-2">
+                        <% card.tags.each do |tag| %>
+                          <span class="badge bg-secondary tag-badge"><%= tag.name %></span>
+                        <% end %>
+                      </div>
+                    <% end %>
                   </div>
                   <div class="card-actions">
                     <% unless item.id == last_column_id %>
                       <button class="complete-card-button" title="Concluir">
                         <i class="bi bi-check-circle"></i>
+                      </button>
+                      <button class="edit-card-button" title="Editar">
+                        <i class="bi bi-pencil-square"></i>
                       </button>
                     <% end %>
                     <button class="delete-card-button" title="Excluir">
@@ -72,11 +94,22 @@
                   <%= card.title %>
                   <p><%= card.description %></p>
                   <p><strong>Humor:</strong> <%= card.mood&.name || 'Não definido' %></p>
+                  <!-- Exibir Tags -->
+                  <% if card.tags.any? %>
+                    <div class="tags mt-2">
+                      <% card.tags.each do |tag| %>
+                        <span class="badge bg-secondary tag-badge"><%= tag.name %></span>
+                      <% end %>
+                    </div>
+                  <% end %>
                 </div>
                 <div class="card-actions">
                   <% unless item.id == last_column_id %>
                     <button class="complete-card-button" title="Concluir">
                       <i class="bi bi-check-circle"></i>
+                    </button>
+                    <button class="edit-card-button" title="Editar">
+                      <i class="bi bi-pencil-square"></i>
                     </button>
                   <% end %>
                   <button class="delete-card-button" title="Excluir">
@@ -94,8 +127,8 @@
           <!-- Formulário oculto para adicionar um novo card -->
           <div class="new-card-form" style="display: none;">
             <%= form_with(model: Card.new, url: board_board_item_cards_path(@board, item), html: { class: 'create-card-form' }) do |form| %>
-              <div class="field">
-                <%= form.text_field :title, placeholder: "Título do card", class: 'card-title-input' %>
+              <div class="field mb-3">
+                <%= form.text_field :title, placeholder: "Título do card", class: 'form-control card-title-input', required: true %>
               </div>
             <% end %>
           </div>
@@ -116,6 +149,54 @@
 </div>
 
 <%= link_to 'Voltar', boards_path, class: 'btn btn-link mt-3' %>
+<!-- Modal para edição de card -->
+<div class="modal fade" id="editCardModal" tabindex="-1" aria-labelledby="editCardModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="editCardModalLabel">Editar Card</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <%= form_with(model: Card.new, url: '#', method: :patch, id: 'edit-card-form') do |form| %>
+          <div class="mb-3">
+            <%= form.label :title, 'Título', class: 'form-label' %>
+            <%= form.text_field :title, id: 'card_title', class: 'form-control', required: true %>
+          </div>
+          <div class="mb-3">
+            <%= form.label :description, 'Descrição', class: 'form-label' %>
+            <%= form.text_area :description, id: 'card_description', class: 'form-control' %>
+          </div>
+          <div class="mb-3">
+            <%= form.label :mood_id, 'Humor', class: 'form-label' %>
+            <%= form.collection_select :mood_id, Mood.all, :id, :name, { include_blank: 'Selecione o humor' }, class: 'form-select', id: 'card_mood_id' %>
+          </div>
+          <div class="mb-3">
+            <%= form.label :due_date, 'Data de Vencimento', class: 'form-label' %>
+            <%= form.date_field :due_date, id: 'card_due_date', class: 'form-control' %>
+          </div>
+          <div class="mb-3">
+            <%= form.label :priority, 'Prioridade', class: 'form-label' %>
+            <%= form.select :priority, [['Baixa', 0], ['Média', 1], ['Alta', 2]], { include_blank: 'Selecione a prioridade' }, class: 'form-select', id: 'card_priority' %>
+          </div>
+          <div class="mb-3">
+            <%= form.label :tags, 'Tags', class: 'form-label' %>
+            <%= form.text_field :tags, id: 'card_tags', class: 'form-control', placeholder: 'Ex: Urgente, Trabalho, Pessoal' %>
+            <small class="form-text text-muted">Separe as tags por vírgulas.</small>
+          </div>
+          <%= form.submit 'Atualizar Card', class: 'btn btn-primary' %>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- Bootstrap CSS -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+<!-- Bootstrap JS (necessário para modals) -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
 <!-- Scripts necessários -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -141,12 +222,29 @@
   /* Transições suaves para cards */
   .card {
     transition: transform 0.3s ease, opacity 0.3s ease; /* Aumento da duração da transição */
+    cursor: pointer; /* Indica que o card é clicável */
   }
 
   /* Classe para cards concluídos */
   .completed-card {
     opacity: 0.6;
   }
+
+  /* Estilização das Tags */
+  .tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+  }
+
+  .tag-badge {
+    font-size: 0.85em;
+  }
+/* Adicione esta classe no seu bloco <style> existente */
+.processing-card {
+  opacity: 0.5; /* Ajuste o valor conforme necessário */
+  transition: opacity 0.3s ease; /* Transição suave */
+}
 
   /* Outras estilizações conforme necessário */
 </style>
@@ -161,61 +259,241 @@
 
   $(document).ready(function() {
     // Configuração otimizada do sortable
- $(".cards").sortable({
-    connectWith: ".cards",
-    placeholder: "card-placeholder",
-    cursor: "move",
-    revert: 300,  // Aumentamos o tempo de reversão para 300ms
-    delay: 0,   // Adicionamos um pequeno atraso antes de iniciar o drag
-    tolerance: "pointer",
-    helper: "clone",  // Usamos um clone como helper
-    opacity: 0.8,     // Tornamos o item arrastado levemente transparente
-    start: function(e, ui) {
-      ui.placeholder.height(ui.item.height());
-      ui.helper.css('z-index', 100);
-    },
-    stop: function(e, ui) {
-      ui.item.css('transform', '');
-    },
-    update: function(event, ui) {
-      if (this === ui.item.parent()[0]) {
-        var cardId = ui.item.data('card-id');
-        var newPosition = ui.item.index();
-        var newBoardItemId = ui.item.closest('.column').data('board-item-id');
-        var boardId = <%= @board.id %>;
-        var moveUrl = '/boards/' + boardId + '/board_items/' + newBoardItemId + '/cards/' + cardId + '/move';
+    $(".cards").sortable({
+      connectWith: ".cards",
+      placeholder: "card-placeholder",
+      cursor: "move",
+      revert: 300,  // Aumentamos o tempo de reversão para 300ms
+      delay: 0,   // Adicionamos um pequeno atraso antes de iniciar o drag
+      tolerance: "pointer",
+      helper: "clone",  // Usamos um clone como helper
+      opacity: 0.8,     // Tornamos o item arrastado levemente transparente
+      start: function(e, ui) {
+        ui.placeholder.height(ui.item.height());
+        ui.helper.css('z-index', 100);
+      },
+      stop: function(e, ui) {
+        ui.item.css('transform', '');
+      },
+      update: function(event, ui) {
+        if (this === ui.item.parent()[0]) {
+          var cardId = ui.item.data('card-id');
+          var newPosition = ui.item.index();
+          var newBoardItemId = ui.item.closest('.column').data('board-item-id');
+          var boardId = $('#kanban-board').data('board-id');
+          var moveUrl = '/boards/' + boardId + '/board_items/' + newBoardItemId + '/cards/' + cardId + '/move';
 
-        $.ajax({
-          url: moveUrl,
-          method: 'PATCH',
-          data: {
-            position: newPosition + 1,
-            board_item_id: newBoardItemId
-          },
-          success: function() {
-            console.log('Card movido com sucesso.');
-            var lastColumnId = <%= last_column_id %>;
-            if (newBoardItemId == lastColumnId) {
-              ui.item.find('.complete-card-button').remove();
-              ui.item.addClass('completed-card');
-            } else {
-              if (ui.item.find('.complete-card-button').length === 0) {
-                ui.item.append(`
-                  <button class="complete-card-button" title="Concluir">
-                    <i class="bi bi-check-circle"></i>
-                  </button>
-                `);
+          $.ajax({
+            url: moveUrl,
+            method: 'PATCH',
+            data: {
+              position: newPosition + 1,
+              board_item_id: newBoardItemId
+            },
+            success: function() {
+              console.log('Card movido com sucesso.');
+              var lastColumnId = $('.column').last().data('board-item-id');
+              if (newBoardItemId == lastColumnId) {
+                ui.item.find('.complete-card-button').remove();
+                ui.item.find('.edit-card-button').remove();
+                ui.item.addClass('completed-card');
+              } else {
+                if (ui.item.find('.complete-card-button').length === 0) {
+                  ui.item.append(`
+                    <button class="complete-card-button" title="Concluir">
+                      <i class="bi bi-check-circle"></i>
+                    </button>
+                    <button class="edit-card-button" title="Editar">
+                      <i class="bi bi-pencil-square"></i>
+                    </button>
+                  `);
+                }
+                ui.item.removeClass('completed-card');
+                  ui.item.addClass('processing-card');
+
               }
-              ui.item.removeClass('completed-card');
+            },
+            error: function() {
+              alert('Erro ao mover o card.');
             }
-          },
-          error: function() {
-            alert('Erro ao mover o card.');
-          }
-        });
+          });
+        }
       }
+    }).disableSelection();
+
+    // Delegação de eventos para abrir a modal ao clicar no botão de editar
+    $('#kanban-board').on('click', '.edit-card-button', function(e) {
+      e.stopPropagation(); // Evita que o evento de clique seja propagado para o card
+      var button = $(this);
+      var card = button.closest('.card');
+      var cardId = card.data('card-id');
+      var boardId = $('#kanban-board').data('board-id');
+      var boardItemId = card.closest('.column').data('board-item-id');
+      openEditCardModal(cardId, boardId, boardItemId);
+    });
+
+    // Função para abrir a modal e carregar os dados do card
+function openEditCardModal(cardId, boardId, boardItemId) {
+  var modal = new bootstrap.Modal(document.getElementById('editCardModal'));
+  var form = $('#edit-card-form');
+
+  // Atualizar a URL do formulário
+  form.attr('action', `/boards/${boardId}/board_items/${boardItemId}/cards/${cardId}`);
+
+  // Carregar os dados do card via AJAX
+  $.ajax({
+    url: `/boards/${boardId}/board_items/${boardItemId}/cards/${cardId}/edit`,
+    method: 'GET',
+    dataType: 'json',
+    success: function(data) {
+      console.log('Dados recebidos para edição:', data);
+      form.find('#card_title').val(data.title);
+      form.find('#card_description').val(data.description);
+      form.find('#card_mood_id').val(data.mood_id || '');
+      form.find('#card_due_date').val(data.due_date ? data.due_date.split('T')[0] : '');
+      form.find('#card_priority').val(data.priority || '');
+
+      // Preencher o campo de tags com as tags existentes
+var tags = (data.tags || []).map(function(tag) { return tag.name; }).join(', ');
+      form.find('#card_tags').val(tags);
+
+      modal.show();
+    },
+    error: function(jqXHR, textStatus, errorThrown) {
+      console.error('Erro ao carregar dados do card:', textStatus, errorThrown);
+      alert('Erro ao carregar dados do card: ' + textStatus);
     }
-  }).disableSelection();
+  });
+}
+
+
+    // Enviar formulário de edição via AJAX
+    $('#edit-card-form').on('submit', function(e) {
+      e.preventDefault();
+      var form = $(this);
+      var formData = form.serialize();
+
+      $.ajax({
+        url: form.attr('action'),
+        method: 'PATCH',
+        data: formData,
+        dataType: 'json',
+        success: function(data) {
+          if (data.success) {
+            // Atualizar o card na interface
+            var card = $(`.card[data-card-id="${data.card.id}"]`);
+            card.find('.card-content').html(`
+              ${data.card.title}
+              <p>${data.card.description || ''}</p>
+              <p><strong>Humor:</strong> ${data.card.mood ? data.card.mood.name : 'Não definido'}</p>
+              ${data.card.due_date ? `<p><strong>Data de Vencimento:</strong> ${new Date(data.card.due_date).toLocaleDateString()}</p>` : ''}
+              <p><strong>Prioridade:</strong> ${['Baixa', 'Média', 'Alta'][data.card.priority] || 'Não definida'}</p>
+              ${data.card.tags.length > 0 ? `
+                <div class="tags mt-2">
+                  ${data.card.tags.map(tag => `<span class="badge bg-secondary tag-badge">${tag.name}</span>`).join('')}
+                </div>
+              ` : ''}
+            `);
+
+            // Fechar a modal
+            var modalInstance = bootstrap.Modal.getInstance(document.getElementById('editCardModal'));
+            modalInstance.hide();
+          } else {
+            alert('Erro ao atualizar o card: ' + data.message);
+          }
+        },
+        error: function() {
+          alert('Erro ao atualizar o card. Por favor, tente novamente.');
+        }
+      });
+    });
+
+    // Handler para o botão de concluir
+// Handler para o botão de concluir
+$(document).on('click', '.complete-card-button', function(e) {
+  e.stopPropagation(); // Evita que o evento de clique seja propagado para outros handlers
+  var button = $(this);
+  var card = button.closest('.card');
+  var lastColumn = $('.column').last();
+  var lastColumnId = lastColumn.data('board-item-id');
+  var boardId = $('#kanban-board').data('board-id');
+  var cardId = card.data('card-id');
+
+  // Adicionar a classe para reduzir a opacidade
+  card.addClass('processing-card');
+
+  // Construir a URL para a rota move
+  var moveUrl = '/boards/' + boardId + '/board_items/' + lastColumnId + '/cards/' + cardId + '/move';
+
+  // Calcular a posição final na última coluna
+  var newPosition = lastColumn.find('.card').not('.new-card').length + 1;
+
+  // Criar uma cópia do card para animação
+  var cardClone = card.clone();
+  cardClone.css({
+    position: 'absolute',
+    top: card.offset().top,
+    left: card.offset().left,
+    width: card.width(),
+    zIndex: 1000,
+    opacity: 0.8
+  });
+  $('body').append(cardClone);
+
+  // Obter a posição do destino
+  var targetPosition = lastColumn.find('.cards').offset();
+
+  // Animar a cópia do card até a última coluna
+  cardClone.animate({
+    top: targetPosition.top,
+    left: targetPosition.left,
+    width: lastColumn.find('.cards').width()
+  }, 500, function() {
+    cardClone.remove(); // Remove a cópia após a animação
+  });
+
+  // Enviar a requisição AJAX para mover o card no servidor
+  $.ajax({
+    url: moveUrl,
+    method: 'PATCH',
+    data: {
+      board_item_id: lastColumnId,
+      position: newPosition
+    },
+    success: function() {
+      // Remover o card da posição original e adicioná-lo à última coluna
+      card.fadeOut(300, function() {
+        card.remove();
+        lastColumn.find('.cards').append(card);
+        card.fadeIn(300);
+        card.addClass('completed-card'); // Adicionar classe para estilização (opcional)
+        // Remover os botões de concluir e editar, já que está na última coluna
+        card.find('.complete-card-button').remove();
+        card.find('.edit-card-button').remove();
+      });
+      console.log('Card concluído e movido com sucesso.');
+    },
+    error: function() {
+      // Remover a classe de processamento em caso de erro
+      card.removeClass('processing-card');
+      alert('Erro ao concluir o card.');
+    }
+  });
+});
+
+
+    // Delegação de eventos para abrir a modal ao clicar no card (opcional, se quiser também suportar)
+    /*
+    $('#kanban-board').on('click', '.card', function(e) {
+      // Verifica se o clique não foi em um botão de ação
+      if ($(e.target).closest('.card-actions').length === 0) {
+        var cardId = $(this).data('card-id');
+        var boardId = $('#kanban-board').data('board-id');
+        var boardItemId = $(this).closest('.column').data('board-item-id');
+        openEditCardModal(cardId, boardId, boardItemId);
+      }
+    });
+    */
 
     // Mostrar o formulário de novo card ao clicar no botão
     $('.show-new-card-form').on('click', function(e) {
@@ -243,6 +521,9 @@
           dataType: 'json',
           success: function(response) {
             if (response.success) {
+              
+              var last_column_id = $('#kanban-board').data('last-column-id');
+
               // Criar o novo elemento do card
               var newCard = $(`
                 <div class="card" data-card-id="${response.card.id}" style="display: none;">
@@ -250,11 +531,15 @@
                     ${response.card.title}
                     <p>${response.card.description || ''}</p>
                     <p><strong>Humor:</strong> ${response.card.mood ? response.card.mood.name : 'Não definido'}</p>
+                    ${response.card.due_date ? `<p><strong>Data de Vencimento:</strong> ${new Date(response.card.due_date).toLocaleDateString()}</p>` : ''}
                   </div>
                   <div class="card-actions">
-                    ${columnId != <%= last_column_id %> ? `
+                    ${columnId != last_column_id ? `
                       <button class="complete-card-button" title="Concluir">
                         <i class="bi bi-check-circle"></i>
+                      </button>
+                      <button class="edit-card-button" title="Editar">
+                        <i class="bi bi-pencil-square"></i>
                       </button>
                     ` : ''}
                     <button class="delete-card-button" title="Excluir">
@@ -301,7 +586,7 @@
       var card = $(this).closest('.card');
       var cardId = card.data('card-id');
       var boardItemId = card.closest('.column').data('board-item-id');
-      var boardId = <%= @board.id %>;
+      var boardId = $('#kanban-board').data('board-id');
 
       if (confirm('Tem certeza que deseja excluir este card?')) {
         $.ajax({
@@ -320,86 +605,5 @@
       }
     });
 
-    // Handler para o botão de concluir
-    $(document).on('click', '.complete-card-button', function(e) {
-      e.stopPropagation(); // Evita que o evento de clique seja propagado para outros handlers
-      var button = $(this);
-      var card = button.closest('.card');
-      var lastColumn = $('.column').last();
-      var lastColumnId = lastColumn.data('board-item-id');
-      var boardId = <%= @board.id %>;
-      var cardId = card.data('card-id');
-
-      // Construir a URL para a rota move
-      var moveUrl = '/boards/' + boardId + '/board_items/' + lastColumnId + '/cards/' + cardId + '/move';
-
-      // Calcular a posição final na última coluna
-      var newPosition = lastColumn.find('.card').not('.new-card').length + 1;
-
-      // Criar uma cópia do card para animação
-      var cardClone = card.clone();
-      cardClone.css({
-        position: 'absolute',
-        top: card.offset().top,
-        left: card.offset().left,
-        width: card.width(),
-        zIndex: 1000,
-        opacity: 0.8
-      });
-      $('body').append(cardClone);
-
-      // Obter a posição do destino
-      var targetPosition = lastColumn.find('.cards').offset();
-
-      // Animar a cópia do card até a última coluna
-      cardClone.animate({
-        top: targetPosition.top,
-        left: targetPosition.left,
-        width: lastColumn.find('.cards').width()
-      }, 500, function() {
-        cardClone.remove(); // Remove a cópia após a animação
-      });
-
-      // Enviar a requisição AJAX para mover o card no servidor
-      $.ajax({
-        url: moveUrl,
-        method: 'PATCH',
-        data: {
-          board_item_id: lastColumnId,
-          position: newPosition
-        },
-        success: function() {
-          // Remover o card da posição original e adicioná-lo à última coluna
-          card.fadeOut(300, function() {
-            card.remove();
-            lastColumn.find('.cards').append(card);
-            card.fadeIn(300);
-            card.addClass('completed-card'); // Adicionar classe para estilização (opcional)
-            // Remover o botão de concluir, já que está na última coluna
-            card.find('.complete-card-button').remove();
-          });
-          console.log('Card concluído e movido com sucesso.');
-        },
-        error: function() {
-          alert('Erro ao concluir o card.');
-        }
-      });
-    });
-
-    $('#daily-board-form').on('submit', function(e) {
-      e.preventDefault();
-      $.ajax({
-        url: $(this).attr('action'),
-        method: $(this).attr('method'),
-        data: $(this).serialize(),
-        dataType: 'script',
-        success: function() {
-          // Sucesso tratado em create_daily_board.js.erb
-        },
-        error: function() {
-          alert('Erro ao criar o board diário.');
-        }
-      });
-    });
   });
 </script>

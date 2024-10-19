@@ -1,6 +1,6 @@
 class User < ApplicationRecord  
-  belongs_to :mood, optional: true
-
+  has_many :user_moods, dependent: :destroy
+  has_many :moods, through: :user_moods
   # Include default devise modules. Others available are:
   # :confirmable, :lockable, :timeoutable, :trackable and :omniauthable
   devise :database_authenticatable, :registerable,

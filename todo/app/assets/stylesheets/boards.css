@@ -198,3 +198,68 @@
   border-color: #0079bf;
   box-shadow: 0 0 0 1px #0079bf;
 }
+
+
+
+
+
+
+.moods-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  position: relative;
+  margin: 20px 0;
+}
+
+.mood-item {
+  width: 100px;
+  height: 140px; /* Ajustar altura para dar espaço para o texto */
+  background-color: #f0f0f0;
+  border: 2px solid #ccc;
+  border-radius: 15px;
+  margin: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start; /* Começa a alinhar do topo */
+  cursor: pointer;
+  transition: transform 0.3s, border-color 0.3s;
+  position: relative;
+}
+
+.mood-item.selected {
+  border-color: #007bff;
+  transform: scale(1.1);
+}
+
+.mood-item:hover {
+  transform: scale(1.05);
+}
+
+.mood-image {
+  width: 100%;
+  height: 100px; /* Controla o tamanho da imagem para caber no card */
+  object-fit: cover; /* Faz a imagem preencher o espaço sem distorção */
+  border-top-left-radius: 15px;
+  border-top-right-radius: 15px;
+}
+
+.mood-name {
+  margin-top: 5px;
+  font-size: 14px;
+  text-align: center;
+}
+
+/* Linha central estilo varal */
+.moods-container::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 10%;
+  width: 80%;
+  height: 2px;
+  background-color: #ccc;
+  z-index: -1;
+}

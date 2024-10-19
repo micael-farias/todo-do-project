@@ -1,13 +1,22 @@
 <!-- app/views/boards/index.html.erb -->
+<!-- app/views/boards/index.html.erb -->
 <div class="mood-selection mb-4">
   <h2>Como você está se sentindo hoje?</h2>
-  <%= form_with url: create_daily_board_boards_path, method: :post, remote: true, html: { id: 'daily-board-form' } do %>
-    <div class="form-group">
-      <%= select_tag :mood_id, options_from_collection_for_select(Mood.all, :id, :name), prompt: 'Selecione seu humor', class: 'form-control', id: 'mood-selector', required: true %>
+  <%= form_with url: create_daily_board_boards_path, method: :post, remote: true, html: { id: 'daily-board-form' } do |f| %>
+    <div class="moods-container">
+      <% Mood.limit(6).each do |mood| %>
+<div class="mood-item <%= 'selected' if current_user.moods.include?(mood) %>" data-mood-id="<%= mood.id %>">
+  <img src="https://img.freepik.com/fotos-gratis/vitrine-de-produtos-com-fundo-de-sala-de-estudio-preto-em-destaque-como-montagem-para-exibicao-de-produtos_1258-108934.jpg" alt="<%= mood.name %>" class="mood-image">
+  <p class="mood-name"><%= mood.name %></p>
+</div>
+
+      <% end %>
     </div>
-    <%= submit_tag 'Criar Board Diário', class: 'btn btn-primary mt-2' %>
+    <%= hidden_field_tag :selected_mood_ids, '', id: 'selected_mood_ids' %>
+    <%= submit_tag 'Enviar Humores', class: 'btn btn-primary mt-3' %>
   <% end %>
 </div>
+
 <!-- app/views/boards/produtividade.html.erb -->
 <h1>Produtividade do Board: <%= current_user.name %> 10/50 cards completos</h1>
 
@@ -37,38 +46,63 @@
 
 <script>
   document.addEventListener('DOMContentLoaded', function() {
-    var moodSelector = document.getElementById('mood-selector');
+    const moodItems = document.querySelectorAll('.mood-item');
+    const selectedMoodIdsField = document.getElementById('selected_mood_ids');
 
-    // Adicionar um listener para a mudança de humor
-    moodSelector.addEventListener('change', function() {
-      var moodId = this.value;
+    moodItems.forEach(item => {
+      item.addEventListener('click', function() {
+        const moodId = this.getAttribute('data-mood-id');
+        this.classList.toggle('selected');
 
-      // Verificar se um humor foi selecionado
-      if (moodId) {
-        // Enviar requisição AJAX para atualizar o humor do usuário
-        fetch('/users/update_mood', {
-          method: 'PATCH',
-          headers: {
-            'Content-Type': 'application/json',
-            'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-          },
-          body: JSON.stringify({ mood_id: moodId })
-        })
-        .then(response => response.json())
-        .then(data => {
-          if (data.success) {
-            console.log('Humor atualizado com sucesso:', data.mood);
-          } else {
-            alert('Erro ao atualizar o humor: ' + data.error);
-          }
-        })
-        .catch(error => {
-          console.error('Erro:', error);
-        });
+        let selectedMoodIds = selectedMoodIdsField.value ? selectedMoodIdsField.value.split(',') : [];
+
+        if (selectedMoodIds.includes(moodId)) {
+          selectedMoodIds = selectedMoodIds.filter(id => id !== moodId);
+        } else {
+          selectedMoodIds.push(moodId);
+        }
+
+        selectedMoodIdsField.value = selectedMoodIds.join(',');
+      });
+    });
+
+    // Handle form submission
+    const form = document.getElementById('daily-board-form');
+    form.addEventListener('submit', function(event) {
+      event.preventDefault();
+      
+      const selectedMoodIds = selectedMoodIdsField.value.split(',').map(id => parseInt(id));
+
+      if (selectedMoodIds.length === 0) {
+        alert('Por favor, selecione pelo menos um humor.');
+        return;
       }
+
+      // Enviar via AJAX
+      fetch(form.action, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+        },
+        body: JSON.stringify({ mood_ids: selectedMoodIds })
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data.success) {
+          console.log('Humores enviados com sucesso:', data);
+          // Opcional: redirecionar ou atualizar a interface
+        } else {
+          alert('Erro ao enviar humores: ' + data.error);
+        }
+      })
+      .catch(error => {
+        console.error('Erro:', error);
+      });
     });
   });
 </script>
+
 
 
 <h1>Boards</h1>

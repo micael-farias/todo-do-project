@@ -22,7 +22,7 @@ Rails.application.routes.draw do
       post :create_daily_board
     end
     resources :board_items, only: [:create, :update, :destroy] do
-      resources :cards, only: [:create, :update, :destroy] do
+      resources :cards, only: [:create, :update, :edit, :destroy] do
         member do
           patch :move
         end

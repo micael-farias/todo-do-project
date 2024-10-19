@@ -78,9 +78,7 @@ class BoardsController < ApplicationController
     end
   end
 
-  def create_daily_board
-    mood = Mood.find(params[:mood_id])
-  
+  def create_daily_board  
     # Verificar se já existe um board diário para o dia de hoje
     daily_board = current_user.boards.where("title LIKE ?", "%Board Diário%").first
   

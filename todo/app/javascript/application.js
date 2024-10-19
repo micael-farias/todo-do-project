@@ -7,7 +7,7 @@ import "popper"
 import "bootstrap"
 import Sortable from 'sortablejs';
 import "chartkick/chart.js"
-
+import "./custom/card_edit"
 document.addEventListener('turbo:load', () => {
   const lists = document.querySelectorAll('.cards');
 
