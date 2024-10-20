@@ -7,7 +7,9 @@ class CardsController < ApplicationController
       @card = @board_item.cards.new(card_params)
       @card.completed = @card.board_item_id == (@card.board_item.board.board_items.order(:position).last).id
       @card.completed_at = Time.current
+
       if @card.save
+        #AssignMoodJob.perform_later(@card.id)
         render json: { success: true, card: @card }
       else
         render json: { success: false, message: @card.errors.full_messages.join(", ") }
@@ -134,8 +136,9 @@ end
     end
 
     def set_card
-      Rails.logger.info @board_item
-      @card = @board_item.cards.find(params[:id])
+      Rails.logger.info params
+      
+      @card = Card.find(params[:id])
     end
 
       

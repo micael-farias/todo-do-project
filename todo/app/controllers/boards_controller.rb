@@ -118,9 +118,26 @@ class BoardsController < ApplicationController
                 .where(boards: { user_id: current_user.id })
                 .where("cards.completed = false AND (cards.due_date BETWEEN ? AND ?)", Date.today, 3.days.from_now)
   
-    # Adiciona também os cards filtrados por qualquer mood do usuário
+    # Se houver humores informados pelo usuário, pegar também os cards desses humores e dos humores próximos
     if moods.present?
-      mood_ids = moods.pluck(:id)
+      mood_ids = moods.pluck(:id).map do |mood_id|
+        case mood_id
+        when 1
+          [1, 2] # Humor 1 (atual) e próximo humor 2
+        when 2
+          [1, 2, 3] # Humor 2 (atual) e próximos humores 1 e 3
+        when 3
+          [2, 3, 4] # Humor 3 (atual) e próximos humores 2 e 4
+        when 4
+          [3, 4, 5] # Humor 4 (atual) e próximos humores 3 e 5
+        when 5
+          [4, 5] # Humor 5 (atual) e próximo humor 4
+        else
+          [] # Caso de erro, nenhum humor associado
+        end
+      end.flatten.uniq
+  
+      # Adiciona também os cards filtrados pelos humores do usuário e os próximos
       cards_by_mood = Card.joins(board_item: :board)
                           .where(boards: { user_id: current_user.id })
                           .where("cards.completed = false AND cards.mood_id IN (?)", mood_ids)
@@ -136,10 +153,12 @@ class BoardsController < ApplicationController
   
     # Se não encontrar nenhum card nas condições anteriores, buscar os incompletos ordenados por prioridade
     if cards.empty?
+      Rails.logger.info "Nenhuma tarefa encontrada com vencimento próximo e humores correspondentes. Buscando outras tarefas por prioridade."
+      
       cards = Card.joins(board_item: :board)
                   .where(boards: { user_id: current_user.id })
                   .where(completed: false)
-                  .order(priority: :desc) # Ordena pela prioridade, 4 (alta) vem primeiro
+                  .order(priority: :desc) # Ordena pela prioridade, maior valor vem primeiro
     end
   
     Rails.logger.info "Cards finais retornados:"
@@ -149,5 +168,6 @@ class BoardsController < ApplicationController
   
     cards
   end
+  
   
 end
