@@ -16,10 +16,13 @@ Rails.application.routes.draw do
     root 'boards#index'
   end
 
+  resources :user_moods, only: [:create, :destroy]
+  post 'update_user_moods', to: 'user_moods#update_user_moods'
 
   resources :boards do
     collection do
       post :create_daily_board
+      post :update_user_moods
     end
     resources :board_items, only: [:create, :update, :destroy] do
       resources :cards, only: [:create, :update, :edit, :destroy] do

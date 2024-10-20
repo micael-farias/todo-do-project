@@ -1,114 +1,118 @@
 <!-- app/views/boards/index.html.erb -->
-<!-- app/views/boards/index.html.erb -->
-<div class="mood-selection mb-4">
-  <h2>Como você está se sentindo hoje?</h2>
-  <%= form_with url: create_daily_board_boards_path, method: :post, remote: true, html: { id: 'daily-board-form' } do |f| %>
-    <div class="moods-container">
-      <% Mood.limit(6).each do |mood| %>
-<div class="mood-item <%= 'selected' if current_user.moods.include?(mood) %>" data-mood-id="<%= mood.id %>">
-  <img src="https://img.freepik.com/fotos-gratis/vitrine-de-produtos-com-fundo-de-sala-de-estudio-preto-em-destaque-como-montagem-para-exibicao-de-produtos_1258-108934.jpg" alt="<%= mood.name %>" class="mood-image">
-  <p class="mood-name"><%= mood.name %></p>
-</div>
 
+<!-- Seção de Seleção de Humor -->
+
+
+  <div class="mood-selection mb-4" id="mood-selection" style="<%= 'display: none;' if @has_mood_today %>">
+    <h2>Como vai, Michael?</h2>
+
+    <h2>Hoje queremos gerar seu quadro de tarefas diário baseado no seu humor. Em uma escala Shrek, como você está hoje?</h2>
+    
+    <%= form_with url: create_daily_board_boards_path, method: :post, remote: true, html: { id: 'daily-board-form' } do |f| %>
+      <div class="moods-container">
+        <% Mood.limit(5).each do |mood| %>
+          <% user_mood = current_user.user_moods.find_by(mood_id: mood.id) %>
+          <div class="mood-item <%= 'selected' if user_mood&.active %>" data-mood-id="<%= mood.id %>">
+            <img src="https://img.freepik.com/fotos-gratis/vitrine-de-produtos-com-fundo-de-sala-de-estudio-preto-em-destaque-como-montagem-para-exibicao-de-produtos_1258-108934.jpg" alt="<%= mood.name %>" class="mood-image">
+            <p class="mood-name"><%= mood.name %></p>
+          </div>
+        <% end %>
+      </div>
+      <%= hidden_field_tag :selected_mood_id, '', id: 'selected_mood_id' %>
+      <!-- Botão para Gerar o Board Diário -->
+      <div class="generate-board-container">
+        <button class="generate-board-button" id="generate-board-button">
+          <i class="bi bi-chevron-double-down"></i>
+        </button>
+        <div class="generate-board-legend">Clique aqui para gerar seu board diário</div>
+      </div>
+    <% end %>
+  </div>
+  <div class="mood-message-section" style="position: relative; padding-top: 20px; background-color: black; <%= 'display: none;' if @has_mood_today %>" id="mood-message-section">
+      <h3 id="selected-mood-text">  Sua Análise de Humor: <%= @active_mood.present? ? @active_mood.name : "Nenhum humor selecionado ainda" %> </h3>
+
+      <!-- Ícone de Lápis no Canto Superior Direito -->
+
+      <div style="display: flex; align-items: center; justify-content: center;">
+
+          <!-- Primeira coluna: Análise de Humor e Imagem -->
+          <div style="display: flex; flex-direction: column; align-items: center;">            <!-- Imagem com bordas arredondadas -->
+              <div style="position: relative; width: 250px; height: 250px; overflow: hidden; border-radius: 20px;">
+                  <img src="https://pyxis.nymag.com/v1/imgs/a59/8f2/af4ffa51c4bbd612e05e8a0f26cba27f5c-shrek.rsquare.w400.jpg" alt="Imagem 1" style="width: 100%; height: 100%; object-fit: cover; border-radius: 20px;">
+              </div>
+          </div>
+
+          <!-- Linha vertical branca separando -->
+          <div style="width: 2px; height: 250px; background-color: white; margin: 0 20px;"></div>
+
+          <!-- Segunda coluna: Texto explicando o humor -->
+          <div style="display: flex; flex-direction: column; justify-content: center;">
+              <p style="font-size: 18px; color: #333;">
+                  Texto falando algo sobre o humor atual. Aqui você pode descrever o que o humor selecionado significa ou fornecer detalhes adicionais.
+              </p>
+          </div>
+
+      </div>
+  </div>
+
+
+<!-- Seção do Gráfico de Cards (Board Diário) -->
+<h2 style="padding-top: 20px; padding-bottom: 20px;">Atividade de Cards - Intervalo 30 dias</h2>
+
+<div class="cards-graph-content" id="cards-graph-content">
+  <div class="cards-graph-section mb-5">
+    <div class="graph-dates">
+      <span class="start-date"><%= @first_card_date.strftime('%d/%m/%Y') %> </span>
+      <span class="end-date"><%= @last_card_date.strftime('%d/%m/%Y') %></span>
+    </div>
+    <div class="cards-graph">
+      <% @cards_by_date.each do |day| %>
+        <div class="graph-day" title="<%= day[:date].strftime('%d/%m/%Y') %>">
+          <% day[:cards].each do |card| %>
+            <% if card.present? %>
+              <div 
+                class="graph-square priority-<%= card.priority || 0 %> <%= 'completed' if card.completed %>" 
+                title="<%= card.title %>" 
+                data-board-id="<%= card.board_item.board_id %>"
+                data-card-id="<%= card.id %>"
+              ></div>
+            <% else %>
+              <div class="graph-square empty"></div>
+            <% end %>
+          <% end %>
+        </div>
       <% end %>
     </div>
-    <%= hidden_field_tag :selected_mood_ids, '', id: 'selected_mood_ids' %>
-    <%= submit_tag 'Enviar Humores', class: 'btn btn-primary mt-3' %>
-  <% end %>
+    <!-- Legenda de Prioridades -->
+    <div class="priority-legend mt-4">
+      <div class="legend-items">
+        <span>Menor Prioridade</span>
+        <div class="legend-item">
+          <div class="graph-square priority-0 completed" title="Não informada"></div>
+        </div>
+        <div class="legend-item">
+          <div class="graph-square priority-1 completed" title="Baixa"></div>
+        </div>
+        <div class="legend-item">
+          <div class="graph-square priority-2 completed" title="Média"></div>
+        </div>
+        <div class="legend-item">
+          <div class="graph-square priority-3 completed" title="Alta"></div>
+        </div>
+        <div class="legend-item">
+          <div class="graph-square priority-4 completed" title="Altíssima"></div>
+        </div>
+        <span>Maior Prioridade</span>
+      </div>
+    </div>
+  </div>
 </div>
 
-<!-- app/views/boards/produtividade.html.erb -->
-<h1>Produtividade do Board: <%= current_user.name %> 10/50 cards completos</h1>
-
-<div id="tasks-chart">
-  <%= line_chart @cards_by_day, 
-      xtitle: "Dias", 
-      ytitle: "Tarefas Completadas", 
-      title: "Tarefas Completadas por Dia",
-      library: {
-        scales: {
-          x: { 
-            type: 'time', 
-            time: { unit: 'day' },
-            title: { display: true, text: 'Dias' }
-          },
-          y: {
-            beginAtZero: true,
-            ticks: { precision: 0 },
-            title: { display: true, text: 'Tarefas Completadas' }
-          }
-        }
-      } 
-  %>
-</div>
-
-
-
-<script>
-  document.addEventListener('DOMContentLoaded', function() {
-    const moodItems = document.querySelectorAll('.mood-item');
-    const selectedMoodIdsField = document.getElementById('selected_mood_ids');
-
-    moodItems.forEach(item => {
-      item.addEventListener('click', function() {
-        const moodId = this.getAttribute('data-mood-id');
-        this.classList.toggle('selected');
-
-        let selectedMoodIds = selectedMoodIdsField.value ? selectedMoodIdsField.value.split(',') : [];
-
-        if (selectedMoodIds.includes(moodId)) {
-          selectedMoodIds = selectedMoodIds.filter(id => id !== moodId);
-        } else {
-          selectedMoodIds.push(moodId);
-        }
-
-        selectedMoodIdsField.value = selectedMoodIds.join(',');
-      });
-    });
-
-    // Handle form submission
-    const form = document.getElementById('daily-board-form');
-    form.addEventListener('submit', function(event) {
-      event.preventDefault();
-      
-      const selectedMoodIds = selectedMoodIdsField.value.split(',').map(id => parseInt(id));
-
-      if (selectedMoodIds.length === 0) {
-        alert('Por favor, selecione pelo menos um humor.');
-        return;
-      }
-
-      // Enviar via AJAX
-      fetch(form.action, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-        },
-        body: JSON.stringify({ mood_ids: selectedMoodIds })
-      })
-      .then(response => response.json())
-      .then(data => {
-        if (data.success) {
-          console.log('Humores enviados com sucesso:', data);
-          // Opcional: redirecionar ou atualizar a interface
-        } else {
-          alert('Erro ao enviar humores: ' + data.error);
-        }
-      })
-      .catch(error => {
-        console.error('Erro:', error);
-      });
-    });
-  });
-</script>
-
-
-
-<h1>Boards</h1>
+<!-- Seção de Boards Existentes -->
+<h2>Boards</h2>
 
 <div class="board-container">
-  <!-- Card para adicionar novo board -->
+  <!-- Card para Adicionar Novo Board -->
   <div class="board-card new-board-card">
     <%= link_to new_board_path, class: 'board-link' do %>
       <div class="card-body">
@@ -117,7 +121,7 @@
     <% end %>
   </div>
 
-  <!-- Cards dos boards existentes -->
+  <!-- Cards dos Boards Existentes -->
   <% @boards.each do |board| %>
     <div class="board-card">
       <%= link_to board_path(board), class: 'board-link' do %>
@@ -128,3 +132,222 @@
     </div>
   <% end %>
 </div>
+
+
+<!-- Seção do Board Diário -->
+<h2>Board diário - <%= Date.today.strftime('%d/%m') %></h2>
+
+<!-- Mensagem Informativa com Link para Editar Humor -->
+<div class="edit-mood-message alert alert-info d-flex align-items-center" role="alert" style="margin-bottom: 20px;">
+  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-emoji-smile-fill me-2" viewBox="0 0 16 16">
+    <path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm3.546-5.346a.5.5 0 0 1-.832.554A3.001 3.001 0 0 1 8 13a3.001 3.001 0 0 1-3.714-2.792.5.5 0 1 1 .832-.554A2 2 0 0 0 8 12a2 2 0 0 0 2.546-1.346zM4.285 7.812a.5.5 0 0 1 .708 0l.824.824a.5.5 0 1 1-.708.708l-.824-.824a.5.5 0 0 1 0-.708zm6.414 0a.5.5 0 0 1 .708.708l-.824.824a.5.5 0 1 1-.708-.708l.824-.824z"/>
+  </svg>
+  <span>
+    O board diário foi criado a partir do seu humor diário. Você pode <a href="#" id="edit-mood-button" class="alert-link">alterar seu humor diário e gerar um novo board</a>.
+  </span>
+</div>
+
+<div class="board-container">
+  <!-- Card do Board Diário Existente -->
+  <div class="board-card">
+    <%= link_to board_path(@daily_board), class: 'board-link' do %>
+      <div class="card-body">
+        <h5 class="card-title"><%= @daily_board.title %></h5>
+      </div>
+    <% end %>
+  </div>
+</div>
+
+
+
+
+<h2>Últimos acessados</h2>
+
+<div class="board-container">
+
+
+  <!-- Cards dos Boards Existentes -->
+  <% @last_accessed_boards.each do |board| %>
+    <div class="board-card">
+      <%= link_to board_path(board), class: 'board-link' do %>
+        <div class="card-body">
+          <h5 class="card-title"><%= board.title %></h5>
+        </div>
+      <% end %>
+    </div>
+  <% end %>
+</div>
+
+<h2>Mais acessados</h2>
+
+<div class="board-container">
+
+
+  <!-- Cards dos Boards Existentes -->
+  <% current_user.boards.order(access_count: :desc).each do |board| %>
+  <div class="board-card">
+    <%= link_to board_path(board['id']), class: 'board-link' do %>
+      <div class="card-body">
+        <h5 class="card-title"><%= board['title'] %></h5>
+      </div>
+    <% end %>
+  </div>
+<% end %>
+
+</div>
+
+
+<!-- Scripts JavaScript -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+
+   // Função para Redirecionar ao Clicar nos Quadrados do Gráfico
+    const graphSquares = document.querySelectorAll('.graph-square');
+
+    graphSquares.forEach(square => {
+        square.addEventListener('click', function() {
+            const boardId = this.getAttribute('data-board-id');
+            const cardId = this.getAttribute('data-card-id');
+
+            if (boardId) {
+                // Redirecionar para o board correspondente
+                window.location.href = `/boards/${boardId}`;
+            }
+        });
+    });
+
+    // Seleção de Humores
+    const moodItems = document.querySelectorAll('.mood-item');
+    const selectedMoodIdField = document.getElementById('selected_mood_id');
+    let selectedMoodId = null;
+
+    // Inicializar a seleção com o humor ativo, se existir
+    moodItems.forEach(item => {
+        const moodId = item.getAttribute('data-mood-id');
+        if (item.classList.contains('selected')) {
+            selectedMoodId = moodId;
+        }
+    });
+    selectedMoodIdField.value = selectedMoodId || '';
+
+    // Manipulação das caixas de humor para seleção única
+    moodItems.forEach(item => {
+        item.addEventListener('click', function() {
+            const moodId = this.getAttribute('data-mood-id');
+
+            if (this.classList.contains('selected')) {
+                // Se o humor já está selecionado, desmarcar
+                this.classList.remove('selected');
+                selectedMoodId = null;
+            } else {
+                // Desmarcar todos os outros humores
+                moodItems.forEach(i => i.classList.remove('selected'));
+                // Marcar o humor clicado
+                this.classList.add('selected');
+                selectedMoodId = moodId;
+            }
+
+            selectedMoodIdField.value = selectedMoodId || '';
+        });
+    });
+
+    // Manipulação do botão "Gerar Board"
+    const generateBoardButton = document.getElementById('generate-board-button');
+
+    generateBoardButton.addEventListener('click', function(event) {
+        event.preventDefault(); // Evita a submissão do formulário imediatamente
+
+        const messageSection = document.getElementById('mood-message-section');
+        const moodSelection = document.getElementById('mood-selection');
+        const selectedMoodsText = document.getElementById('selected-mood-text');
+
+        // Obter o nome do humor selecionado
+        const selectedMoodItem = document.querySelector('.mood-item.selected');
+        console.log(selectedMoodItem)
+        const selectedMoodName = selectedMoodItem ? selectedMoodItem.querySelector('.mood-name').innerText : '';
+
+        if (!selectedMoodId) {
+            alert('Por favor, selecione pelo menos um humor antes de gerar o board.');
+            return;
+        }
+
+        selectedMoodsText.innerText = "Sua Análise de Humor: " + selectedMoodName;
+        // Atualizar a mensagem
+
+        // Scroll para a seção de mensagem com comportamento suave
+        messageSection.scrollIntoView({ behavior: 'smooth' });
+
+        // Atualizar os humores ativos via AJAX
+        fetch('/update_user_moods', { // Atualize a rota conforme necessário
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+            },
+            body: JSON.stringify({ mood_id: selectedMoodId })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                console.log('Humor atualizado com sucesso');
+            } else {
+                alert('Erro ao atualizar humor: ' + data.error);
+            }
+        })
+        .catch(error => {
+            console.error('Erro:', error);
+        });
+
+    });
+
+    // Manipulação do botão "Editar Humor"
+    const editMoodButton = document.getElementById('edit-mood-button');
+
+    editMoodButton.addEventListener('click', function() {
+        const moodSelection = document.getElementById('mood-selection');
+        const messageSection = document.getElementById('mood-message-section');
+        
+        // Mostrar a seleção de humores imediatamente
+        moodSelection.style.display = 'flex';
+        messageSection.style.display = 'block';
+        
+        // Adicionar um pequeno delay para garantir que a visibilidade foi aplicada antes de rolar para o topo
+        setTimeout(() => {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }, 100); // Ajuste o tempo conforme necessário (100ms é geralmente suficiente)
+    });
+   
+    // Manipulação da submissão do formulário (se ainda necessário)
+    const form = document.getElementById('daily-board-form');
+    form.addEventListener('submit', function(event) {
+        event.preventDefault();
+        
+        if (!selectedMoodId) {
+            alert('Por favor, selecione pelo menos um humor.');
+            return;
+        }
+
+        // Enviar via AJAX
+        fetch(form.action, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+            },
+            body: JSON.stringify({ mood_id: selectedMoodId })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                console.log('Humor enviado com sucesso:', data);
+                // Opcional: redirecionar ou atualizar a interface
+            } else {
+                alert('Erro ao enviar humor: ' + data.error);
+            }
+        })
+        .catch(error => {
+            console.error('Erro:', error);
+        });
+    });
+});
+</script>

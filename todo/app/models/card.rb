@@ -5,6 +5,7 @@ class Card < ApplicationRecord
   belongs_to :mood, optional: true # Torna o humor opcional, se necessário
   has_many :tags, dependent: :destroy
   accepts_nested_attributes_for :tags, allow_destroy: true, reject_if: :all_blank
+  belongs_to :user, optional: true # Se aplicável
 
   validates :title, presence: true
   scope :incomplete, -> { where(completed: [false, nil]) }

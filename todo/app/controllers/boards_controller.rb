@@ -4,60 +4,60 @@ class BoardsController < ApplicationController
 
   def index
     @boards = current_user.boards
-    produtividade
-  end
+    @last_accessed_boards = current_user.boards.order(last_access: :desc)
+    @today = Time.current
+    @daily_board = current_user.boards.where("title LIKE ?", "%Board Diário%").first
+    
+    
+    @active_mood = current_user.user_moods.find_by(active: true)&.mood
 
-  def produtividade
-    # Definir o período para o gráfico (do primeiro ao último card completado)
-    first_completed_at = Card.joins(board_item: :board)
-                           .where(boards: { user_id: current_user.id })
-                           .where(completed: true)
-                           .minimum(:completed_at)
+    @user_moods_today = current_user.user_moods.where(updated_at: @today.beginning_of_day..@today.end_of_day, active: true)
+    Rails.logger.info "Moods: #{@today}"
+    @has_mood_today = @user_moods_today.exists?
+    Rails.logger.info "Moods: #{@has_mood_today}"
+
+    @selected_moods = @has_mood_today ? @user_moods_today.pluck(:mood_id) : []
+    
+    # Preparar dados para o gráfico de cards
+    @cards = current_user.cards.order(:created_at)
+    @first_card_date = 30.days.ago.to_date
+    @last_card_date = @cards.last&.created_at&.to_date || Date.today
   
-    last_completed_at = Card.joins(board_item: :board)
-                            .where(boards: { user_id: current_user.id })
-                            .where(completed: true)
-                            .maximum(:completed_at)
-    
-    Rails.logger.info "First completed at: #{first_completed_at}"
-    Rails.logger.info "Last completed at: #{last_completed_at}"
-    
-    # Se o usuário não completou nenhuma tarefa, definir um período padrão
-    if first_completed_at.nil? || last_completed_at.nil?
-      Rails.logger.info "Nenhum card completado. Definindo período padrão para hoje."
-      first_completed_at = Date.today.beginning_of_day
-      last_completed_at = Date.today.end_of_day
+    # Gerar um array de todas as datas entre a primeira e a última criação de card
+    @date_range = (@first_card_date..@last_card_date).to_a
+  
+    # Organizar os cards por data
+    @cards_by_date = @date_range.map do |date|
+      cards_for_date = @cards.where(created_at: date.beginning_of_day..date.end_of_day).to_a      
+      {
+        date: date,
+        cards: cards_for_date
+      }
     end
-    
-    # Busca todos os cards completados pelo usuário dentro do período
-    @completed_cards = Card.joins(board_item: :board)
-                          .where(boards: { user_id: current_user.id })
-                          .where(completed: true, completed_at: first_completed_at..last_completed_at)
-    
-    Rails.logger.info "Número de cards completados no período: #{@completed_cards.count}"
-    Rails.logger.debug "Cards completados: #{@completed_cards.inspect}"
-    
-    # Agrupar cards completados por dia usando Groupdate
-    @cards_by_day = @completed_cards.group_by_day(:completed_at, range: first_completed_at..last_completed_at).count
-    
-    Rails.logger.info "Cards agrupados por dia: #{@cards_by_day}"
-    
-   # Preencher os dias sem atividades com zero
-    # O Groupdate já preenche os dias no range com zero, então a inversão pode não ser necessária
-   
-    
-    Rails.logger.info "Cards agrupados com dias sem atividades preenchidos: #{@cards_by_day}"
+
+     # Determinar a quantidade máxima de cards em qualquer dia
+     max_cards = @cards_by_date.map { |day| day[:cards].size }.max || 0
+
+     # Preencher os dias com menos cards para igualar à quantidade máxima
+     @cards_by_date.each do |day|
+      Rails.logger.info "Diaaa #{day}"
+       if day[:cards].size < max_cards
+         # Adiciona entradas nil para representar espaços vazios
+         (max_cards - day[:cards].size).times do        
+           day[:cards] << nil
+         end
+       end
+     end
+
   end
 
   def show
     @board = current_user.boards.find(params[:id])
+    @board.increment!(:access_count)
     @board.update(last_access: Time.current)
 
     if @board.title.include?('Board Diário')
-      Rails.logger.info @board
-      Rails.logger.info "aaaaaaaaaaa"
-      Rails.logger.info current_user.mood
-      @daily_board_cards = fetch_daily_board_cards(@board, current_user.mood)
+      @daily_board_cards = fetch_daily_board_cards(@board, current_user.moods)
       Rails.logger.info "Daily Board Cards: #{@daily_board_cards.map(&:title)}"
     end
   end
@@ -112,39 +112,42 @@ class BoardsController < ApplicationController
     )
   end
 
-  def fetch_daily_board_cards(board, mood)
-    # Exemplo de lógica para buscar os cards para o board diário
-    # Busca os cards que não estão completos e com a data de vencimento entre hoje e 3 dias a partir de hoje (independente do humor)
- # Busca os cards que não estão completos e com a data de vencimento entre hoje e 3 dias a partir de hoje
-      cards = Card.joins(board_item: :board)
-      .where(boards: { user_id: current_user.id })
-      .where("cards.completed = false AND (cards.due_date BETWEEN ? AND ?)", Date.today, 3.days.from_now)
-
-      # Adiciona também os cards filtrados por humor, caso o mood seja passado
-      if mood.present?
-      cards_by_mood = Card.joins(board_item: :board)
+  def fetch_daily_board_cards(board, moods)
+    # Busca os cards que não estão completos e com a data de vencimento entre hoje e 3 dias a partir de hoje
+    cards = Card.joins(board_item: :board)
                 .where(boards: { user_id: current_user.id })
-                .where("cards.completed = false AND cards.mood_id = ?", mood.id)
-
+                .where("cards.completed = false AND (cards.due_date BETWEEN ? AND ?)", Date.today, 3.days.from_now)
+  
+    # Adiciona também os cards filtrados por qualquer mood do usuário
+    if moods.present?
+      mood_ids = moods.pluck(:id)
+      cards_by_mood = Card.joins(board_item: :board)
+                          .where(boards: { user_id: current_user.id })
+                          .where("cards.completed = false AND cards.mood_id IN (?)", mood_ids)
+      
       # Unindo os dois conjuntos de cards (de humor e de vencimento próximo) sem duplicação
       cards = cards.or(cards_by_mood)
-      end
-      Rails.logger.info "Cards retornados (combinação de humor e vencimento próximo):"
-      cards.each do |card|
-        Rails.logger.info "Card ID: #{card.id}, Título: #{card.title}, Due Date: #{card.due_date}, Humor: #{card.mood&.name}, Prioridade: #{card.priority}"
-      end
-      # Se não encontrar nenhum card nas condições anteriores, buscar os incompletos ordenados por prioridade
-      if cards.empty?
+    end
+  
+    Rails.logger.info "Cards retornados (combinação de humor e vencimento próximo):"
+    cards.each do |card|
+      Rails.logger.info "Card ID: #{card.id}, Título: #{card.title}, Due Date: #{card.due_date}, Humor: #{card.mood&.name}, Prioridade: #{card.priority}"
+    end
+  
+    # Se não encontrar nenhum card nas condições anteriores, buscar os incompletos ordenados por prioridade
+    if cards.empty?
       cards = Card.joins(board_item: :board)
-        .where(boards: { user_id: current_user.id })
-        .where(completed: false)
-        .order(priority: :desc) # Ordena pela prioridade, 4 (alta) vem primeiro
-      end
-      Rails.logger.info "Cards retornados (combinação de humor e vencimento próximo):"
-      cards.each do |card|
-        Rails.logger.info "Card ID: #{card.id}, Título: #{card.title}, Due Date: #{card.due_date}, Humor: #{card.mood&.name}, Prioridade: #{card.priority}"
-      end
-      cards
-
+                  .where(boards: { user_id: current_user.id })
+                  .where(completed: false)
+                  .order(priority: :desc) # Ordena pela prioridade, 4 (alta) vem primeiro
+    end
+  
+    Rails.logger.info "Cards finais retornados:"
+    cards.each do |card|
+      Rails.logger.info "Card ID: #{card.id}, Título: #{card.title}, Due Date: #{card.due_date}, Humor: #{card.mood&.name}, Prioridade: #{card.priority}"
+    end
+  
+    cards
   end
+  
 end

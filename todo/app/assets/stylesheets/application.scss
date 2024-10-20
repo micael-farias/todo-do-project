@@ -30,4 +30,29 @@
   .card:hover {
     background-color: #f0f0f0;
   }
-  
+  .offset{
+    margin-top:-500px;
+   }
+  p {
+    /* Adicione aqui os estilos que deseja aplicar a todos os parágrafos */
+    font-size: 16px;
+    line-height: 1.5;
+    color: #333;
+}
+
+/* Estilos globais para todos os spans */
+span {
+    /* Adicione aqui os estilos que deseja aplicar a todos os spans */
+    font-size: 14px;
+    color: #666;
+}
+
+h2 {
+  /* Adicione aqui os estilos que deseja aplicar a todos os parágrafos */
+  font-size: 25px;
+  width: 50%;
+  font-weight: 300; /* Deixa o texto mais fino */
+  line-height: 1.5;
+  color: #ffffff;
+}
+

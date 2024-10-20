@@ -6,7 +6,17 @@ class User < ApplicationRecord
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :validatable
 
-   
-  has_many :boards, dependent: :destroy  # Um usuário tem muitos Boards
+  after_create :initialize_user_moods
 
+  has_many :boards, dependent: :destroy  # Um usuário tem muitos Boards
+  # Associações com Boards
+  # Associações Indiretas para BoardItems e Cards
+  has_many :board_items, through: :boards
+  has_many :cards, through: :board_items
+
+  def initialize_user_moods
+    Mood.find_each do |mood|
+      self.user_moods.create(mood: mood, active: false) # Define `active` conforme necessário
+    end
+  end
 end
