@@ -1,0 +1,114 @@
+/* styles.css */
+
+/* Estilos para o Cartão */
+.card {
+    position: relative;
+    background-color: var(--background-color); /* Usando variável para flexibilidade */
+    border-radius: 8px;
+    padding: 15px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between; /* Alinha o conteúdo principal em cima e os ícones embaixo */
+  }
+  
+  /* Círculo azul no canto superior */
+  .card .blue-circle {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    width: 20px;
+    height: 20px;
+    background-color: blue;
+    border-radius: 50%;
+  }
+  
+  /* Conteúdo Principal do Cartão */
+  .card-content {
+    display: flex;
+    flex-direction: column;
+    width: 95%;
+  }
+  
+  /* Título do Cartão */
+  .card-title {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    grid-gap: 5px;
+    align-items: start;
+  }
+
+  .custom-badge {
+    background-color: #101204;
+    color: #ADB9C5;
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-size: 0.85rem;
+  }
+   
+  
+  /* Texto do Título */
+  .title-text {
+    color: #ADB9C5;
+    word-wrap: break-word; /* Permite a quebra de linha no texto */
+    font-size: 20px;
+  }
+  
+  /* Ícones de Ação no Título (se aplicável) */
+  /* .clipboard-icon pode ser definido aqui se estiver sendo usado */
+  
+  /* Informações Adicionais */
+  .card-info {
+    display: flex;
+    flex-direction: column;
+    gap: 5px; /* Espaçamento entre os elementos */
+  }
+  
+  .card-info p {
+    font-size: 0.9em;
+    color: #ADB9C5;
+    margin: 0; /* Remove margens padrão */
+    padding-bottom: 5px; /* Apenas no último parágrafo, se necessário */
+  }
+  
+  /* Tags */
+  .tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+  }
+  
+  .tag-badge {
+    /* Estilos para as badges das tags */
+  }
+  
+  /* Ações do Cartão */
+  .card-actions {
+    display: flex;
+    gap: 5px;
+    width: 100%;
+    justify-content: flex-end;
+    margin-top: auto;
+  }
+  
+  .card-actions button {
+    background: none;
+    border: none;
+    cursor: pointer;
+  }
+  
+  .card-actions button i {
+    font-size: 16px; /* Tamanho normal dos ícones */
+    transition: transform 0.2s ease; /* Transição suave */
+  }
+  
+  .card-actions button i:hover {
+    transform: scale(1.3); /* Aumenta o ícone em 30% ao passar o mouse */
+  }
+  
+    /* Ocultar Ações Quando Classe hide-actions Está Presente */
+    .hide-actions .complete-card-button,
+    .hide-actions .edit-card-button {
+        display: none;
+    }
+    

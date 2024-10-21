@@ -70,7 +70,8 @@ class BoardsController < ApplicationController
 
   def create
     @board = current_user.boards.new(board_params)
-
+    @board.priority = 0
+    
     if @board.save
       redirect_to @board, notice: 'Board criado com sucesso.'
     else

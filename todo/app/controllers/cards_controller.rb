@@ -10,7 +10,23 @@ class CardsController < ApplicationController
 
       if @card.save
         #AssignMoodJob.perform_later(@card.id)
-        render json: { success: true, card: @card }
+
+  
+        last_board_item = @card.board_item.board.board_items.order(:position).last
+        card_in_last_column = params[:board_item_id].to_i == last_board_item.id
+
+        # Renderizar a partial como string
+        rendered_card = render_to_string(
+          partial: 'card', 
+          locals: { 
+            card: @card, 
+            background_color: '#ffffff', 
+            is_last_column: card_in_last_column, 
+            due_info: nil, 
+            due_label: "Data de Vencimento" 
+          }
+        )
+        render json: { success: true, card: @card, rendered_card: rendered_card }
       else
         render json: { success: false, message: @card.errors.full_messages.join(", ") }
       end
@@ -128,11 +144,11 @@ end
   
     def set_board_and_board_item
       @board = Board.find(params[:board_id])
-      @board_item = @board.board_items.find(params[:board_item_id])
+      @board_item = BoardItem.find(params[:board_item_id])
     end
   
     def card_params
-      params.require(:card).permit(:title, :description, :mood_id, :due_date, :priority)
+      params.require(:card).permit(:title, :description, :mood_id, :due_date, :priority, tags: [])
     end
 
     def set_card

@@ -1,6 +1,7 @@
 <!-- app/views/boards/index.html.erb -->
 
 <!-- Seção de Seleção de Humor -->
+<div style="padding-left: 10px">
 
 
   <div class="mood-selection mb-4" id="mood-selection" style="<%= 'display: none;' if @has_mood_today %>">
@@ -99,9 +100,6 @@
         <div class="legend-item">
           <div class="graph-square priority-3 completed" title="Alta"></div>
         </div>
-        <div class="legend-item">
-          <div class="graph-square priority-4 completed" title="Altíssima"></div>
-        </div>
         <span>Maior Prioridade</span>
       </div>
     </div>
@@ -139,9 +137,6 @@
 
 <!-- Mensagem Informativa com Link para Editar Humor -->
 <div class="edit-mood-message alert alert-info d-flex align-items-center" role="alert" style="margin-bottom: 20px;">
-  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-emoji-smile-fill me-2" viewBox="0 0 16 16">
-    <path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm3.546-5.346a.5.5 0 0 1-.832.554A3.001 3.001 0 0 1 8 13a3.001 3.001 0 0 1-3.714-2.792.5.5 0 1 1 .832-.554A2 2 0 0 0 8 12a2 2 0 0 0 2.546-1.346zM4.285 7.812a.5.5 0 0 1 .708 0l.824.824a.5.5 0 1 1-.708.708l-.824-.824a.5.5 0 0 1 0-.708zm6.414 0a.5.5 0 0 1 .708.708l-.824.824a.5.5 0 1 1-.708-.708l.824-.824z"/>
-  </svg>
   <span>
     O board diário foi criado a partir do seu humor diário. Você pode <a href="#" id="edit-mood-button" class="alert-link">alterar seu humor diário e gerar um novo board</a>.
   </span>
@@ -196,7 +191,7 @@
 
 </div>
 
-
+</div>
 <!-- Scripts JavaScript -->
 <script>
 document.addEventListener('DOMContentLoaded', function() {

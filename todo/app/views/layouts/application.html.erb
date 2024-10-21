@@ -19,73 +19,15 @@
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            background-color: #f0f0f0;
-        }
-        #kanban-board {
-            display: flex;
-            overflow-x: auto;
-            padding-bottom: 20px;
-        }
-        .column {
-            background-color: #f4f5f7;
-            border-radius: 3px;
-            width: 300px;
-            margin: 0 10px;
-            padding: 10px;
-            flex-shrink: 0;
-              display: flex;
-    flex-direction: column;
-    position: relative;
-        }
-        .column h3 {
-            margin-top: 0;
-            padding-bottom: 10px;
-            border-bottom: 1px solid #ddd;
-        }
-        .cards {
-            min-height: 100px;
-                flex-grow: 1;
-        }
-        .card {
-            background-color: white;
-            border-radius: 3px;
-            padding: 10px;
-            margin-bottom: 10px;
-            cursor: move;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
-            transition: all 0.3s cubic-bezier(.25,.8,.25,1);
-        }
-        .card:hover {
-            box-shadow: 0 14px 28px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22);
-        }
-        .card-placeholder {
-            border: 2px dashed #ccc;
-            margin-bottom: 10px;
-            background-color: #f9f9f9;
-        }
-        .ui-sortable-helper {
-            transform: rotate(3deg);
-            cursor: grabbing;
-        }
-        .bg-orange {
-    background-color: #1D2125 !important; /* Cor laranja */
-    border-bottom: 1px solid white !important; /* Borda branca na parte inferior */
-
-}
-
-    </style>
+ 
     <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
     <%= javascript_importmap_tags %>
     <%= javascript_include_tag "//www.google.com/jsapi", "chartkick" %>
   </head>
 
-  <body style="background-color: #1D2125">
+<body style="background-color: #1D2125">
     <!-- Navbar -->
-  <nav class="navbar navbar-expand-lg bg-orange">
+ <nav class="navbar navbar-expand-lg bg-orange">
   <div class="container-fluid">
     <!-- Link para a página inicial -->
     <a class="navbar-brand text-white" href="<%= root_path %>">TO DO</a>
@@ -96,26 +38,49 @@
     </button>
     <!-- Conteúdo do menu de navegação -->
     <div class="collapse navbar-collapse" id="navbarNav">
-      <!-- Espaço vazio ou links adicionais podem ser adicionados aqui -->
       <ul class="navbar-nav me-auto">
         <!-- Adicione links de navegação adicionais aqui, se necessário -->
       </ul>
-      <!-- Seção de saudação e imagem do usuário -->
+      <!-- Seção de saudação e imagem do usuário com dropdown -->
       <div class="d-flex align-items-center">
-        <span class="text-white me-2">Vamos trabalhar Michael!<%= current_user.name %></span>
-        <%= image_tag('default_avatar.png', 
-                     class: 'rounded-circle', 
-                     alt: 'Usuário', 
-                     width: '40', 
-                     height: '40') %>
+        <span class="text-white me-2">Vamos trabalhar Michael! <%= current_user.name %></span>
+
+        <!-- Dropdown para o avatar -->
+        <div class="dropdown">
+          <a href="#" class="d-flex align-items-center" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+            <%= image_tag('default_avatar.png', 
+                        class: 'rounded-circle', 
+                        alt: 'Usuário', 
+                        width: '40', 
+                        height: '40') %>
+          </a>
+          <ul class="dropdown-menu dropdown-menu-end custom-dropdown-menu" aria-labelledby="userDropdown">
+          <li>
+            <a class="dropdown-item" href="#" style="color:white">
+              <i class="bi bi-gear me-2"></i> Configurações
+            </a>
+          </li>
+          <li>
+            <a class="dropdown-item" href="#" style="color:white">
+              <i class="bi bi-person me-2"></i> Perfil
+            </a>
+          </li>
+          <li><hr class="dropdown-divider"></li>
+          <li>
+            <%= link_to destroy_user_session_path, method: :delete, class: 'dropdown-item', style: 'color:white' do %>
+              <i class="bi bi-box-arrow-right me-2"></i> Sair
+            <% end %>
+          </li>
+        </ul>
+
+        </div>
       </div>
     </div>
   </div>
 </nav>
 
-
     <!-- Container principal -->
-    <div class="container mt-4">
+    <div class="container-fluid" style="padding: 0px">
       <%= yield %>
     </div>
   </body>

@@ -12,8 +12,10 @@
  *
  *= require_tree .
  *= require_self
+ *= require cards
  *= require boards
  */
+ 
  @import "bootstrap";
  .list {
     background-color: #f4f4f4;
@@ -26,7 +28,10 @@
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
     cursor: grab;
   }
-  
+
+  .bg-orange {
+    border-bottom: 2px solid white; /* Linha branca de 2px abaixo da navbar */
+  }
   .card:hover {
     background-color: #f0f0f0;
   }
@@ -39,6 +44,11 @@
     line-height: 1.5;
     color: #333;
 }
+.custom-dropdown-menu {
+  background-color: #181C1F !important;
+  color: #22272B; /* Cor do texto, se necessário */
+}
+
 
 /* Estilos globais para todos os spans */
 span {

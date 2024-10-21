@@ -1,126 +1,71 @@
 <!-- app/views/boards/show.html.erb -->
-
-<h1><%= @board.title %></h1>
-
+<div style="background-color: #352D78">
+<h2 style="color: rgb(169, 169, 169); width:100%; line-height: 50px; padding-left: 10px; background-color: rgba(169, 169, 169, 0.2);">
+  <%= @board.title %>
+</h2> 
 <!-- Seção do Kanban Board -->
-<div id="kanban-board" data-board-id="<%= @board.id %>">
+<div style="background-color: #352D78" id="kanban-board" data-board-id="<%= @board.id %>">
+
+
   <% last_column_id = @board.board_items.last.id %> <!-- Identifica o ID da última coluna -->
+<% @board.board_items.each do |item| %>
+  <div class="column" data-board-item-id="<%= item.id %>" style="background-color: #101204; padding: 10px;">
+     
+     
+   <div class="column-header">
+      <h3>
+        <span class="column-name" data-column-id="<%= item.id %>"><%= item.name %></span>
+      </h3>
 
-  <% @board.board_items.each do |item| %>
-    <div class="column" data-board-item-id="<%= item.id %>">
-      <h3><%= item.name %></h3>
-      <div class="column-content">
-        <div class="cards">
+                <% unless @board.title.include?('Board Diário') %>
 
-          <% if @board.title.include?('Board Diário') %>
-            <!-- Exibir os cards na primeira ou segunda coluna do Board Diário -->
+        <button class="delete-column-button" data-column-id="<%= item.id %>" title="Excluir Coluna" data-board-item-id="<%= item.id %>">
+          <i class="bi bi-trash" style="color: white"></i>
+        </button>
+        <%end%>
+      </div>
+    <div class="column-content">
+      <div class="cards">
 
-            <!-- Primeira Coluna: Cards filtrados por humor -->
-            <% if @board.board_items.first == item %>
-              <% @daily_board_cards.each do |card| %>
-                <div class="card" data-card-id="<%= card.id %>">
-                  <div class="card-content">
-                    <%= card.title %>
-                    <p><%= card.description %></p>
-                    <p><strong>Humor:</strong> <%= card.mood&.name || 'Não definido' %></p>
-                    <% if card.due_date.present? %>
-                      <p><strong>Data de Vencimento:</strong> <%= card.due_date.strftime('%d/%m/%Y') %></p>
-                    <% end %>
-                    <!-- Exibir Tags -->
-                    <% if card.tags.any? %>
-                      <div class="tags mt-2">
-                        <% card.tags.each do |tag| %>
-                          <span class="badge bg-secondary tag-badge"><%= tag.name %></span>
-                        <% end %>
-                      </div>
-                    <% end %>
-                  </div>
-                  <div class="card-actions">
-                    <% unless item.id == last_column_id %>
-                      <button class="complete-card-button" title="Concluir">
-                        <i class="bi bi-check-circle"></i>
-                      </button>
-                      <button class="edit-card-button" title="Editar">
-                        <i class="bi bi-pencil-square"></i>
-                      </button>
-                    <% end %>
-                    <button class="delete-card-button" title="Excluir">
-                      <i class="bi bi-trash"></i>
-                    </button>
-                  </div>
-                </div>
-              <% end %>
+        <% if @board.title.include?('Board Diário') %>
+          <!-- Exibir os cards na primeira ou segunda coluna do Board Diário -->
 
-            <!-- Segunda Coluna: Todos os cards finalizados hoje -->
-            <% elsif @board.board_items.second == item %>
-              <% Card.where(completed_at: Date.today.all_day).each do |card| %> <!-- Busca todos os cards finalizados hoje -->
-                <div class="card" data-card-id="<%= card.id %>">
-                  <div class="card-content">
-                    <%= card.title %>
-                    <p><%= card.description %></p>
-                    <p><strong>Humor:</strong> <%= card.mood&.name || 'Não definido' %></p>
-                    <p><strong>Completado em:</strong> <%= card.completed_at.strftime('%d/%m/%Y %H:%M') %></p>
-                    <!-- Exibir Tags -->
-                    <% if card.tags.any? %>
-                      <div class="tags mt-2">
-                        <% card.tags.each do |tag| %>
-                          <span class="badge bg-secondary tag-badge"><%= tag.name %></span>
-                        <% end %>
-                      </div>
-                    <% end %>
-                  </div>
-                  <div class="card-actions">
-                    <% unless item.id == last_column_id %>
-                      <button class="complete-card-button" title="Concluir">
-                        <i class="bi bi-check-circle"></i>
-                      </button>
-                      <button class="edit-card-button" title="Editar">
-                        <i class="bi bi-pencil-square"></i>
-                      </button>
-                    <% end %>
-                    <button class="delete-card-button" title="Excluir">
-                      <i class="bi bi-trash"></i>
-                    </button>
-                  </div>
-                </div>
-              <% end %>
+          <!-- Primeira Coluna: Cards filtrados por humor -->
+          <% if @board.board_items.first == item %>
+            <% @daily_board_cards.each do |card| %>
+              <%= render 'cards/card', 
+                card: card, 
+                due_info: card.due_date.present? ? card.due_date.strftime('%d/%m/%Y') : nil, 
+                due_label: 'Vencimento',
+                is_last_column: item.id == last_column_id 
+              %>
             <% end %>
 
-          <% else %>
-            <!-- Para boards normais, exibe os cards normalmente nas colunas -->
-            <% item.cards.order(:position).each do |card| %>
-              <div class="card" data-card-id="<%= card.id %>">
-                <div class="card-content">
-                  <%= card.title %>
-                  <p><%= card.description %></p>
-                  <p><strong>Humor:</strong> <%= card.mood&.name || 'Não definido' %></p>
-                  <!-- Exibir Tags -->
-                  <% if card.tags.any? %>
-                    <div class="tags mt-2">
-                      <% card.tags.each do |tag| %>
-                        <span class="badge bg-secondary tag-badge"><%= tag.name %></span>
-                      <% end %>
-                    </div>
-                  <% end %>
-                </div>
-                <div class="card-actions">
-                  <% unless item.id == last_column_id %>
-                    <button class="complete-card-button" title="Concluir">
-                      <i class="bi bi-check-circle"></i>
-                    </button>
-                    <button class="edit-card-button" title="Editar">
-                      <i class="bi bi-pencil-square"></i>
-                    </button>
-                  <% end %>
-                  <button class="delete-card-button" title="Excluir">
-                    <i class="bi bi-trash"></i>
-                  </button>
-                </div>
-              </div>
+          <!-- Segunda Coluna: Todos os cards finalizados hoje -->
+          <% elsif @board.board_items.second == item %>
+            <% Card.where(completed_at: Date.today.all_day).each do |card| %>
+              <%= render 'cards/card', 
+                card: card, 
+                due_info: card.completed_at.strftime('%d/%m/%Y %H:%M'), 
+                due_label: 'Completado em',
+                is_last_column: item.id == last_column_id 
+              %>
             <% end %>
           <% end %>
 
-        </div>
+        <% else %>
+          <!-- Para boards normais, exibe os cards normalmente nas colunas -->
+          <% item.cards.order(:position).each do |card| %>
+            <%= render 'cards/card', 
+              card: card, 
+              due_info: card.due_date.present? ? card.due_date.strftime('%d/%m/%Y') : nil, 
+              due_label: 'Vencimento',
+              is_last_column: item.id == last_column_id 
+            %>
+          <% end %>
+        <% end %>
+
+      </div>
 
         <% unless @board.title.include?('Board Diário') %>
 
@@ -128,37 +73,56 @@
           <div class="new-card-form" style="display: none;">
             <%= form_with(model: Card.new, url: board_board_item_cards_path(@board, item), html: { class: 'create-card-form' }) do |form| %>
               <div class="field mb-3">
-                <%= form.text_field :title, placeholder: "Título do card", class: 'form-control card-title-input', required: true %>
+                <%= form.text_field :title, placeholder: "Título do card", class: 'form-control card-title-input custom-input', required: true %>
               </div>
             <% end %>
           </div>
           <!-- Botão para adicionar um novo card -->
           <div class="add-card-button">
             <a href="#" class="show-new-card-form">
-              <div class="card new-card">
-                <i class="bi bi-plus-lg"></i>
+              <div class="card new-card" style="background-color: #181C1F">
+                <i class="bi bi-plus-lg" style="color: white"></i>
               </div>
             </a>
           </div>
 
         <% end %>
 
-      </div>
+
+    </div>
+  </div>
+<% end %>
+
+<!-- Formulário oculto para adicionar uma nova coluna -->
+        <% unless @board.title.include?('Board Diário') %>
+
+<div class="new-column-form" style="display: none;width: 300px">
+  <%= form_with(model: BoardItem.new, url: board_board_items_path(@board), html: { class: 'create-column-form' }) do |form| %>
+    <div class="field mb-3" style="width: 300px">
+      <%= form.text_field :name, placeholder: "Nome da coluna", class: 'form-control column-name-input', required: true %>
     </div>
   <% end %>
 </div>
-
-<%= link_to 'Voltar', boards_path, class: 'btn btn-link mt-3' %>
+<!-- Botão para adicionar uma nova coluna -->
+<div class="add-column-button">
+  <a href="#" class="show-new-column-form">
+    <div class="card new-column">
+      <i class="bi bi-plus-lg"></i>
+    </div>
+  </a>
+</div>
+<% end %>
+<!-- Modal para edição de card -->
 <!-- Modal para edição de card -->
 <div class="modal fade" id="editCardModal" tabindex="-1" aria-labelledby="editCardModalLabel" aria-hidden="true">
   <div class="modal-dialog">
-    <div class="modal-content">
+    <div class="modal-content" style="background-color: #22272B;">
       <div class="modal-header">
         <h5 class="modal-title" id="editCardModalLabel">Editar Card</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
-        <%= form_with(model: Card.new, url: '#', method: :patch, id: 'edit-card-form') do |form| %>
+        <%= form_with(model: Card.new, url: '#', method: :patch, id: 'edit-card-form', class: 'custom-card-form') do |form| %>
           <div class="mb-3">
             <%= form.label :title, 'Título', class: 'form-label' %>
             <%= form.text_field :title, id: 'card_title', class: 'form-control', required: true %>
@@ -184,12 +148,21 @@
             <%= form.text_field :tags, id: 'card_tags', class: 'form-control', placeholder: 'Ex: Urgente, Trabalho, Pessoal' %>
             <small class="form-text text-muted">Separe as tags por vírgulas.</small>
           </div>
-          <%= form.submit 'Atualizar Card', class: 'btn btn-primary' %>
+
+          <!-- Adicionar a classe text-end para alinhar o botão à direita -->
+          <div class="text-end">
+            <%= form.submit 'Atualizar Card', class: 'btn btn-primary custom-submit-button' %>
+          </div>
         <% end %>
       </div>
     </div>
   </div>
 </div>
+
+
+</div>
+
+  
 
 
 <!-- Bootstrap CSS -->
@@ -259,67 +232,56 @@
 
   $(document).ready(function() {
     // Configuração otimizada do sortable
-    $(".cards").sortable({
-      connectWith: ".cards",
-      placeholder: "card-placeholder",
-      cursor: "move",
-      revert: 300,  // Aumentamos o tempo de reversão para 300ms
-      delay: 0,   // Adicionamos um pequeno atraso antes de iniciar o drag
-      tolerance: "pointer",
-      helper: "clone",  // Usamos um clone como helper
-      opacity: 0.8,     // Tornamos o item arrastado levemente transparente
-      start: function(e, ui) {
-        ui.placeholder.height(ui.item.height());
-        ui.helper.css('z-index', 100);
-      },
-      stop: function(e, ui) {
-        ui.item.css('transform', '');
-      },
-      update: function(event, ui) {
-        if (this === ui.item.parent()[0]) {
-          var cardId = ui.item.data('card-id');
-          var newPosition = ui.item.index();
-          var newBoardItemId = ui.item.closest('.column').data('board-item-id');
-          var boardId = $('#kanban-board').data('board-id');
-          var moveUrl = '/boards/' + boardId + '/board_items/' + newBoardItemId + '/cards/' + cardId + '/move';
+ $(".cards").sortable({
+    connectWith: ".cards",
+    placeholder: "card-placeholder",
+    cursor: "move",
+    revert: 300,  // Tempo de reversão para 300ms
+    delay: 0,     // Pequeno atraso antes de iniciar o drag
+    tolerance: "pointer",
+    helper: "clone",  // Usa um clone como helper
+    opacity: 0.8,     // Item arrastado levemente transparente
+    start: function(e, ui) {
+      ui.placeholder.height(ui.item.height());
+      ui.helper.css('z-index', 100);
+    },
+    stop: function(e, ui) {
+      ui.item.css('transform', '');
+    },
+    update: function(event, ui) {
+      if (this === ui.item.parent()[0]) {
+        var cardId = ui.item.data('card-id');
+        var newPosition = ui.item.index();
+        var newBoardItemId = ui.item.closest('.column').data('board-item-id');
+        var boardId = $('#kanban-board').data('board-id');
+        var moveUrl = '/boards/' + boardId + '/board_items/' + newBoardItemId + '/cards/' + cardId + '/move';
 
-          $.ajax({
-            url: moveUrl,
-            method: 'PATCH',
-            data: {
-              position: newPosition + 1,
-              board_item_id: newBoardItemId
-            },
-            success: function() {
-              console.log('Card movido com sucesso.');
-              var lastColumnId = $('.column').last().data('board-item-id');
-              if (newBoardItemId == lastColumnId) {
-                ui.item.find('.complete-card-button').remove();
-                ui.item.find('.edit-card-button').remove();
-                ui.item.addClass('completed-card');
-              } else {
-                if (ui.item.find('.complete-card-button').length === 0) {
-                  ui.item.append(`
-                    <button class="complete-card-button" title="Concluir">
-                      <i class="bi bi-check-circle"></i>
-                    </button>
-                    <button class="edit-card-button" title="Editar">
-                      <i class="bi bi-pencil-square"></i>
-                    </button>
-                  `);
-                }
-                ui.item.removeClass('completed-card');
-                  ui.item.addClass('processing-card');
-
-              }
-            },
-            error: function() {
-              alert('Erro ao mover o card.');
+        $.ajax({
+          url: moveUrl,
+          method: 'PATCH',
+          data: {
+            position: newPosition + 1,
+            board_item_id: newBoardItemId
+          },
+          success: function() {
+            console.log('Card movido com sucesso.');
+            var lastColumnId = $('.column').last().data('board-item-id');
+            console.log("oh nooo")
+            if (newBoardItemId == lastColumnId) {
+              // Ocultar os botões de concluir e editar
+              ui.item.find('.complete-card-button').hide();
+            } else {
+              // Mostrar os botões de concluir e editar
+              ui.item.find('.complete-card-button').show();
             }
-          });
-        }
+          },
+          error: function() {
+            alert('Erro ao mover o card.');
+          }
+        });
       }
-    }).disableSelection();
+    }
+  }).disableSelection();
 
     // Delegação de eventos para abrir a modal ao clicar no botão de editar
     $('#kanban-board').on('click', '.edit-card-button', function(e) {
@@ -333,38 +295,38 @@
     });
 
     // Função para abrir a modal e carregar os dados do card
-function openEditCardModal(cardId, boardId, boardItemId) {
-  var modal = new bootstrap.Modal(document.getElementById('editCardModal'));
-  var form = $('#edit-card-form');
+    function openEditCardModal(cardId, boardId, boardItemId) {
+      var modal = new bootstrap.Modal(document.getElementById('editCardModal'));
+      var form = $('#edit-card-form');
 
-  // Atualizar a URL do formulário
-  form.attr('action', `/boards/${boardId}/board_items/${boardItemId}/cards/${cardId}`);
+      // Atualizar a URL do formulário
+      form.attr('action', `/boards/${boardId}/board_items/${boardItemId}/cards/${cardId}`);
 
-  // Carregar os dados do card via AJAX
-  $.ajax({
-    url: `/boards/${boardId}/board_items/${boardItemId}/cards/${cardId}/edit`,
-    method: 'GET',
-    dataType: 'json',
-    success: function(data) {
-      console.log('Dados recebidos para edição:', data);
-      form.find('#card_title').val(data.title);
-      form.find('#card_description').val(data.description);
-      form.find('#card_mood_id').val(data.mood_id || '');
-      form.find('#card_due_date').val(data.due_date ? data.due_date.split('T')[0] : '');
-      form.find('#card_priority').val(data.priority || '');
+      // Carregar os dados do card via AJAX
+      $.ajax({
+        url: `/boards/${boardId}/board_items/${boardItemId}/cards/${cardId}/edit`,
+        method: 'GET',
+        dataType: 'json',
+        success: function(data) {
+          console.log('Dados recebidos para edição:', data);
+          form.find('#card_title').val(data.title);
+          form.find('#card_description').val(data.description);
+          form.find('#card_mood_id').val(data.mood_id || '');
+          form.find('#card_due_date').val(data.due_date ? data.due_date.split('T')[0] : '');
+          form.find('#card_priority').val(data.priority || '');
 
-      // Preencher o campo de tags com as tags existentes
-var tags = (data.tags || []).map(function(tag) { return tag.name; }).join(', ');
-      form.find('#card_tags').val(tags);
+          // Preencher o campo de tags com as tags existentes
+          var tags = (data.tags || []).map(function(tag) { return tag.name; }).join(', ');
+          form.find('#card_tags').val(tags);
 
-      modal.show();
-    },
-    error: function(jqXHR, textStatus, errorThrown) {
-      console.error('Erro ao carregar dados do card:', textStatus, errorThrown);
-      alert('Erro ao carregar dados do card: ' + textStatus);
+          modal.show();
+        },
+        error: function(jqXHR, textStatus, errorThrown) {
+          console.error('Erro ao carregar dados do card:', textStatus, errorThrown);
+          alert('Erro ao carregar dados do card: ' + textStatus);
+        }
+      });
     }
-  });
-}
 
 
     // Enviar formulário de edição via AJAX
@@ -379,28 +341,61 @@ var tags = (data.tags || []).map(function(tag) { return tag.name; }).join(', ');
         data: formData,
         dataType: 'json',
         success: function(data) {
+          console.log(data)
           if (data.success) {
-            // Atualizar o card na interface
-            var card = $(`.card[data-card-id="${data.card.id}"]`);
-            card.find('.card-content').html(`
-              ${data.card.title}
-              <p>${data.card.description || ''}</p>
-              <p><strong>Humor:</strong> ${data.card.mood ? data.card.mood.name : 'Não definido'}</p>
-              ${data.card.due_date ? `<p><strong>Data de Vencimento:</strong> ${new Date(data.card.due_date).toLocaleDateString()}</p>` : ''}
-              <p><strong>Prioridade:</strong> ${['Baixa', 'Média', 'Alta'][data.card.priority] || 'Não definida'}</p>
-              ${data.card.tags.length > 0 ? `
-                <div class="tags mt-2">
-                  ${data.card.tags.map(tag => `<span class="badge bg-secondary tag-badge">${tag.name}</span>`).join('')}
+  // Atualizar o card na interface
+  var card = $(`.card[data-card-id="${data.card.id}"]`);
+  
+  // Atualizar o conteúdo do card, refletindo a nova estrutura
+              card.html(`
+                <!-- Círculo azul no canto superior com prioridade -->
+                <div class="blue-circle" style="background-color: 
+                  ${data.card.priority == 3 ? '#00042E' : data.card.priority == 2 ? '#12155E' : data.card.priority == 1 ? '#36487A' : '#6f6f6f'};"
+                  title="${data.card.priority == 3 ? 'Prioridade Alta' : data.card.priority == 2 ? 'Prioridade Média' : data.card.priority == 1 ? 'Prioridade Baixa' : 'Sem Prioridade'}">
                 </div>
-              ` : ''}
-            `);
 
-            // Fechar a modal
-            var modalInstance = bootstrap.Modal.getInstance(document.getElementById('editCardModal'));
-            modalInstance.hide();
-          } else {
-            alert('Erro ao atualizar o card: ' + data.message);
-          }
+                <!-- Conteúdo do Cartão -->
+                <div class="card-content">
+                  <h4 class="card-title">
+                    <span class="title-text">${data.card.title}</span>
+                  </h4>
+
+                  <div class="card-info">
+                    <p><strong>Humor pra realizar:</strong> ${data.card.mood ? data.card.mood.name : 'Não definido'}</p>
+                    ${data.card.due_date ? `<p><strong>Vencimento:</strong> ${new Date(data.card.due_date).toLocaleDateString()}</p>` : ''}
+                    <p><strong>Prioridade:</strong> ${['Baixa', 'Média', 'Alta'][data.card.priority] || 'Não definida'}</p>
+                  </div>
+
+                  <!-- Tags -->
+                  ${data.card.tags.length > 0 ? `
+                    <div class="tags mt-2">
+                      ${data.card.tags.map(tag => `<span class="custom-badge">${tag.name}</span>`).join('')}
+                    </div>` : ''}
+                </div>
+
+                <!-- Ações do Cartão -->
+                <div class="card-actions">
+                  ${data.is_last_column ? '' : `
+                    <button class="complete-card-button" title="Concluir">
+                      <i class="bi bi-check-circle" style="color: white;"></i>
+                    </button>
+                  `}
+                  <button class="edit-card-button" title="Editar">
+                    <i class="bi bi-pencil-square" style="color: white;"></i>
+                  </button>
+                  <button class="delete-card-button" title="Excluir">
+                    <i class="bi bi-trash" style="color: white;"></i>
+                  </button>
+                </div>
+              `);
+
+              // Fechar a modal
+              var modalInstance = bootstrap.Modal.getInstance(document.getElementById('editCardModal'));
+              modalInstance.hide();
+            } else {
+              alert('Erro ao atualizar o card: ' + data.message);
+            }
+
         },
         error: function() {
           alert('Erro ao atualizar o card. Por favor, tente novamente.');
@@ -408,92 +403,78 @@ var tags = (data.tags || []).map(function(tag) { return tag.name; }).join(', ');
       });
     });
 
-    // Handler para o botão de concluir
-// Handler para o botão de concluir
-$(document).on('click', '.complete-card-button', function(e) {
-  e.stopPropagation(); // Evita que o evento de clique seja propagado para outros handlers
-  var button = $(this);
-  var card = button.closest('.card');
-  var lastColumn = $('.column').last();
-  var lastColumnId = lastColumn.data('board-item-id');
-  var boardId = $('#kanban-board').data('board-id');
-  var cardId = card.data('card-id');
+    // Handler para o botão de concluir// Handler para o botão de concluir
+  $(document).on('click', '.complete-card-button', function(e) {
+    e.stopPropagation(); // Evita que o evento de clique seja propagado para outros handlers
+    var button = $(this);
+    var card = button.closest('.card');
+    var lastColumn = $('.column').last();
+    var lastColumnId = lastColumn.data('board-item-id');
+    var boardId = $('#kanban-board').data('board-id');
+    var cardId = card.data('card-id');
 
-  // Adicionar a classe para reduzir a opacidade
-  card.addClass('processing-card');
+    // Adicionar a classe para reduzir a opacidade
+    card.addClass('processing-card');
 
-  // Construir a URL para a rota move
-  var moveUrl = '/boards/' + boardId + '/board_items/' + lastColumnId + '/cards/' + cardId + '/move';
+    // Construir a URL para a rota move
+    var moveUrl = '/boards/' + boardId + '/board_items/' + lastColumnId + '/cards/' + cardId + '/move';
 
-  // Calcular a posição final na última coluna
-  var newPosition = lastColumn.find('.card').not('.new-card').length + 1;
+    // Calcular a posição final na última coluna
+    var newPosition = lastColumn.find('.card').not('.new-card').length + 1;
 
-  // Criar uma cópia do card para animação
-  var cardClone = card.clone();
-  cardClone.css({
-    position: 'absolute',
-    top: card.offset().top,
-    left: card.offset().left,
-    width: card.width(),
-    zIndex: 1000,
-    opacity: 0.8
-  });
-  $('body').append(cardClone);
+    // Criar uma cópia do card para animação
+    var cardClone = card.clone();
+    cardClone.css({
+      position: 'absolute',
+      top: card.offset().top,
+      left: card.offset().left,
+      width: card.width(),
+      zIndex: 1000
+    });
+    $('body').append(cardClone);
 
-  // Obter a posição do destino
-  var targetPosition = lastColumn.find('.cards').offset();
+    // Obter a posição do destino
+    var targetPosition = lastColumn.find('.cards').offset();
 
-  // Animar a cópia do card até a última coluna
-  cardClone.animate({
-    top: targetPosition.top,
-    left: targetPosition.left,
-    width: lastColumn.find('.cards').width()
-  }, 500, function() {
-    cardClone.remove(); // Remove a cópia após a animação
-  });
+    // Animar a cópia do card até a última coluna
+    cardClone.animate({
+      top: targetPosition.top,
+      left: targetPosition.left,
+      width: lastColumn.find('.cards').width()
+    }, 500, function() {
+      cardClone.remove(); // Remove a cópia após a animação
+    });
 
-  // Enviar a requisição AJAX para mover o card no servidor
-  $.ajax({
-    url: moveUrl,
-    method: 'PATCH',
-    data: {
-      board_item_id: lastColumnId,
-      position: newPosition
-    },
-    success: function() {
-      // Remover o card da posição original e adicioná-lo à última coluna
-      card.fadeOut(300, function() {
-        card.remove();
-        lastColumn.find('.cards').append(card);
-        card.fadeIn(300);
-        card.addClass('completed-card'); // Adicionar classe para estilização (opcional)
-        // Remover os botões de concluir e editar, já que está na última coluna
-        card.find('.complete-card-button').remove();
-        card.find('.edit-card-button').remove();
-      });
-      console.log('Card concluído e movido com sucesso.');
-    },
-    error: function() {
-      // Remover a classe de processamento em caso de erro
-      card.removeClass('processing-card');
-      alert('Erro ao concluir o card.');
-    }
-  });
-});
+    // Enviar a requisição AJAX para mover o card no servidor
+    $.ajax({
+      url: moveUrl,
+      method: 'PATCH',
+      data: {
+        board_item_id: lastColumnId,
+        position: newPosition
+      },
+      success: function() {
+        // Remover o card da posição original e adicioná-lo à última coluna
+        card.fadeOut(300, function() {
+          card.remove();
+          lastColumn.find('.cards').append(card);
+          card.fadeIn(300);
+          card.removeClass('processing-card');
+          // Remover os botões de concluir e editar, já que está na última coluna
+          card.find('.complete-card-button, .edit-card-button').hide();
+        });
+        console.log('Card concluído e movido com sucesso.');
 
-
-    // Delegação de eventos para abrir a modal ao clicar no card (opcional, se quiser também suportar)
-    /*
-    $('#kanban-board').on('click', '.card', function(e) {
-      // Verifica se o clique não foi em um botão de ação
-      if ($(e.target).closest('.card-actions').length === 0) {
-        var cardId = $(this).data('card-id');
-        var boardId = $('#kanban-board').data('board-id');
-        var boardItemId = $(this).closest('.column').data('board-item-id');
-        openEditCardModal(cardId, boardId, boardItemId);
+      },
+      error: function() {
+        // Remover a classe de processamento em caso de erro
+        card.removeClass('processing-card');
+        alert('Erro ao concluir o card.');
       }
     });
-    */
+  });
+
+
 
     // Mostrar o formulário de novo card ao clicar no botão
     $('.show-new-card-form').on('click', function(e) {
@@ -504,72 +485,50 @@ $(document).on('click', '.complete-card-button', function(e) {
       column.find('.card-title-input').focus();
     });
 
-    // Submeter o formulário ao pressionar Enter
-    $(document).on('keypress', '.card-title-input', function(e) {
-      if (e.which == 13) { // Código da tecla Enter
-        e.preventDefault();
-        var form = $(this).closest('form');
-        var column = form.closest('.column');
-        var columnId = column.data('board-item-id');
-        var cardTitle = $(this).val();
+// Submeter o formulário ao pressionar Enter
+  $(document).on('keypress', '.card-title-input', function(e) {
+    if (e.which == 13) { // Código da tecla Enter
+      e.preventDefault();
+      var form = $(this).closest('form');
+      var column = form.closest('.column');
+      var columnId = column.data('board-item-id');
+      var cardTitle = $(this).val();
 
-        // Enviar requisição AJAX para criar o card
-        $.ajax({
-          url: form.attr('action'),
-          method: 'POST',
-          data: form.serialize(),
-          dataType: 'json',
-          success: function(response) {
-            if (response.success) {
-              
-              var last_column_id = $('#kanban-board').data('last-column-id');
+      // Enviar requisição AJAX para criar o card
+      $.ajax({
+        url: form.attr('action'),
+        method: 'POST',
+        data: form.serialize(),
+        dataType: 'json',
+        success: function(response) {
+          if (response.success) {
+            // Inserir o HTML do cartão renderizado
+            var newCard = $(response.rendered_card).hide(); // Esconder inicialmente para aplicar o fade in
+            
+            // Adicionar o novo card à última posição da coluna e aplicar fade in
+            column.find('.cards').append(newCard);
+            newCard.fadeIn(300);
 
-              // Criar o novo elemento do card
-              var newCard = $(`
-                <div class="card" data-card-id="${response.card.id}" style="display: none;">
-                  <div class="card-content">
-                    ${response.card.title}
-                    <p>${response.card.description || ''}</p>
-                    <p><strong>Humor:</strong> ${response.card.mood ? response.card.mood.name : 'Não definido'}</p>
-                    ${response.card.due_date ? `<p><strong>Data de Vencimento:</strong> ${new Date(response.card.due_date).toLocaleDateString()}</p>` : ''}
-                  </div>
-                  <div class="card-actions">
-                    ${columnId != last_column_id ? `
-                      <button class="complete-card-button" title="Concluir">
-                        <i class="bi bi-check-circle"></i>
-                      </button>
-                      <button class="edit-card-button" title="Editar">
-                        <i class="bi bi-pencil-square"></i>
-                      </button>
-                    ` : ''}
-                    <button class="delete-card-button" title="Excluir">
-                      <i class="bi bi-trash"></i>
-                    </button>
-                  </div>
-                </div>
-              `);
+            // Limpar e esconder o formulário
+            form.find('.card-title-input').val('');
+            form.closest('.new-card-form').hide();
+            column.find('.add-card-button').show();
 
-              // Adicionar o novo card à última posição da coluna e aplicar fade in
-              column.find('.cards').append(newCard);
-              newCard.fadeIn(300);
-
-              // Limpar e esconder o formulário
-              form.find('.card-title-input').val('');
-              form.closest('.new-card-form').hide();
-              column.find('.add-card-button').show();
-
-              // Reativar o sortable
-              $(".cards").sortable("refresh");
-            } else {
-              alert('Erro ao criar o card: ' + response.message);
-            }
-          },
-          error: function() {
-            alert('Erro ao criar o card. Por favor, tente novamente.');
+            // Reativar o sortable (se estiver usando jQuery UI Sortable ou similar)
+            $(".cards").sortable("refresh");
+              setTimeout(() => {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }, 100);
+          } else {
+            alert('Erro ao criar o card: ' + response.message);
           }
-        });
-      }
-    });
+        },
+        error: function() {
+          alert('Erro ao criar o card. Por favor, tente novamente.');
+        }
+      });
+    }
+  });
 
     // Fechar o formulário ao clicar fora
     $(document).on('click', function(e) {
@@ -579,6 +538,69 @@ $(document).on('click', '.complete-card-button', function(e) {
         $('.add-card-button').show();
       }
     });
+
+
+
+ $('.show-new-column-form').on('click', function(e) {
+    e.preventDefault();
+    var board = $('#kanban-board');
+    board.find('.add-column-button').hide();
+    board.find('.new-column-form').show();
+    board.find('.column-name-input').focus();
+  });
+
+
+$(document).on('click', '.delete-column-button', function(e) {
+    e.stopPropagation(); // Evita que o evento de clique seja propagado para outros handlers
+
+    var button = $(this);
+    var columnId = button.data('column-id');
+    var column = button.closest('.column');
+
+    // Verificar se a coluna contém cards
+    var hasCards = column.find('.card').length > 0;
+    var confirmationMessage = hasCards ? 
+      'Esta coluna contém cards. Ao excluir a coluna, todos os cards também serão excluídos. Deseja continuar?' : 
+      'Tem certeza que deseja excluir esta coluna?';
+
+    if (confirm(confirmationMessage)) {
+      var boardId = $('#kanban-board').data('board-id');
+      var deleteUrl = '/boards/' + boardId + '/board_items/' + columnId;
+
+      $.ajax({
+        url: deleteUrl,
+        method: 'DELETE',
+        success: function(response) {
+          if (response.success) {
+            // Remover a coluna do DOM com efeito de fadeOut
+            column.fadeOut(300, function() {
+              $(this).remove();
+            });
+          } else {
+            alert('Erro ao excluir a coluna: ' + response.message);
+          }
+        },
+        error: function() {
+          alert('Erro ao excluir a coluna. Por favor, tente novamente.');
+        }
+      });
+    }
+  });
+
+
+  // Fechar o formulário de nova coluna ao clicar fora
+  $(document).on('click', function(e) {
+    var target = $(e.target);
+    if (!target.closest('.new-column-form').length && !target.closest('.show-new-column-form').length) {
+      $('.new-column-form').hide();
+      $('.add-column-button').show();
+    }
+  });
+
+
+
+
+
 
     // Handler para o botão de excluir
     $(document).on('click', '.delete-card-button', function(e) {
@@ -605,5 +627,127 @@ $(document).on('click', '.complete-card-button', function(e) {
       }
     });
 
+
+
+
+
+     $('#kanban-board').on('click', '.column-name', function() {
+    var span = $(this);
+    var currentName = span.text();
+    var columnId = span.data('column-id');
+
+    // Criar um campo de input com o nome atual
+    var input = $('<input>', {
+      type: 'text',
+      class: 'form-control column-name-input',
+      value: currentName
+    });
+
+    // Substituir o span pelo input
+    span.replaceWith(input);
+    input.focus();
+
+    // Selecionar o texto no input
+    input.select();
   });
+
+  // Handler para salvar o nome da coluna ao pressionar Enter
+  $('#kanban-board').on('keypress', '.column-name-input', function(e) {
+    if (e.which == 13) { // Tecla Enter
+      e.preventDefault();
+      var input = $(this);
+      var newName = input.val().trim();
+      var columnId = input.closest('.column').data('board-item-id');
+      var form = $(this).closest('form');
+      var board = $('#kanban-board');
+      
+      if (newName === "") {
+        alert('O nome da coluna não pode estar vazio.');
+        return;
+      }
+
+      console.log(columnId)
+
+      if(columnId == undefined){
+        // Enviar requisição AJAX para criar a coluna
+        $.ajax({
+          url: form.attr('action'),
+          method: 'POST',
+          data: form.serialize(),
+          dataType: 'json',
+          success: function(response) {
+            if (response.success) {
+              // Criar a nova coluna ocultamente para aplicar o fade in
+              var newColumn = $(response.rendered_column).hide();
+
+              // Inserir a nova coluna antes do botão de adicionar coluna
+              board.find('.add-column-button').before(newColumn);
+              newColumn.fadeIn(300);
+
+              // Limpar e esconder o formulário
+              form.find('.column-name-input').val('');
+              form.closest('.new-column-form').hide();
+              board.find('.add-column-button').show();
+
+              // Reativar o sortable para a nova coluna
+              $(".cards").sortable("refresh");
+            } else {
+              alert('Erro ao criar a coluna: ' + response.message);
+            }
+          },
+          error: function() {
+            alert('Erro ao criar a coluna. Por favor, tente novamente.');
+          }
+        });
+      }else{
+     // Enviar requisição AJAX para atualizar o nome da coluna
+        $.ajax({
+          url: '/boards/' + $('#kanban-board').data('board-id') + '/board_items/' + columnId,
+          method: 'PATCH',
+          data: {
+            board_item: { name: newName }
+          },
+          dataType: 'json',
+          success: function(response) {
+            if (response.success) {
+              // Atualizar o nome na interface
+               console.log( response.board_item.name)
+             var updatedSpan = $('<span>', {
+                class: 'column-name',
+                'data-column-id': columnId,
+                text: response.board_item.name
+              });
+              console.log(updatedSpan)
+              input.replaceWith(updatedSpan);
+
+            } else {
+              alert('Erro ao atualizar o nome da coluna: ' + response.message);
+              // Reverter para o nome original em caso de erro
+              var revertedSpan = $('<span>', {
+                class: 'column-name',
+                'data-column-id': columnId,
+                text: currentName
+              });
+              input.replaceWith(revertedSpan);
+            }
+          },
+          error: function() {
+            alert('Erro ao atualizar o nome da coluna. Por favor, tente novamente.');
+            // Reverter para o nome original em caso de erro
+            var revertedSpan = $('<span>', {
+              class: 'column-name',
+              'data-column-id': columnId,
+              text: currentName
+            });
+            input.replaceWith(revertedSpan);
+          }
+        });
+      }
+ 
+    }
+  });
+
+
+  });
+
 </script>

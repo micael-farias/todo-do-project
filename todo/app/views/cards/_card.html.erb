@@ -1,8 +1,90 @@
-<div class="card" data-card-id="<%= card.id %>">
-  <%= card.title %>
-  <% unless card.board_item_id == @board.board_items.last.id %>
-    <button class="complete-card-button" title="Concluir">
-      <i class="bi bi-check-circle"></i>
-    </button>
+<!-- Assegure-se de que o arquivo CSS externo esteja incluído no seu layout principal, por exemplo: -->
+<!-- <link rel="stylesheet" href="/path/to/styles.css"> -->
+
+<div class="card" data-card-id="<%= card.id %>" style="background-color: #22272B;">
+  
+  <!-- Círculo azul no canto superior -->
+<div class="blue-circle" 
+  style="background-color: 
+    <% if card.priority == 3 %>
+      #00042E;
+    <% elsif card.priority == 2 %>
+      #12155E;
+    <% elsif card.priority == 1 %>
+      #36487A;
+    <% else %>
+      #6f6f6f;
+    <% end %>;"
+  title="<% if card.priority == 3 %>
+            Prioridade Alta
+          <% elsif card.priority == 2 %>
+            Prioridade Média
+          <% elsif card.priority == 1 %>
+            Prioridade Baixa
+          <% else %>
+            Sem Prioridade
+          <% end %>">
+</div>
+
+  <div class="card-content">
+    
+    <!-- Título do Cartão com Ícone de Prancheta -->
+    <h4 class="card-title">
+      <!-- Adicione o ícone de prancheta aqui, se necessário -->
+      <span class="title-text"><%= card.title %></span>
+    </h4>
+    
+    <div class="card-info">
+      <p>
+        <strong>Humor pra realizar:</strong> <%= card.mood&.name || 'Não definido' %>
+      </p>
+
+      <% if due_info.present? %>
+        <p>
+          <strong><%= due_label %>:</strong> <%= due_info %>
+        </p>
+      <% end %>
+      
+      <% if card.priority? %>
+        <p>
+          <strong>Prioridade:</strong>
+          <% if card.priority == 3 %>
+            Alta
+          <% elsif card.priority == 2 %>
+            Média
+          <% elsif card.priority == 1 %>
+            Baixa
+          <% else %>
+            Sem Prioridade
+          <% end %>
+        </p>
+      <% end %>
+    </div>
+    
+  <!-- Tags -->
+  <% if card.tags.any? %>
+    <div class="tags">
+      <% card.tags.each do |tag| %>
+        <span class="custom-badge"><%= tag.name %></span>
+      <% end %>
+    </div>
   <% end %>
+
+    
+  </div>
+
+  <!-- Ações do Cartão -->
+  <div class="card-actions">
+      <button class="complete-card-button" title="Concluir" 
+        style="display: <%= is_last_column ? 'none' : 'block' %>;">
+        <i class="bi bi-check-circle" style="color: white;"></i>
+      </button>
+      <button class="edit-card-button" title="Editar">
+        <i class="bi bi-pencil-square" style="color: white;"></i>
+      </button>
+    <button class="delete-card-button" title="Excluir">
+      <i class="bi bi-trash" style="color: white;"></i>
+    </button>
+  </div>
+  
 </div>
