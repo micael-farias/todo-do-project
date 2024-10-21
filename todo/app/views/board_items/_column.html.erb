@@ -1,34 +1,34 @@
-<div class="column" data-board-item-id="<%= item.id %>" style="background-color: #101204; padding: 10px; position: relative;">
-  <!-- Botão de Excluir Coluna -->
-<div class="column-header">
-      <h3>
-        <span class="column-name" data-column-id="<%= item.id %>"><%= item.name %></span>
-      </h3>
-        <!-- Ícone de Lixeira para remover a coluna -->
-        <button class="delete-column-button" data-column-id="<%= item.id %>" title="Excluir Coluna" data-board-item-id="<%= item.id %>">
-          <i class="bi bi-trash" style="color: white"></i>
-        </button>
-      </div>
+<div class="column" data-board-item-id="<%= item.id %>" style="background-color: #101204; padding: 10px;<%= 'width: 600px;' if @board.title.include?('Board Diário')%>;">
+  <div class="column-header">
+    <h3>
+      <span class="column-name" data-column-id="<%= item.id %>"><%= item.name %></span>
+    </h3>
+    <% unless @board.title.include?('Board Diário') %>
+    <!-- Ícone de Lixeira para remover a coluna -->
+    <button class="delete-column-button" data-column-id="<%= item.id %>" title="Excluir Coluna" data-board-item-id="<%= item.id %>">
+      <i class="bi bi-trash" style="color: white"></i>
+    </button>
+    <% end %>
+  </div>
   <div class="column-content">
     <div class="cards">
-      <!-- Renderizar os cards existentes -->
       <% if @board.title.include?('Board Diário') %>
-        <!-- Lógica para Board Diário -->
+        <!-- Exibir os cards na primeira ou segunda coluna do Board Diário -->
+        <!-- Primeira Coluna: Cards filtrados por humor -->
         <% if @board.board_items.first == item %>
           <% @daily_board_cards.each do |card| %>
             <%= render 'cards/card', 
               card: card, 
-              background_color: 'bg-card-diario-1', 
               due_info: card.due_date.present? ? card.due_date.strftime('%d/%m/%Y') : nil, 
               due_label: 'Vencimento',
               is_last_column: item.id == last_column_id 
             %>
           <% end %>
+        <!-- Segunda Coluna: Todos os cards finalizados hoje -->
         <% elsif @board.board_items.second == item %>
           <% Card.where(completed_at: Date.today.all_day).each do |card| %>
             <%= render 'cards/card', 
               card: card, 
-              background_color: 'bg-card-diario-2', 
               due_info: card.completed_at.strftime('%d/%m/%Y %H:%M'), 
               due_label: 'Completado em',
               is_last_column: item.id == last_column_id 
@@ -40,7 +40,6 @@
         <% item.cards.order(:position).each do |card| %>
           <%= render 'cards/card', 
             card: card, 
-            background_color: 'bg-card-normal', 
             due_info: card.due_date.present? ? card.due_date.strftime('%d/%m/%Y') : nil, 
             due_label: 'Vencimento',
             is_last_column: item.id == last_column_id 
@@ -50,22 +49,22 @@
     </div>
 
     <% unless @board.title.include?('Board Diário') %>
-      <!-- Formulário oculto para adicionar um novo card -->
-        <div class="new-card-form" style="display: none;">
-            <%= form_with(model: Card.new, url: board_board_item_cards_path(@board, item), html: { class: 'create-card-form' }) do |form| %>
-              <div class="field mb-3">
-                <%= form.text_field :title, placeholder: "Título do card", class: 'form-control card-title-input custom-input', required: true %>
-              </div>
-            <% end %>
-          </div>
-          <!-- Botão para adicionar um novo card -->
-          <div class="add-card-button">
-            <a href="#" class="show-new-card-form">
-              <div class="card new-card" style="background-color: #181C1F">
-                <i class="bi bi-plus-lg" style="color: white"></i>
-              </div>
-            </a>
-          </div>
+    <!-- Formulário oculto para adicionar um novo card -->
+    <div class="new-card-form" style="display: none;">
+      <%= form_with(model: Card.new, url: board_board_item_cards_path(@board, item), html: { class: 'create-card-form' }) do |form| %>
+        <div class="field mb-3">
+          <%= form.text_field :title, placeholder: "Título do card", class: 'form-control card-title-input custom-input', required: true %>
+        </div>
+      <% end %>
+    </div>
+    <!-- Botão para adicionar um novo card -->
+    <div class="add-card-button">
+      <a href="#" class="show-new-card-form">
+        <div class="card new-card" style="background-color: #181C1F">
+          <i class="bi bi-plus-lg" style="color: white"></i>
+        </div>
+      </a>
+    </div>
     <% end %>
   </div>
 </div>

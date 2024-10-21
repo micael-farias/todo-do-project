@@ -1,97 +1,108 @@
 <!-- app/views/boards/show.html.erb -->
-<div style="background-color: #352D78">
-<h2 style="color: rgb(169, 169, 169); width:100%; line-height: 50px; padding-left: 10px; background-color: rgba(169, 169, 169, 0.2);">
+<div style="background-color: #352D78; height: 100vh;">
+<h2 style="color: rgb(169, 169, 169); width:100%; line-height: 50px; padding-left: 10px; background-color: rgba(169, 169, 169, 0.2); display: flex; align-items: center; justify-content: space-between;">
   <%= @board.title %>
-</h2> 
+  <!-- Ícone de lixeira para excluir o board -->
+  <!-- Ícone de duplicar board ao lado do botão de exclusão -->
+  <div>
+    
+
+  <button id="delete-board-button" title="Excluir board" class="btn btn-link" style="float: right; color: white;; margin-right: 10px;">
+    <i class="bi bi-trash"></i>
+  </button>
+  <button id="duplicate-board-button" title="Duplicar board" class="btn btn-link" style="float: right; color: white">
+    <i class="bi bi-files"></i>
+  </button>
+  </div>
+
+</h2>
+
+
+         <% if @board.title.include?('Board Diário') %>
+
+            <div class="edit-mood-message alert d-flex align-items-center" role="alert" style="background-color: #101204; margin: 0px 10px 0px 10px;">
+              <span style="color: #ADB9C5;" >
+                O board diário é  criado a partir do seu humor diário. Pega-se primeiro as tarefas que estão a 3 dias de se vencer, em seguida pega-se as tarefas que estão marcadas no humor que você selecionou, e por último o restante de tarefas ordenadas por prioridade.
+              </span>
+            </div>
+        <%end %>
 <!-- Seção do Kanban Board -->
 <div style="background-color: #352D78" id="kanban-board" data-board-id="<%= @board.id %>">
-
+      <% if @board.board_items.any? %>
 
   <% last_column_id = @board.board_items.last.id %> <!-- Identifica o ID da última coluna -->
-<% @board.board_items.each do |item| %>
-  <div class="column" data-board-item-id="<%= item.id %>" style="background-color: #101204; padding: 10px;">
-     
-     
-   <div class="column-header">
-      <h3>
-        <span class="column-name" data-column-id="<%= item.id %>"><%= item.name %></span>
-      </h3>
-
-                <% unless @board.title.include?('Board Diário') %>
-
+  <% @board.board_items.each do |item| %>
+  <div class="column" data-board-item-id="<%= item.id %>" style="background-color: #101204; padding: 10px;<%= 'width: 600px;' if @board.title.include?('Board Diário')%> ">
+    <div class="column-header">
+        <h3>
+          <span class="column-name" data-column-id="<%= item.id %>"><%= item.name %></span>
+        </h3>
+        <% unless @board.title.include?('Board Diário') %>
         <button class="delete-column-button" data-column-id="<%= item.id %>" title="Excluir Coluna" data-board-item-id="<%= item.id %>">
-          <i class="bi bi-trash" style="color: white"></i>
+        <i class="bi bi-trash" style="color: white"></i>
         </button>
         <%end%>
-      </div>
+    </div>
     <div class="column-content">
-      <div class="cards">
-
-        <% if @board.title.include?('Board Diário') %>
+        <div class="cards">
+          <% if @board.title.include?('Board Diário') %>
           <!-- Exibir os cards na primeira ou segunda coluna do Board Diário -->
-
           <!-- Primeira Coluna: Cards filtrados por humor -->
           <% if @board.board_items.first == item %>
-            <% @daily_board_cards.each do |card| %>
-              <%= render 'cards/card', 
-                card: card, 
-                due_info: card.due_date.present? ? card.due_date.strftime('%d/%m/%Y') : nil, 
-                due_label: 'Vencimento',
-                is_last_column: item.id == last_column_id 
-              %>
-            <% end %>
-
-          <!-- Segunda Coluna: Todos os cards finalizados hoje -->
-          <% elsif @board.board_items.second == item %>
-            <% Card.where(completed_at: Date.today.all_day).each do |card| %>
-              <%= render 'cards/card', 
-                card: card, 
-                due_info: card.completed_at.strftime('%d/%m/%Y %H:%M'), 
-                due_label: 'Completado em',
-                is_last_column: item.id == last_column_id 
-              %>
-            <% end %>
-          <% end %>
-
-        <% else %>
-          <!-- Para boards normais, exibe os cards normalmente nas colunas -->
-          <% item.cards.order(:position).each do |card| %>
-            <%= render 'cards/card', 
+          <% @daily_board_cards.each do |card| %>
+          <%= render 'cards/card', 
               card: card, 
               due_info: card.due_date.present? ? card.due_date.strftime('%d/%m/%Y') : nil, 
               due_label: 'Vencimento',
               is_last_column: item.id == last_column_id 
-            %>
+              %>
           <% end %>
-        <% end %>
-
-      </div>
-
+          <!-- Segunda Coluna: Todos os cards finalizados hoje -->
+          <% elsif @board.board_items.second == item %>
+          <% Card.where(completed_at: Date.today.all_day).each do |card| %>
+          <%= render 'cards/card', 
+              card: card, 
+              due_info: card.completed_at.strftime('%d/%m/%Y %H:%M'), 
+              due_label: 'Completado em',
+              is_last_column: item.id == last_column_id 
+              %>
+          <% end %>
+          <% end %>
+          <% else %>
+          <!-- Para boards normais, exibe os cards normalmente nas colunas -->
+          <% item.cards.order(:position).each do |card| %>
+          <%= render 'cards/card', 
+              card: card, 
+              due_info: card.due_date.present? ? card.due_date.strftime('%d/%m/%Y') : nil, 
+              due_label: 'Vencimento',
+              is_last_column: item.id == last_column_id 
+              %>
+          <% end %>
+          <% end %>
+        </div>
         <% unless @board.title.include?('Board Diário') %>
-
-          <!-- Formulário oculto para adicionar um novo card -->
-          <div class="new-card-form" style="display: none;">
-            <%= form_with(model: Card.new, url: board_board_item_cards_path(@board, item), html: { class: 'create-card-form' }) do |form| %>
-              <div class="field mb-3">
-                <%= form.text_field :title, placeholder: "Título do card", class: 'form-control card-title-input custom-input', required: true %>
-              </div>
-            <% end %>
+        <!-- Formulário oculto para adicionar um novo card -->
+        <div class="new-card-form" style="display: none;">
+          <%= form_with(model: Card.new, url: board_board_item_cards_path(@board, item), html: { class: 'create-card-form' }) do |form| %>
+          <div class="field mb-3">
+              <%= form.text_field :title, placeholder: "Título do card", class: 'form-control card-title-input custom-input', required: true %>
           </div>
-          <!-- Botão para adicionar um novo card -->
-          <div class="add-card-button">
-            <a href="#" class="show-new-card-form">
+          <% end %>
+        </div>
+        <!-- Botão para adicionar um novo card -->
+        <div class="add-card-button">
+          <a href="#" class="show-new-card-form">
               <div class="card new-card" style="background-color: #181C1F">
                 <i class="bi bi-plus-lg" style="color: white"></i>
+                
               </div>
-            </a>
-          </div>
-
+          </a>
+        </div>
         <% end %>
-
-
     </div>
   </div>
-<% end %>
+  <% end %>
+  <% end %>
 
 <!-- Formulário oculto para adicionar uma nova coluna -->
         <% unless @board.title.include?('Board Diário') %>
@@ -105,12 +116,14 @@
 </div>
 <!-- Botão para adicionar uma nova coluna -->
 <div class="add-column-button">
-  <a href="#" class="show-new-column-form">
-    <div class="card new-column">
+  <a href="#" class="show-new-column-form" style="text-decoration: none;">
+    <div class="new-column">
       <i class="bi bi-plus-lg"></i>
+      <span style="color: #ADB9C5; font-weight: 700">Adicionar coluna</span> 
     </div>
   </a>
 </div>
+
 <% end %>
 <!-- Modal para edição de card -->
 <!-- Modal para edição de card -->
@@ -143,11 +156,16 @@
             <%= form.label :priority, 'Prioridade', class: 'form-label' %>
             <%= form.select :priority, [['Baixa', 0], ['Média', 1], ['Alta', 2]], { include_blank: 'Selecione a prioridade' }, class: 'form-select', id: 'card_priority' %>
           </div>
-          <div class="mb-3">
-            <%= form.label :tags, 'Tags', class: 'form-label' %>
-            <%= form.text_field :tags, id: 'card_tags', class: 'form-control', placeholder: 'Ex: Urgente, Trabalho, Pessoal' %>
-            <small class="form-text text-muted">Separe as tags por vírgulas.</small>
-          </div>
+<div class="mb-3">
+  <%= form.label :tags, 'Tags', class: 'form-label' %>
+  <input type="text" id="tag-input-edit" class="form-control" placeholder="Digite uma tag e pressione Enter">
+  <small class="form-text text-muted">Pressione Enter para adicionar uma tag.</small>
+  <div id="tag-container-edit" class="mb-2">
+    <!-- Tags existentes serão adicionadas aqui via JavaScript -->
+  </div>
+  <%= form.hidden_field :tags, id: 'card_tags_edit', class: 'form-control', value: '' %>
+</div>
+
 
           <!-- Adicionar a classe text-end para alinhar o botão à direita -->
           <div class="text-end">
@@ -162,22 +180,6 @@
 
 </div>
 
-  
-
-
-<!-- Bootstrap CSS -->
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-
-<!-- Bootstrap JS (necessário para modals) -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-
-<!-- Scripts necessários -->
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<!-- Inclua o jQuery UI para o sortable -->
-<script src="https://code.jquery.com/ui/1.13.1/jquery-ui.min.js"></script>
-
-<!-- Opcional: Inclua ícones do Bootstrap se ainda não estiverem incluídos -->
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
 
 <!-- CSS para Melhor Desempenho e Estilização -->
 <style>
@@ -301,6 +303,9 @@
 
       // Atualizar a URL do formulário
       form.attr('action', `/boards/${boardId}/board_items/${boardItemId}/cards/${cardId}`);
+      // Limpar as tags existentes no container
+      $('#tag-container-edit').empty();
+      $('#card_tags_edit').val('');
 
       // Carregar os dados do card via AJAX
       $.ajax({
@@ -314,10 +319,15 @@
           form.find('#card_mood_id').val(data.mood_id || '');
           form.find('#card_due_date').val(data.due_date ? data.due_date.split('T')[0] : '');
           form.find('#card_priority').val(data.priority || '');
-
+              
           // Preencher o campo de tags com as tags existentes
-          var tags = (data.tags || []).map(function(tag) { return tag.name; }).join(', ');
-          form.find('#card_tags').val(tags);
+             // Preencher as tags existentes
+          if (data.tags && data.tags.length > 0) {
+            data.tags.forEach(function(tag) {
+              console.log("snerorooroo")
+              addTag(tag.name, 'tag-container-edit', 'card_tags_edit');
+            });
+          }
 
           modal.show();
         },
@@ -363,7 +373,7 @@
                   <div class="card-info">
                     <p><strong>Humor pra realizar:</strong> ${data.card.mood ? data.card.mood.name : 'Não definido'}</p>
                     ${data.card.due_date ? `<p><strong>Vencimento:</strong> ${new Date(data.card.due_date).toLocaleDateString()}</p>` : ''}
-                    <p><strong>Prioridade:</strong> ${['Baixa', 'Média', 'Alta'][data.card.priority] || 'Não definida'}</p>
+                    ${data.card.priority != null && data.card.priority !== 0 ? `<p><strong>Prioridade:</strong> ${['Baixa', 'Média', 'Alta'][data.card.priority] || 'Não definida'}</p>` : ''}
                   </div>
 
                   <!-- Tags -->
@@ -512,13 +522,14 @@
             // Limpar e esconder o formulário
             form.find('.card-title-input').val('');
             form.closest('.new-card-form').hide();
-            column.find('.add-card-button').show();
+            column.find('.add-card-button').hide();
+location.reload();
 
             // Reativar o sortable (se estiver usando jQuery UI Sortable ou similar)
-            $(".cards").sortable("refresh");
-              setTimeout(() => {
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        }, 100);
+            //$(".cards").sortable("refresh");
+             // setTimeout(() => {
+            //window.scrollTo({ top: 0, behavior: 'smooth' });
+        //}, 100);
           } else {
             alert('Erro ao criar o card: ' + response.message);
           }
@@ -533,6 +544,7 @@
     // Fechar o formulário ao clicar fora
     $(document).on('click', function(e) {
       var target = $(e.target);
+      console.log("oiii")
       if (!target.closest('.new-card-form').length && !target.closest('.show-new-card-form').length) {
         $('.new-card-form').hide();
         $('.add-card-button').show();
@@ -541,13 +553,14 @@
 
 
 
- $('.show-new-column-form').on('click', function(e) {
-    e.preventDefault();
-    var board = $('#kanban-board');
-    board.find('.add-column-button').hide();
-    board.find('.new-column-form').show();
-    board.find('.column-name-input').focus();
-  });
+$(document).on('click', '.show-new-column-form', function(e) {
+  e.preventDefault();
+  var board = $('#kanban-board');
+  board.find('.add-column-button').hide();
+  board.find('.new-column-form').show();
+  board.find('.column-name-input').focus();
+});
+
 
 
 $(document).on('click', '.delete-column-button', function(e) {
@@ -631,10 +644,12 @@ $(document).on('click', '.delete-column-button', function(e) {
 
 
 
-     $('#kanban-board').on('click', '.column-name', function() {
+  $('#kanban-board').on('click', '.column-name', function() {
     var span = $(this);
     var currentName = span.text();
     var columnId = span.data('column-id');
+
+    console.log("ahahahah")
 
     // Criar um campo de input com o nome atual
     var input = $('<input>', {
@@ -691,6 +706,9 @@ $(document).on('click', '.delete-column-button', function(e) {
 
               // Reativar o sortable para a nova coluna
               $(".cards").sortable("refresh");
+
+          
+               
             } else {
               alert('Erro ao criar a coluna: ' + response.message);
             }
@@ -746,6 +764,137 @@ $(document).on('click', '.delete-column-button', function(e) {
  
     }
   });
+
+
+function addTag(tag, containerId, hiddenFieldId) {
+      tag = tag.trim();
+      if (tag === '') return;
+
+      // Verificar se a tag já existe (case-insensitive)
+      var existingTags = $(`#${containerId} .tag-badge`).map(function() {
+        return $(this).data('tag').toLowerCase();
+      }).get();
+
+      if (existingTags.includes(tag.toLowerCase())) {
+        alert('Essa tag já foi adicionada.');
+        return;
+      }
+
+      // Criar o elemento da tag
+      var tagBadge = $(`
+        <span class="tag-badge" data-tag="${tag}">
+          ${tag}
+          <span class="remove-tag">&times;</span>
+        </span>
+      `);
+
+      // Adicionar a tag ao container
+      $(`#${containerId}`).append(tagBadge);
+
+      // Atualizar o campo hidden
+      var currentTags = $(`#${hiddenFieldId}`).val();
+      if (currentTags) {
+        $(`#${hiddenFieldId}`).val(currentTags + ',' + tag);
+      } else {
+        $(`#${hiddenFieldId}`).val(tag);
+      }
+    }
+
+    // Função para remover uma tag
+    function removeTag(tag, containerId, hiddenFieldId) {
+      $(`#${containerId} .tag-badge[data-tag="${tag}"]`).remove();
+
+      // Atualizar o campo hidden
+      var currentTags = $(`#${hiddenFieldId}`).val().split(',');
+      var updatedTags = currentTags.filter(function(t) {
+        return t.trim().toLowerCase() !== tag.trim().toLowerCase();
+      });
+      $(`#${hiddenFieldId}`).val(updatedTags.join(','));
+    }
+
+    // Manipuladores para adicionar tags no formulário de criação
+    $('#tag-input-new').on('keypress', function(e) {
+      if (e.which == 13) { // Tecla Enter
+        e.preventDefault();
+        var tag = $(this).val();
+        addTag(tag, 'tag-container-new', 'card_tags_new');
+        $(this).val('');
+      }
+    });
+
+    // Manipuladores para remover tags no formulário de criação
+    $('#tag-container-new').on('click', '.remove-tag', function() {
+      var tag = $(this).parent().data('tag');
+      removeTag(tag, 'tag-container-new', 'card_tags_new');
+    });
+
+    // Manipuladores para adicionar tags no formulário de edição
+    $('#tag-input-edit').on('keypress', function(e) {
+      if (e.which == 13) { // Tecla Enter
+        e.preventDefault();
+        var tag = $(this).val();
+        addTag(tag, 'tag-container-edit', 'card_tags_edit');
+        $(this).val('');
+      }
+    });
+
+    // Manipuladores para remover tags no formulário de edição
+    $('#tag-container-edit').on('click', '.remove-tag', function() {
+      var tag = $(this).parent().data('tag');
+      removeTag(tag, 'tag-container-edit', 'card_tags_edit');
+    });
+
+  // Manipulador para o botão de excluir o board
+  $('#delete-board-button').on('click', function(e) {
+    e.preventDefault();
+
+
+    if (confirm('Tem certeza que deseja excluir este board? Todas as colunas e cards associados também serão excluídos.')) {
+      var boardId = $('#kanban-board').data('board-id');
+    
+      // Enviar requisição AJAX para excluir o board
+      $.ajax({
+        url: '/boards/' + boardId,
+        method: 'DELETE',
+        success: function(response) {
+          if (response.success) {
+            window.location.href = '/';  // Redireciona para a página inicial após a exclusão
+          } else {
+            alert('Erro ao excluir o board: ' + response.message);
+          }
+        },
+        error: function() {
+          alert('Erro ao excluir o board. Por favor, tente novamente.');
+        }
+      });
+    }
+  });
+// Handler para o botão de duplicar o board
+$('#duplicate-board-button').on('click', function(e) {
+  e.preventDefault();
+
+  if (confirm('Tem certeza que deseja duplicar este board? As colunas serão duplicadas, mas os cards não.')) {
+    var boardId = $('#kanban-board').data('board-id');
+
+    // Enviar requisição AJAX para duplicar o board
+    $.ajax({
+      url: '/boards/' + boardId + '/duplicate',
+      method: 'POST',
+      success: function(response) {
+        if (response.success) {
+          // Redirecionar para o novo board após a duplicação
+          window.location.href = '/boards/' + response.new_board_id;
+        } else {
+          alert('Erro ao duplicar o board: ' + response.message);
+        }
+      },
+      error: function() {
+        alert('Erro ao duplicar o board. Por favor, tente novamente.');
+      }
+    });
+  }
+});
+
 
 
   });

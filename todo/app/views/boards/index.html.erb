@@ -111,13 +111,20 @@
 
 <div class="board-container">
   <!-- Card para Adicionar Novo Board -->
-  <div class="board-card new-board-card">
-    <%= link_to new_board_path, class: 'board-link' do %>
+    <div class="board-card new-board-card" id="add-board-button">
       <div class="card-body">
         <i class="bi bi-plus-lg" aria-label="Adicionar Novo Board"></i>
       </div>
-    <% end %>
-  </div>
+    </div>
+
+    <!-- Formulário oculto para adicionar um novo board -->
+    <div class="new-board-form" style="display: none;">
+      <%= form_with(model: Board.new, url: boards_path, html: { class: 'create-board-form' }) do |form| %>
+        <div class="field mb-3">
+          <%= form.text_field :title, placeholder: "Nome do novo board", class: 'form-control board-title-input', required: true %>
+        </div>
+      <% end %>
+    </div>
 
   <!-- Cards dos Boards Existentes -->
   <% @boards.each do |board| %>
@@ -194,6 +201,81 @@
 </div>
 <!-- Scripts JavaScript -->
 <script>
+ $.ajaxSetup({
+    headers: {
+      'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content')
+    }
+  });
+
+  $(document).ready(function() {
+
+    // Mostrar o formulário de novo board ao clicar no botão
+$('#add-board-button').on('click', function(e) {
+  e.preventDefault();
+  var $this = $(this);
+  var $form = $('.new-board-form');
+  
+  $this.hide();
+  $form.show().insertAfter($this);
+  $form.find('.board-title-input').focus();
+});
+
+// Fechar o formulário ao clicar fora
+$(document).on('click', function(e) {
+  var $target = $(e.target);
+  if (!$target.closest('.new-board-form').length && !$target.closest('#add-board-button').length) {
+    $('.new-board-form').hide();
+    $('#add-board-button').show();
+  }
+});
+
+// Submeter o formulário ao pressionar Enter
+$(document).on('keypress', '.board-title-input', function(e) {
+  if (e.which == 13) { // Código da tecla Enter
+    e.preventDefault();
+    var $form = $(this).closest('form');
+    var boardTitle = $(this).val();
+
+    // Enviar requisição AJAX para criar o board
+    $.ajax({
+      url: $form.attr('action'),
+      method: 'POST',
+      data: $form.serialize(),
+      dataType: 'json',
+      success: function(response) {
+        if (response.success) {
+          // Criar o novo card do board
+          var newBoardCard = $(`
+            <div class="board-card">
+              <a href="/boards/${response.board.id}" class="board-link">
+                <div class="card-body">
+                  <h5 class="card-title">${response.board.title}</h5>
+                </div>
+              </a>
+            </div>
+          `).hide();
+          
+          // Inserir o novo board após o botão de adicionar
+          $('#add-board-button').after(newBoardCard);
+          newBoardCard.fadeIn(300);
+
+          // Limpar e esconder o formulário
+          $form.find('.board-title-input').val('');
+          $form.closest('.new-board-form').hide();
+          $('#add-board-button').show();
+        } else {
+          alert('Erro ao criar o board: ' + response.message);
+        }
+      },
+      error: function() {
+        alert('Erro ao criar o board. Por favor, tente novamente.');
+      }
+    });
+  }
+});
+
+  });
+
 document.addEventListener('DOMContentLoaded', function() {
 
    // Função para Redirecionar ao Clicar nos Quadrados do Gráfico

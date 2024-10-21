@@ -1,43 +1,290 @@
-<h2>Edit <%= resource_name.to_s.humanize %></h2>
+<!-<!-- app/views/devise/registrations/edit.html.erb -->
+<div style="background-color: #22272B; color: #eee; min-height: 100vh; padding: 40px;">
+  <h2 style="text-align: center; margin-bottom: 40px;">Editar Perfil</h2>
 
-<%= form_for(resource, as: resource_name, url: registration_path(resource_name), html: { method: :put }) do |f| %>
-  <%= render "devise/shared/error_messages", resource: resource %>
+  <form action="#" method="post" enctype="multipart/form-data">
+    <!-- Seção Superior: Foto do Usuário e Nome -->
+    <div style="display: flex; align-items: center; margin-bottom: 40px;">
+      <div style="position: relative; margin-right: 30px;">
+        <!-- Avatar do Usuário -->
+        <img src="default_avatar.png" alt="Avatar" class="avatar-image" style="width: 150px; height: 150px; border-radius: 50%; object-fit: cover;">
 
-  <div class="field">
-    <%= f.label :email %><br />
-    <%= f.email_field :email, autofocus: true, autocomplete: "email" %>
-  </div>
+        <!-- Ícone de Editar Foto -->
+        <label for="avatar-upload" class="edit-avatar-overlay" style="
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 150px;
+          height: 150px;
+          border-radius: 50%;
+          background: rgba(0, 0, 0, 0.5);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          opacity: 0;
+          transition: opacity 0.3s ease;
+          cursor: pointer;
+        ">
+          <i class="bi bi-pencil-square" style="color: #eee; font-size: 24px;"></i>
+        </label>
+        <input type="file" id="avatar-upload" name="avatar" style="display: none;">
+      </div>
+      <div>
+        <h3>Nome do Usuário</h3>
+        <p>email@exemplo.com</p>
+      </div>
+    </div>
 
-  <% if devise_mapping.confirmable? && resource.pending_reconfirmation? %>
-    <div>Currently waiting confirmation for: <%= resource.unconfirmed_email %></div>
-  <% end %>
+    <!-- Separador -->
+    <hr style="border-top: 1px solid #eee; margin-bottom: 40px;">
 
-  <div class="field">
-    <%= f.label :password %> <i>(leave blank if you don't want to change it)</i><br />
-    <%= f.password_field :password, autocomplete: "new-password" %>
-    <% if @minimum_password_length %>
-      <br />
-      <em><%= @minimum_password_length %> characters minimum</em>
-    <% end %>
-  </div>
+    <!-- Configurações dos Boards -->
+    <div style="margin-bottom: 40px;">
+      <h4>Configurações dos Boards</h4>
+      <div class="form-check form-switch mb-3">
+        <input class="form-check-input" type="checkbox" id="show_recent_boards">
+        <label class="form-check-label" for="show_recent_boards">Mostrar últimos acessados</label>
+      </div>
+      <div class="form-check form-switch mb-3">
+        <input class="form-check-input" type="checkbox" id="show_popular_boards">
+        <label class="form-check-label" for="show_popular_boards">Mostrar mais acessados</label>
+      </div>
+      <div class="form-check form-switch mb-3">
+        <input class="form-check-input" type="checkbox" id="show_daily_board">
+        <label class="form-check-label" for="show_daily_board">Mostrar board diário</label>
+      </div>
+    </div>
 
-  <div class="field">
-    <%= f.label :password_confirmation %><br />
-    <%= f.password_field :password_confirmation, autocomplete: "new-password" %>
-  </div>
+    <!-- Separador -->
+    <hr style="border-top: 1px solid #eee; margin-bottom: 40px;">
 
-  <div class="field">
-    <%= f.label :current_password %> <i>(we need your current password to confirm your changes)</i><br />
-    <%= f.password_field :current_password, autocomplete: "current-password" %>
-  </div>
+    <!-- Configurações dos Cards -->
+    <div style="margin-bottom: 40px;">
+      <h4>Configurações dos Cards</h4>
+      <div class="form-check form-switch mb-3">
+        <input class="form-check-input" type="checkbox" id="show_priority">
+        <label class="form-check-label" for="show_priority">Mostrar prioridade</label>
+      </div>
+      <div class="form-check form-switch mb-3">
+        <input class="form-check-input" type="checkbox" id="show_due_date">
+        <label class="form-check-label" for="show_due_date">Mostrar data de vencimento</label>
+      </div>
+      <div class="form-check form-switch mb-3">
+        <input class="form-check-input" type="checkbox" id="show_mood">
+        <label class="form-check-label" for="show_mood">Mostrar humor</label>
+      </div>
+    </div>
 
-  <div class="actions">
-    <%= f.submit "Update" %>
-  </div>
-<% end %>
+    <!-- Separador -->
+    <hr style="border-top: 1px solid #eee; margin-bottom: 40px;">
 
-<h3>Cancel my account</h3>
+    <!-- Campos de Nome e Email -->
+    <div style="display: flex; flex-direction: column; gap: 20px; margin-bottom: 40px;">
+      <!-- Nome -->
+      <div>
+        <label for="name" class="form-label" style="display: block; margin-bottom: 5px;">Nome</label>
+        <input type="text" id="name" name="name" class="form-control" style="
+          background-color: #333;
+          color: #eee;
+          border: 1px solid #555;
+          padding: 10px;
+          width: 100%;
+          border-radius: 5px;
+        " placeholder="Digite seu nome">
+      </div>
 
-<div>Unhappy? <%= button_to "Cancel my account", registration_path(resource_name), data: { confirm: "Are you sure?", turbo_confirm: "Are you sure?" }, method: :delete %></div>
+      <!-- Email (não editável) -->
+      <div>
+        <label for="email" class="form-label" style="display: block; margin-bottom: 5px;">Email</label>
+        <input type="email" id="email" name="email" class="form-control" readonly style="
+          background-color: #333;
+          color: #eee;
+          border: 1px solid #555;
+          padding: 10px;
+          width: 100%;
+          border-radius: 5px;
+        " value="email@exemplo.com">
+      </div>
 
-<%= link_to "Back", :back %>
+      <!-- Outro Campo de Nome (Exemplo) -->
+      <div>
+        <label for="username" class="form-label" style="display: block; margin-bottom: 5px;">Nome de Usuário</label>
+        <input type="text" id="username" name="username" class="form-control" style="
+          background-color: #333;
+          color: #eee;
+          border: 1px solid #555;
+          padding: 10px;
+          width: 100%;
+          border-radius: 5px;
+        " placeholder="Digite seu nome de usuário">
+      </div>
+    </div>
+
+    <!-- Seletor de Humor (Categorias com Moods) -->
+    <div class="mood-selection mb-4" id="mood-selection" style="display: flex; flex-direction: column; gap: 15px;">
+      <h5>Qual tema para escolher o humor que você deseja?</h5>
+      
+      <!-- Categoria: Gretchen -->
+      <div class="mood-category" style="margin-bottom: 20px;">
+        <h6>Gretchen</h6>
+        <div class="moods-container" style="display: flex; gap: 10px;">
+          <!-- Mood Item 1: Bom -->
+          <div class="mood-item selected" data-mood-id="1" data-category="Gretchen" style="
+            cursor: pointer;
+            position: relative;
+            text-align: center;
+          ">
+            <img src="https://via.placeholder.com/50" alt="Bom" class="mood-image" style="
+              width: 50px;
+              height: 50px;
+              border-radius: 50%;
+              object-fit: cover;
+            ">
+            <p class="mood-name" style="margin-top: 5px;">Bom</p>
+            <span style="position: absolute; top: 5px; right: 5px; color: #eee;">
+              <i class="bi bi-check-circle"></i>
+            </span>
+          </div>
+          <!-- Mood Item 2: Excelente -->
+          <div class="mood-item" data-mood-id="2" data-category="Gretchen" style="
+            cursor: pointer;
+            position: relative;
+            text-align: center;
+          ">
+            <img src="https://via.placeholder.com/50" alt="Excelente" class="mood-image" style="
+              width: 50px;
+              height: 50px;
+              border-radius: 50%;
+              object-fit: cover;
+            ">
+            <p class="mood-name" style="margin-top: 5px;">Excelente</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Categoria: Shrek -->
+      <div class="mood-category" style="margin-bottom: 20px;">
+        <h6>Shrek</h6>
+        <div class="moods-container" style="display: flex; gap: 10px;">
+          <!-- Mood Item 3: Bom -->
+          <div class="mood-item" data-mood-id="3" data-category="Shrek" style="
+            cursor: pointer;
+            position: relative;
+            text-align: center;
+          ">
+            <img src="https://via.placeholder.com/50" alt="Bom" class="mood-image" style="
+              width: 50px;
+              height: 50px;
+              border-radius: 50%;
+              object-fit: cover;
+            ">
+            <p class="mood-name" style="margin-top: 5px;">Bom</p>
+          </div>
+          <!-- Mood Item 4: Excelente -->
+          <div class="mood-item" data-mood-id="4" data-category="Shrek" style="
+            cursor: pointer;
+            position: relative;
+            text-align: center;
+          ">
+            <img src="https://via.placeholder.com/50" alt="Excelente" class="mood-image" style="
+              width: 50px;
+              height: 50px;
+              border-radius: 50%;
+              object-fit: cover;
+            ">
+            <p class="mood-name" style="margin-top: 5px;">Excelente</p>
+            <span style="position: absolute; top: 5px; right: 5px; color: #eee;">
+              <i class="bi bi-check-circle"></i>
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <input type="hidden" id="selected_mood_id" name="selected_mood_id" value="1">
+    </div>
+
+    <!-- Botões de Ação -->
+    <div class="actions" style="display: flex; gap: 20px;">
+      <button type="submit" class="btn btn-primary" style="
+        background-color: #4CAF50;
+        color: #eee;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 5px;
+        cursor: pointer;
+      ">Atualizar</button>
+      <button type="button" class="btn btn-danger" style="
+        background-color: #f44336;
+        color: #eee;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 5px;
+        cursor: pointer;
+      " onclick="confirm('Tem certeza que deseja cancelar sua conta?') && location.href='#'">Cancelar minha conta</button>
+    </div>
+  </form>
+
+  <!-- CSS Personalizado -->
+  <style>
+    /* Hover na foto para mostrar o ícone de edição */
+    .avatar-image:hover + .edit-avatar-overlay {
+      opacity: 1;
+    }
+
+    /* Estilos para os switches */
+    .form-check-input {
+      width: 2em;
+      height: 1em;
+    }
+
+    /* Seletor de Humor */
+    .mood-item.selected {
+      border: 2px solid #00ff00;
+      border-radius: 50%;
+    }
+
+    .mood-item:hover {
+      opacity: 0.8;
+    }
+  </style>
+
+  <!-- JavaScript para Interatividade -->
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <!-- Bootstrap Icons -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+  <script>
+    $(document).ready(function() {
+      // Interação para editar a foto de perfil
+      $('#avatar-upload').on('change', function() {
+        var file = this.files[0];
+        if (file) {
+          var reader = new FileReader();
+          reader.onload = function(e) {
+            $('.avatar-image').attr('src', e.target.result);
+            alert('Foto de perfil atualizada!');
+          }
+          reader.readAsDataURL(file);
+        }
+      });
+
+      // Interação para seleção de humor
+      $('.mood-item').on('click', function() {
+        // Remove a classe 'selected' de todos os humores
+        $('.mood-item').removeClass('selected');
+        // Adiciona a classe 'selected' ao humor clicado
+        $(this).addClass('selected');
+        // Atualiza o valor do campo hidden com o ID do humor selecionado
+        var selectedMoodId = $(this).data('mood-id');
+        $('#selected_mood_id').val(selectedMoodId);
+      });
+
+      // Submit do formulário de humor (simulado)
+      $('#mood-selection').on('submit', function(e) {
+        e.preventDefault();
+        var selectedMoodId = $('#selected_mood_id').val();
+        alert('Humor selecionado: ' + selectedMoodId);
+        // Aqui você pode adicionar a lógica para enviar via AJAX
+      });
+    });
+  </script>
+</div>

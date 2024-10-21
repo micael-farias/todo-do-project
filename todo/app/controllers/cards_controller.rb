@@ -7,6 +7,7 @@ class CardsController < ApplicationController
       @card = @board_item.cards.new(card_params)
       @card.completed = @card.board_item_id == (@card.board_item.board.board_items.order(:position).last).id
       @card.completed_at = Time.current
+      @card.priority = 0
 
       if @card.save
         #AssignMoodJob.perform_later(@card.id)
@@ -14,7 +15,7 @@ class CardsController < ApplicationController
   
         last_board_item = @card.board_item.board.board_items.order(:position).last
         card_in_last_column = params[:board_item_id].to_i == last_board_item.id
-
+          Rails.logger.info "Como voce sabe que vou consegur #{params[:board_item_id]}-#{last_board_item.id} #{card_in_last_column}"
         # Renderizar a partial como string
         rendered_card = render_to_string(
           partial: 'card', 
@@ -35,7 +36,7 @@ class CardsController < ApplicationController
     
     def edit
       respond_to do |format|
-        format.json { render json: @card }
+        format.json { render json: @card.to_json(include: :tags) }
         format.html # se você tiver uma view HTML para edit
       end
     end
@@ -73,7 +74,7 @@ end
     def destroy
       @card = @board_item.cards.find(params[:id])
       @card.destroy
-      redirect_to @board_item.board, notice: 'Card excluído com sucesso.'
+      #redirect_to @board_item.board, notice: 'Card excluído com sucesso.'
     end
   
     def move
@@ -151,7 +152,7 @@ end
       params.require(:card).permit(:title, :description, :mood_id, :due_date, :priority, tags: [])
     end
 
-    def set_card
+    def set_card  
       Rails.logger.info params
       
       @card = Card.find(params[:id])

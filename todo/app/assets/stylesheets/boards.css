@@ -151,6 +151,10 @@
     width: 100%;
   }
 
+  #kanban-board::-webkit-scrollbar {
+    display: none; /* Para Chrome, Safari e Edge */
+  }
+
   .column {
     background-color: #f4f5f7;
     border-radius: 10px;
@@ -219,8 +223,36 @@
   border-radius: 5px;
   text-align: center;
   cursor: pointer;
+  display: flex;
+  align-items: center;  /* Alinha o ícone e o texto verticalmente */
+  justify-content: center; /* Centraliza o conteúdo horizontalmente */
+}
+.add-column-text {
+  text-decoration: none;  /* Remove o sublinhado */
+  font-style: normal;     /* Remove o itálico */
 }
 
+.new-column i {
+  margin-right: 8px; /* Espaçamento entre o ícone e o texto */
+}
+
+.tag-badge {
+  background-color: #6c757d;
+  color: white;
+  padding: 5px 10px;
+  border-radius: 15px;
+  font-size: 0.85em;
+  display: inline-flex;
+  align-items: center;
+  margin-right: 5px;
+  margin-bottom: 5px;
+}
+
+.tag-badge .remove-tag {
+  margin-left: 8px;
+  cursor: pointer;
+  font-weight: bold;
+}
 .add-column-button .new-column:hover {
   background-color: #181C1F;
 }

@@ -2,8 +2,40 @@
 class BoardsController < ApplicationController
   before_action :authenticate_user!
 
+  def destroy
+    @board = current_user.boards.find(params[:id])
+
+    if @board.destroy
+      respond_to do |format|
+        format.json { render json: { success: true }, status: :ok }
+      end
+    else
+      respond_to do |format|
+        format.json { render json: { success: false, message: @board.errors.full_messages.join(", ") }, status: :unprocessable_entity }
+      end
+    end
+  end
+
+  def duplicate
+    original_board = Board.find(params[:id])
+    new_board = original_board.dup # Duplica o board original
+    new_board.title = "#{original_board.title} - Cópia" # Adiciona "- Cópia" ao título
+
+    if new_board.save
+      # Duplica as colunas (BoardItems) sem os cards
+      original_board.board_items.each do |item|
+        new_board.board_items.create(name: item.name, position: item.position)
+      end
+  
+      render json: { success: true, new_board_id: new_board.id }
+    else
+      render json: { success: false, message: 'Erro ao duplicar o board.' }
+    end
+  end
+  
+
   def index
-    @boards = current_user.boards
+    @boards = current_user.boards.order(created_at: :desc)
     @last_accessed_boards = current_user.boards.order(last_access: :desc)
     @today = Time.current
     @daily_board = current_user.boards.where("title LIKE ?", "%Board Diário%").first
@@ -70,12 +102,12 @@ class BoardsController < ApplicationController
 
   def create
     @board = current_user.boards.new(board_params)
-    @board.priority = 0
-    
-    if @board.save
-      redirect_to @board, notice: 'Board criado com sucesso.'
-    else
-      render :new
+    respond_to do |format|
+      if @board.save
+        format.json { render json: { success: true, board: @board }, status: :created }
+      else
+        format.json { render json: { success: false, message: @board.errors.full_messages.join(", ") }, status: :unprocessable_entity }
+      end
     end
   end
 
@@ -114,12 +146,18 @@ class BoardsController < ApplicationController
   end
 
   def fetch_daily_board_cards(board, moods)
-    # Busca os cards que não estão completos e com a data de vencimento entre hoje e 3 dias a partir de hoje
-    cards = Card.joins(board_item: :board)
-                .where(boards: { user_id: current_user.id })
-                .where("cards.completed = false AND (cards.due_date BETWEEN ? AND ?)", Date.today, 3.days.from_now)
+    # Define o intervalo de datas para vencimento
+    today = Date.today
+    three_days_from_now = 3.days.from_now.to_date
   
-    # Se houver humores informados pelo usuário, pegar também os cards desses humores e dos humores próximos
+    # 1. Buscar os cards que estão se vencendo mais próximos (entre hoje e 3 dias)
+    cards_due_soon = Card.joins(board_item: :board)
+                         .where(boards: { user_id: current_user.id })
+                         .where(completed: false)
+                         .where(due_date: today..three_days_from_now)
+                         .order(due_date: :asc, priority: :desc)
+  
+    # 2. Buscar os cards que pertencem aos humores selecionados, excluindo os cards já encontrados
     if moods.present?
       mood_ids = moods.pluck(:id).map do |mood_id|
         case mood_id
@@ -128,7 +166,7 @@ class BoardsController < ApplicationController
         when 2
           [1, 2, 3] # Humor 2 (atual) e próximos humores 1 e 3
         when 3
-          [2, 3, 4] # Humor 3 (atual) e próximos humores 2 e 4
+          [1, 2, 3, 4, 5] # Humor 3 (atual) e próximos humores 2 e 4
         when 4
           [3, 4, 5] # Humor 4 (atual) e próximos humores 3 e 5
         when 5
@@ -138,37 +176,36 @@ class BoardsController < ApplicationController
         end
       end.flatten.uniq
   
-      # Adiciona também os cards filtrados pelos humores do usuário e os próximos
+      # Excluir os cards já retornados na busca de "vencimento próximo"
       cards_by_mood = Card.joins(board_item: :board)
                           .where(boards: { user_id: current_user.id })
-                          .where("cards.completed = false AND cards.mood_id IN (?)", mood_ids)
-      
-      # Unindo os dois conjuntos de cards (de humor e de vencimento próximo) sem duplicação
-      cards = cards.or(cards_by_mood)
+                          .where(completed: false, mood_id: mood_ids)
+                          .where.not(id: cards_due_soon.pluck(:id))
+                          .order(priority: :desc)
+    else
+      cards_by_mood = Card.none
     end
   
-    Rails.logger.info "Cards retornados (combinação de humor e vencimento próximo):"
-    cards.each do |card|
-      Rails.logger.info "Card ID: #{card.id}, Título: #{card.title}, Due Date: #{card.due_date}, Humor: #{card.mood&.name}, Prioridade: #{card.priority}"
-    end
+    # 3. Buscar o restante dos cards que não foram concluídos e ainda não estão nas listas anteriores
+    remaining_cards = Card.joins(board_item: :board)
+                          .where(boards: { user_id: current_user.id })
+                          .where(completed: false)
+                          .where.not(id: cards_due_soon.pluck(:id) + cards_by_mood.pluck(:id))
+                          .order(priority: :desc)
   
-    # Se não encontrar nenhum card nas condições anteriores, buscar os incompletos ordenados por prioridade
-    if cards.empty?
-      Rails.logger.info "Nenhuma tarefa encontrada com vencimento próximo e humores correspondentes. Buscando outras tarefas por prioridade."
-      
-      cards = Card.joins(board_item: :board)
-                  .where(boards: { user_id: current_user.id })
-                  .where(completed: false)
-                  .order(priority: :desc) # Ordena pela prioridade, maior valor vem primeiro
-    end
+    # Combinar todos os resultados em um único conjunto de cards
+    final_cards = cards_due_soon + cards_by_mood + remaining_cards
   
+    # Log para depuração
     Rails.logger.info "Cards finais retornados:"
-    cards.each do |card|
+    final_cards.each do |card|
       Rails.logger.info "Card ID: #{card.id}, Título: #{card.title}, Due Date: #{card.due_date}, Humor: #{card.mood&.name}, Prioridade: #{card.priority}"
     end
   
-    cards
+    final_cards
   end
+  
+  
   
   
 end

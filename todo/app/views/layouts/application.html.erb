@@ -19,7 +19,21 @@
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
- 
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Bootstrap JS (necessário para modals) -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Scripts necessários -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <!-- Inclua o jQuery UI para o sortable -->
+    <script src="https://code.jquery.com/ui/1.13.1/jquery-ui.min.js"></script>
+
+    <!-- Opcional: Inclua ícones do Bootstrap se ainda não estiverem incluídos -->
+
+
+
     <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
     <%= javascript_importmap_tags %>
     <%= javascript_include_tag "//www.google.com/jsapi", "chartkick" %>
@@ -42,39 +56,42 @@
         <!-- Adicione links de navegação adicionais aqui, se necessário -->
       </ul>
       <!-- Seção de saudação e imagem do usuário com dropdown -->
+      <%if current_user != nil%>
       <div class="d-flex align-items-center">
         <span class="text-white me-2">Vamos trabalhar Michael! <%= current_user.name %></span>
 
         <!-- Dropdown para o avatar -->
         <div class="dropdown">
           <a href="#" class="d-flex align-items-center" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-            <%= image_tag('default_avatar.png', 
-                        class: 'rounded-circle', 
-                        alt: 'Usuário', 
-                        width: '40', 
-                        height: '40') %>
+            <% if current_user.avatar.attached? %>
+              <%= image_tag current_user.avatar.variant(resize_to_limit: [40, 40]), class: 'rounded-circle' %>
+            <% else %>
+              <%= image_tag 'default_avatar.png', class: 'rounded-circle', alt: 'Usuário', width: '40', height: '40' %>
+            <% end %>
+
           </a>
           <ul class="dropdown-menu dropdown-menu-end custom-dropdown-menu" aria-labelledby="userDropdown">
-          <li>
-            <a class="dropdown-item" href="#" style="color:white">
+            <li>  
+            <a class="dropdown-item" href="<%= edit_user_registration_path %>" style="color:white">
               <i class="bi bi-gear me-2"></i> Configurações
             </a>
-          </li>
-          <li>
-            <a class="dropdown-item" href="#" style="color:white">
-              <i class="bi bi-person me-2"></i> Perfil
-            </a>
-          </li>
-          <li><hr class="dropdown-divider"></li>
-          <li>
-            <%= link_to destroy_user_session_path, method: :delete, class: 'dropdown-item', style: 'color:white' do %>
-              <i class="bi bi-box-arrow-right me-2"></i> Sair
-            <% end %>
-          </li>
-        </ul>
+            </li>
+            <li>
+              <a class="dropdown-item" href="#" style="color:white">
+                <i class="bi bi-person me-2"></i> Perfil
+              </a>
+            </li>
+            <li><hr class="dropdown-divider"></li>
+            <li>
+              <%= link_to destroy_user_session_path, method: :delete, class: 'dropdown-item', style: 'color:white' do %>
+                <i class="bi bi-box-arrow-right me-2"></i> Sair
+              <% end %>
+            </li>
+          </ul>
 
         </div>
       </div>
+      <%end%>
     </div>
   </div>
 </nav>

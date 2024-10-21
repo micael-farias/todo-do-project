@@ -5,7 +5,8 @@ class BoardItemsController < ApplicationController
     def create
       @board = Board.find(params[:board_id])
       @board_item = @board.board_items.new(board_item_params)
-  
+      @board_item.position = @board.board_items.size      
+
       if @board_item.save
         render json: { 
           success: true, 

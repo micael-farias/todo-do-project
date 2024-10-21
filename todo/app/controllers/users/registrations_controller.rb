@@ -1,6 +1,14 @@
 class Users::RegistrationsController < Devise::RegistrationsController
-    # Outros métodos já existentes...
-  
+    before_action :configure_permitted_parameters, only: [:create, :update]
+
+    protected
+
+    # Adicione os parâmetros permitidos
+    def configure_permitted_parameters
+      devise_parameter_sanitizer.permit(:sign_up, keys: [:name, :avatar])
+      devise_parameter_sanitizer.permit(:account_update, keys: [:name, :avatar])
+    end  
+    
     def update_mood
       @user = current_user
       mood = Mood.find(params[:mood_id])

@@ -13,6 +13,7 @@ class User < ApplicationRecord
   # Associações Indiretas para BoardItems e Cards
   has_many :board_items, through: :boards
   has_many :cards, through: :board_items
+  has_one_attached :avatar
 
   def initialize_user_moods
     Mood.find_each do |mood|
