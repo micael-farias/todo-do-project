@@ -8,7 +8,7 @@
       <h2>Hoje queremos gerar seu quadro de tarefas diário baseado no seu humor. Em uma escala <%= mood_category.name %>, como você está hoje?</h2>
       <%= form_with url: create_daily_board_boards_path, method: :post, remote: true, html: { id: 'daily-board-form' } do |f| %>
       <div class="moods-container">
-         <% theme_moods = ThemeMood.where(mood_category_id: mood_category.id).limit(5) %>
+         <% theme_moods = ThemeMood.where(mood_category_id: mood_category.id).order(:mood_id) %>
          <% theme_moods.each do |theme_mood| %>
          <% user_mood = current_user.user_moods.find_by(mood_id: theme_mood.mood_id) %>       
          <div class="mood-item <%= 'selected' if user_mood&.active %>" data-mood-id="<%= theme_mood.mood_id %>">
@@ -28,6 +28,7 @@
       <% end %>
    </div>
    <div style="height: 20px" id="mood-message-above-section"></div>
+   
    <div class="mood-message-section" style="position: relative; background-color: black; <%= 'display: none;' if @has_mood_today %>" id="mood-message-section">
       <!-- Atualiza o título com base no humor atual -->
       <h3 id="selected-mood-text">Sua Análise de Humor: <%= @active_mood.present? ? @active_mood.mood.name : "Nenhum humor selecionado ainda" %></h3>
@@ -36,7 +37,7 @@
          <div style="display: flex; flex-direction: column; align-items: flex-start;">
             <!-- Atualiza a imagem com base no humor atual -->
             <div style="position: relative; width: 250px; height: 250px; overflow: hidden; border-radius: 20px;">
-               <img id="mood-image" src="<%= @active_mood.image_url || 'https://via.placeholder.com/250' %>" alt="Imagem de Humor" style="width: 100%; height: 100%; object-fit: cover; border-radius: 20px;">
+               <img id="mood-image" src="<%= @active_mood.present? ?   @active_mood.image_url : 'https://via.placeholder.com/250' %>" alt="Imagem de Humor" style="width: 100%; height: 100%; object-fit: cover; border-radius: 20px;">
             </div>
          </div>
          <!-- Linha vertical branca separando -->
@@ -45,8 +46,15 @@
          <div style="display: flex; flex-direction: column; justify-content: center;">
             <!-- Atualiza a mensagem com base no humor atual -->
             <p id="mood-message" style="font-size: 18px; color: #333;">
-               <%= @active_mood.message || "Texto falando algo sobre o humor atual. Aqui você pode descrever o que o humor selecionado significa ou fornecer detalhes adicionais." %>
+               <%= @random_message.present? ? @random_message.message : "Texto falando algo sobre o humor atual. Aqui você pode descrever o que o humor selecionado significa ou fornecer detalhes adicionais." %>
+            
             </p>
+            <%= link_to board_path(@daily_board), class: 'board-link' do %>
+            <u>
+               Vamos ver seu board diário? Clique aqui
+            </u>
+        <% end %>
+
          </div>
       </div>
       <% end %>
@@ -132,8 +140,9 @@
       <% end %>
    </div>
    <!-- Seção do Board Diário -->
-   <% if current_user.show_daily_board && current_user.cards.exists?%>
+   <% if current_user.show_daily_board && current_user.cards.exists? && @daily_board.present?%>
    <h2 style="margin-left: 20px;">Board diário - <%= Date.today.strftime('%d/%m') %></h2>
+   
    <!-- Mensagem Informativa com Link para Editar Humor -->
    <div class="edit-mood-message alert alert-info d-flex align-items-center" role="alert" style="margin-bottom: 20px;">
       <span>
@@ -143,11 +152,13 @@
    <div class="board-container">
       <!-- Card do Board Diário Existente -->
       <div class="board-card">
+
          <%= link_to board_path(@daily_board), class: 'board-link' do %>
          <div class="card-body">
             <h5 class="card-title"><%= @daily_board.title %></h5>
          </div>
          <% end %>
+
       </div>
    </div>
    <% end %>
@@ -350,7 +361,7 @@ document.addEventListener('DOMContentLoaded', function() {
         .then(response => response.json())
         .then(data => {
           if (data.success) {
-              console.log('Humor atualizado com sucesso');
+              console.log(data);
 
               // Verifica se os dados de theme_mood foram retornados
               if (data.theme_mood) {

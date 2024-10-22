@@ -17,9 +17,15 @@ class User < ApplicationRecord
   has_many :parameters, dependent: :destroy
 
   def initialize_user_moods
-    Mood.find_each do |mood|
-      self.user_moods.create(mood: mood, active: false) # Define `active` conforme necessário
-    end
+    # Mood.find_each do |mood|
+     # self.user_moods.create(mood: mood, active: false) # Define `active` conforme necessário
+    #end
+
+    daily_board = self.boards.create(title: "Board Diário", active: false)
+
+    # Criar as duas colunas: To Do e Done
+    todo_column = daily_board.board_items.create(name: 'To Do', position: 1)
+    done_column = daily_board.board_items.create(name: 'Done', position: 2)
   end
 
   def active_theme_mood

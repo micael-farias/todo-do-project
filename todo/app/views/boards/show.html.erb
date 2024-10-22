@@ -6,13 +6,17 @@
   <!-- Ícone de duplicar board ao lado do botão de exclusão -->
   <div>
     
+         <% unless @board.title.include?('Board Diário') %>
 
   <button id="delete-board-button" title="Excluir board" class="btn btn-link" style="float: right; color: white;; margin-right: 10px;">
     <i class="bi bi-trash"></i>
   </button>
+  
   <button id="duplicate-board-button" title="Duplicar board" class="btn btn-link" style="float: right; color: white">
     <i class="bi bi-files"></i>
   </button>
+
+  <%end%>
   </div>
 
 </h2>
@@ -59,7 +63,7 @@
           <% end %>
           <!-- Segunda Coluna: Todos os cards finalizados hoje -->
           <% elsif @board.board_items.second == item %>
-          <% Card.where(completed_at: Date.today.all_day).each do |card| %>
+          <% Card.where(completed_at: Date.today.all_day, completed: true).each do |card| %>
           <%= render 'cards/card', 
               card: card, 
               due_info: card.completed_at.strftime('%d/%m/%Y %H:%M'), 
@@ -471,7 +475,7 @@
           card.fadeIn(300);
           card.removeClass('processing-card');
           // Remover os botões de concluir e editar, já que está na última coluna
-          card.find('.complete-card-button, .edit-card-button').hide();
+          card.find('.complete-card-button').hide();
         });
         console.log('Card concluído e movido com sucesso.');
 

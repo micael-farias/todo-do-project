@@ -1,10 +1,9 @@
 # app/controllers/boards_controller.rb
 class BoardsController < ApplicationController
   before_action :authenticate_user!
+  before_action :set_board, only:[:destroy, :duplicate]
 
   def destroy
-    @board = current_user.boards.find(params[:id])
-
     if @board.destroy
       respond_to do |format|
         format.json { render json: { success: true }, status: :ok }
@@ -17,13 +16,11 @@ class BoardsController < ApplicationController
   end
 
   def duplicate
-    original_board = Board.find(params[:id])
-    new_board = original_board.dup # Duplica o board original
-    new_board.title = "#{original_board.title} - Cópia" # Adiciona "- Cópia" ao título
+    new_board = @board.dup 
+    new_board.title = "#{@board.title} - Cópia" 
 
     if new_board.save
-      # Duplica as colunas (BoardItems) sem os cards
-      original_board.board_items.each do |item|
+      @board.board_items.each do |item|
         new_board.board_items.create(name: item.name, position: item.position)
       end
   
@@ -33,14 +30,13 @@ class BoardsController < ApplicationController
     end
   end
   
-
   def index
     @boards = current_user.boards.where(active: true).order(created_at: :desc)
     @last_accessed_boards = current_user.boards.where(active: true).order(last_access: :desc)
     @today = Time.current
-    @daily_board = current_user.boards.where("title LIKE ?", "%Board Diário%").first
+    @daily_board = current_user.boards.where("title LIKE ?", "%Board Diário%").first 
     @active_mood = current_user.active_theme_mood
-    Rails.logger.info "Mooscsassadds: #{@active_mood.to_json}"
+    @random_message = @active_mood.theme_mood_messages.order("RANDOM()").first if @active_mood.present?
 
     
     @user_moods_today = current_user.user_moods.where(updated_at: @today.beginning_of_day..@today.end_of_day, active: true)
@@ -114,7 +110,7 @@ class BoardsController < ApplicationController
   
     if daily_board.nil?
       # Criar um novo board diário
-      daily_board = current_user.boards.create(title: "Board Diário - #{Date.today.strftime('%d/%m/%Y')}")
+      daily_board = current_user.boards.create(title: "Board Diário")
   
       # Criar as duas colunas: To Do e Done
       todo_column = daily_board.board_items.create(name: 'To Do', priority: 1)
@@ -134,6 +130,10 @@ class BoardsController < ApplicationController
   # Outras ações (edit, update, destroy) podem ser adicionadas aqui
 
   private
+
+  def set_board
+    @board = current_user.boards.find(params[:id])
+  end
 
   def board_params
     params.require(:board).permit(

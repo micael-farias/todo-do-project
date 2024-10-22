@@ -4,7 +4,6 @@ Rails.application.routes.draw do
 
   # Redirecionar para a tela de login para usuários não autenticados
   devise_scope :user do
-    patch 'users/update_mood', to: 'users/registrations#update_mood'
     get '/users/sign_out' => 'devise/sessions#destroy'     
 
     unauthenticated do

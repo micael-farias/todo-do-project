@@ -31,12 +31,17 @@ class UserMoodsController < ApplicationController
       current_user.user_moods.update_all(active: false)
       user_mood = current_user.user_moods.find_or_initialize_by(mood_id: selected_mood_id)
       user_mood.active = true
+
+      daily_board = current_user.boards.where("title LIKE ?", "%Board Diário%").first
+      unless daily_board.active
+        daily_board.update(active: true)
+      end
     
       if user_mood.save
         # Busca o theme_mood correspondente
         theme_mood = ThemeMood.find_by(mood_id: selected_mood_id, mood_category_id: current_user.mood_category_id)
     
-        render json: { success: true, theme_mood: { image_url: theme_mood.image_url, message: theme_mood.message } }
+        render json: { success: true, theme_mood: { image_url: theme_mood.image_url, message: theme_mood.theme_mood_messages.order("RANDOM()").first.message  } }
       else
         render json: { success: false, error: user_mood.errors.full_messages.join(", ") }
       end

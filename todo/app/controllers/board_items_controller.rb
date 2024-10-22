@@ -1,11 +1,12 @@
 # app/controllers/board_items_controller.rb
 class BoardItemsController < ApplicationController
-    before_action :set_board
-  
+    before_action :set_board, only: [:create, :update, :destroy]
+    before_action :set_board_item, only: [:update, :destroy]  
+
     def create
-      @board = Board.find(params[:board_id])
       @board_item = @board.board_items.new(board_item_params)
-      @board_item.position = @board.board_items.size      
+      last_position = @board.board_items.maximum(:position) || 1
+      @board_item.position = last_position + 1
 
       if @board_item.save
         render json: { 
@@ -18,8 +19,6 @@ class BoardItemsController < ApplicationController
     end
     
     def update
-      @board_item = @board.board_items.find(params[:id])
-
       if @board_item.update(board_item_params)
         respond_to do |format|
           format.html { redirect_to @board, notice: 'Coluna atualizada com sucesso.' }
@@ -34,8 +33,6 @@ class BoardItemsController < ApplicationController
     end
   
     def destroy
-      @board_item = @board.board_items.find(params[:id])
-
       if @board_item.destroy
         render json: { success: true }
       else
@@ -47,8 +44,12 @@ class BoardItemsController < ApplicationController
   
     def set_board
       @board = current_user.boards.find(params[:board_id])
+    end  
+
+    def set_board_item
+      @board_item = @board.board_items.find(params[:id])
     end
-  
+
     def board_item_params
       params.require(:board_item).permit(:name)
     end

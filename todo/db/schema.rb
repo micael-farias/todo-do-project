@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2024_10_22_031147) do
+ActiveRecord::Schema[7.2].define(version: 2024_10_22_114103) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -130,6 +130,14 @@ ActiveRecord::Schema[7.2].define(version: 2024_10_22_031147) do
     t.index ["card_id"], name: "index_tags_on_card_id"
   end
 
+  create_table "theme_mood_messages", force: :cascade do |t|
+    t.bigint "theme_mood_id", null: false
+    t.text "message", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["theme_mood_id"], name: "index_theme_mood_messages_on_theme_mood_id"
+  end
+
   create_table "theme_moods", force: :cascade do |t|
     t.bigint "mood_category_id", null: false
     t.bigint "mood_id", null: false
@@ -173,15 +181,13 @@ ActiveRecord::Schema[7.2].define(version: 2024_10_22_031147) do
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
-  add_foreign_key "board_cards", "boards"
   add_foreign_key "board_cards", "cards"
   add_foreign_key "board_item_tags", "board_items"
-  add_foreign_key "board_items", "boards"
-  add_foreign_key "boards", "users"
   add_foreign_key "cards", "board_items"
   add_foreign_key "cards", "moods"
   add_foreign_key "parameters", "users"
   add_foreign_key "tags", "cards"
+  add_foreign_key "theme_mood_messages", "theme_moods"
   add_foreign_key "theme_moods", "mood_categories"
   add_foreign_key "theme_moods", "moods"
   add_foreign_key "user_moods", "moods"
