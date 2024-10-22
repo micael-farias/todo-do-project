@@ -1,0 +1,49 @@
+<% if current_user.cards.exists? %>
+  <h2 style="margin-left: 20px; padding-top: 20px; padding-bottom: 20px;">Atividade de Cards - Intervalo 30 dias</h2>
+  <div class="cards-graph-content" id="cards-graph-content">
+    <div class="cards-graph-section mb-5">
+      <div class="graph-dates">
+        <span class="start-date"><%= @first_card_date.strftime('%d/%m/%Y') %></span>
+        <span class="end-date"><%= @last_card_date.strftime('%d/%m/%Y') %></span>
+      </div>
+      <div class="cards-graph">
+        <% @cards_by_date.each do |day| %>
+          <div class="graph-day" title="<%= day[:date].strftime('%d/%m/%Y') %>">
+            <% day[:cards].each do |card| %>
+              <% if card.present? %>
+                <div 
+                  class="graph-square priority-<%= card.priority || 0 %> <%= 'completed' if card.completed %>" 
+                  title="<%= card.title %>" 
+                  data-board-id="<%= card.board_item.board_id %>"
+                  data-card-id="<%= card.id %>"
+                ></div>
+              <% else %>
+                <div class="graph-square empty"></div>
+              <% end %>
+            <% end %>
+          </div>
+        <% end %>
+      </div>
+      
+      <!-- Legenda de Prioridades -->
+      <div class="priority-legend mt-4">
+        <div class="legend-items">
+          <span>Menor Prioridade</span>
+          <div class="legend-item">
+            <div class="graph-square priority-0 completed" title="Não informada"></div>
+          </div>
+          <div class="legend-item">
+            <div class="graph-square priority-1 completed" title="Baixa"></div>
+          </div>
+          <div class="legend-item">
+            <div class="graph-square priority-2 completed" title="Média"></div>
+          </div>
+          <div class="legend-item">
+            <div class="graph-square priority-3 completed" title="Alta"></div>
+          </div>
+          <span>Maior Prioridade</span>
+        </div>
+      </div>
+    </div>
+  </div>
+<% end %>

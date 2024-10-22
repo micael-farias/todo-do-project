@@ -1,2 +1,0 @@
-class BoardItemTag < ApplicationRecord
-end

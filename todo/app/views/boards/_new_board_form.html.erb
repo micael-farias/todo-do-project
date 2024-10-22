@@ -1,0 +1,5 @@
+<%= form_with(model: Board.new, url: boards_path, html: { class: 'create-board-form' }) do |form| %>
+  <div class="field mb-3">
+    <%= form.text_field :title, placeholder: "Nome do novo board", class: 'form-control board-title-input', required: true %>
+  </div>
+<% end %>

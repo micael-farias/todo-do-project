@@ -8,6 +8,15 @@ import "bootstrap"
 import Sortable from 'sortablejs';
 import "chartkick/chart.js"
 import "./custom/card_edit"
+import 'jquery';
+import './boards/ajax_setup';
+import './boards/board_form';
+import './boards/cards_graph';
+import './boards/mood_selection';
+import './boards/mood_message';
+import './boards/mood_update';
+
+console.log("aquiiiiiiiiii")
 document.addEventListener('turbo:load', () => {
   const lists = document.querySelectorAll('.cards');
 

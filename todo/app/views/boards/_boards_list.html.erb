@@ -1,0 +1,17 @@
+<h2 style="margin-left: 20px;">Boards</h2>
+<div class="board-container">
+  <!-- Card para Adicionar Novo Board -->
+  <div class="board-card new-board-card" id="add-board-button">
+    <div class="card-body">
+      <i class="bi bi-plus-lg" aria-label="Adicionar Novo Board"></i>
+    </div>
+  </div>
+  
+  <!-- Formulário oculto para adicionar um novo board -->
+  <div class="new-board-form" style="display: none;">
+    <%= render 'new_board_form' %>
+  </div>
+  
+  <!-- Cards dos Boards Existentes -->
+  <%= render partial: 'board_card', collection: @boards, as: :board %>
+</div>

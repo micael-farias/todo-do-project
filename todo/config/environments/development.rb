@@ -38,7 +38,7 @@ Rails.application.configure do
     authentication: "plain",
     enable_starttls_auto: true,
     user_name: "quixalert@gmail.com",  # Defina isso nas variáveis de ambiente
-    password: "mcktfmfqaqxnlyua"    # Defina isso nas variáveis de ambiente
+    password: "mcktf"    # Defina isso nas variáveis de ambiente
   }
   config.action_mailer.raise_delivery_errors = true
   config.action_mailer.perform_deliveries = true

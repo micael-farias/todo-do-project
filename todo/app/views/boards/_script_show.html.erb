@@ -1,0 +1,670 @@
+
+<script>
+  // Configurar AJAX para incluir o token CSRF
+  $.ajaxSetup({
+    headers: {
+      'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content')
+    }
+  });
+
+  $(document).ready(function() {
+    // Configuração otimizada do sortable
+ $(".cards").sortable({
+    connectWith: ".cards",
+    placeholder: "card-placeholder",
+    cursor: "move",
+    revert: 300,  // Tempo de reversão para 300ms
+    delay: 0,     // Pequeno atraso antes de iniciar o drag
+    tolerance: "pointer",
+    helper: "clone",  // Usa um clone como helper
+    opacity: 0.8,     // Item arrastado levemente transparente
+    start: function(e, ui) {
+      ui.placeholder.height(ui.item.height());
+      ui.helper.css('z-index', 100);
+    },
+    stop: function(e, ui) {
+      ui.item.css('transform', '');
+    },
+    update: function(event, ui) {
+      if (this === ui.item.parent()[0]) {
+        var cardId = ui.item.data('card-id');
+        var newPosition = ui.item.index();
+        var newBoardItemId = ui.item.closest('.column').data('board-item-id');
+        var boardId = $('#kanban-board').data('board-id');
+        var moveUrl = '/boards/' + boardId + '/board_items/' + newBoardItemId + '/cards/' + cardId + '/move';
+
+        $.ajax({
+          url: moveUrl,
+          method: 'PATCH',
+          data: {
+            position: newPosition + 1,
+            board_item_id: newBoardItemId
+          },
+          success: function() {
+            console.log('Card movido com sucesso.');
+            var lastColumnId = $('.column').last().data('board-item-id');
+            console.log("oh nooo")
+            if (newBoardItemId == lastColumnId) {
+              // Ocultar os botões de concluir e editar
+              ui.item.find('.complete-card-button').hide();
+            } else {
+              // Mostrar os botões de concluir e editar
+              ui.item.find('.complete-card-button').show();
+            }
+          },
+          error: function() {
+            alert('Erro ao mover o card.');
+          }
+        });
+      }
+    }
+  }).disableSelection();
+
+    // Delegação de eventos para abrir a modal ao clicar no botão de editar
+    $('#kanban-board').on('click', '.edit-card-button', function(e) {
+      e.stopPropagation(); // Evita que o evento de clique seja propagado para o card
+      var button = $(this);
+      var card = button.closest('.card');
+      var cardId = card.data('card-id');
+      var boardId = $('#kanban-board').data('board-id');
+      var boardItemId = card.closest('.column').data('board-item-id');
+      openEditCardModal(cardId, boardId, boardItemId);
+    });
+
+    // Função para abrir a modal e carregar os dados do card
+    function openEditCardModal(cardId, boardId, boardItemId) {
+      var modal = new bootstrap.Modal(document.getElementById('editCardModal'));
+      var form = $('#edit-card-form');
+
+      // Atualizar a URL do formulário
+      form.attr('action', `/boards/${boardId}/board_items/${boardItemId}/cards/${cardId}`);
+      // Limpar as tags existentes no container
+      $('#tag-container-edit').empty();
+      $('#card_tags_edit').val('');
+
+      // Carregar os dados do card via AJAX
+      $.ajax({
+        url: `/boards/${boardId}/board_items/${boardItemId}/cards/${cardId}/edit`,
+        method: 'GET',
+        dataType: 'json',
+        success: function(data) {
+          console.log('Dados recebidos para edição:', data);
+          form.find('#card_title').val(data.title);
+          form.find('#card_description').val(data.description);
+          form.find('#card_mood_id').val(data.mood_id || '');
+          form.find('#card_due_date').val(data.due_date ? data.due_date.split('T')[0] : '');
+          form.find('#card_priority').val(data.priority || '');
+              
+          // Preencher o campo de tags com as tags existentes
+             // Preencher as tags existentes
+          if (data.tags && data.tags.length > 0) {
+            data.tags.forEach(function(tag) {
+              addTag(tag.name, 'tag-container-edit', 'card_tags_edit');
+            });
+          }
+
+          modal.show();
+        },
+        error: function(jqXHR, textStatus, errorThrown) {
+          console.error('Erro ao carregar dados do card:', textStatus, errorThrown);
+          alert('Erro ao carregar dados do card: ' + textStatus);
+        }
+      });
+    }
+
+
+    // Enviar formulário de edição via AJAX
+    $('#edit-card-form').on('submit', function(e) {
+      e.preventDefault();
+      var form = $(this);
+      var formData = form.serialize();
+
+      $.ajax({
+        url: form.attr('action'),
+        method: 'PATCH',
+        data: formData,
+        dataType: 'json',
+        success: function(data) {
+          console.log(data)
+          if (data.success) {
+  // Atualizar o card na interface
+  var card = $(`.card[data-card-id="${data.card.id}"]`);
+      const user = data.user;
+
+  // Atualizar o conteúdo do card, refletindo a nova estrutura
+              card.html(`
+                <!-- Círculo azul no canto superior com prioridade -->
+                <div class="blue-circle" style="background-color: 
+                  ${data.card.priority == 3 ? '#00042E' : data.card.priority == 2 ? '#12155E' : data.card.priority == 1 ? '#36487A' : '#6f6f6f'};"
+                  title="${data.card.priority == 3 ? 'Prioridade Alta' : data.card.priority == 2 ? 'Prioridade Média' : data.card.priority == 1 ? 'Prioridade Baixa' : 'Sem Prioridade'}">
+                </div>
+
+                <!-- Conteúdo do Cartão -->
+                <div class="card-content">
+                  <h4 class="card-title">
+                    <span class="title-text">${data.card.title}</span>
+                  </h4>
+
+                  <div class="card-info">
+                    ${user.show_card_mood ? `<p><strong>Humor pra realizar:</strong> ${data.card.mood ? data.card.mood.name : 'Não definido'}</p>` : ''}
+                    ${data.card.due_date && user.show_card_due_date ? `<p><strong>Vencimento:</strong> ${new Date(data.card.due_date).toLocaleDateString()}</p>` : ''}
+                    ${data.card.priority != null && data.card.priority !== 0 && user.show_card_priority ? `<p><strong>Prioridade:</strong> ${['Baixa', 'Média', 'Alta'][data.card.priority] || 'Não definida'}</p>` : ''}
+                  </div>
+
+                  <!-- Tags -->
+                  ${data.card.tags.length > 0 ? `
+                    <div class="tags mt-2">
+                      ${data.card.tags.map(tag => `<span class="custom-badge">${tag.name}</span>`).join('')}
+                    </div>` : ''}
+                </div>
+
+                <!-- Ações do Cartão -->
+                <div class="card-actions">
+                  ${data.is_last_column ? '' : `
+                    <button class="complete-card-button" title="Concluir">
+                      <i class="bi bi-check-circle" style="color: white;"></i>
+                    </button>
+                  `}
+                  <button class="edit-card-button" title="Editar">
+                    <i class="bi bi-pencil-square" style="color: white;"></i>
+                  </button>
+                  <button class="delete-card-button" title="Excluir">
+                    <i class="bi bi-trash" style="color: white;"></i>
+                  </button>
+                </div>
+              `);
+
+              // Fechar a modal
+              var modalInstance = bootstrap.Modal.getInstance(document.getElementById('editCardModal'));
+              modalInstance.hide();
+            } else {
+              alert('Erro ao atualizar o card: ' + data.message);
+            }
+
+        },
+        error: function() {
+          alert('Erro ao atualizar o card. Por favor, tente novamente.');
+        }
+      });
+    });
+
+    // Handler para o botão de concluir// Handler para o botão de concluir
+  $(document).on('click', '.complete-card-button', function(e) {
+    e.stopPropagation(); // Evita que o evento de clique seja propagado para outros handlers
+    var button = $(this);
+    var card = button.closest('.card');
+    var lastColumn = $('.column').last();
+    var lastColumnId = lastColumn.data('board-item-id');
+    var boardId = $('#kanban-board').data('board-id');
+    var cardId = card.data('card-id');
+
+    // Adicionar a classe para reduzir a opacidade
+    card.addClass('processing-card');
+
+    // Construir a URL para a rota move
+    var moveUrl = '/boards/' + boardId + '/board_items/' + lastColumnId + '/cards/' + cardId + '/move';
+
+    // Calcular a posição final na última coluna
+    var newPosition = lastColumn.find('.card').not('.new-card').length + 1;
+
+    // Criar uma cópia do card para animação
+    var cardClone = card.clone();
+    cardClone.css({
+      position: 'absolute',
+      top: card.offset().top,
+      left: card.offset().left,
+      width: card.width(),
+      zIndex: 1000
+    });
+    $('body').append(cardClone);
+
+    // Obter a posição do destino
+    var targetPosition = lastColumn.find('.cards').offset();
+
+    // Animar a cópia do card até a última coluna
+    cardClone.animate({
+      top: targetPosition.top,
+      left: targetPosition.left,
+      width: lastColumn.find('.cards').width()
+    }, 500, function() {
+      cardClone.remove(); // Remove a cópia após a animação
+    });
+
+    // Enviar a requisição AJAX para mover o card no servidor
+    $.ajax({
+      url: moveUrl,
+      method: 'PATCH',
+      data: {
+        board_item_id: lastColumnId,
+        position: newPosition
+      },
+      success: function() {
+        // Remover o card da posição original e adicioná-lo à última coluna
+        card.fadeOut(300, function() {
+          card.remove();
+          lastColumn.find('.cards').append(card);
+          card.fadeIn(300);
+          card.removeClass('processing-card');
+          // Remover os botões de concluir e editar, já que está na última coluna
+          card.find('.complete-card-button').hide();
+        });
+        console.log('Card concluído e movido com sucesso.');
+
+      },
+      error: function() {
+        // Remover a classe de processamento em caso de erro
+        card.removeClass('processing-card');
+        alert('Erro ao concluir o card.');
+      }
+    });
+  });
+
+
+
+    // Mostrar o formulário de novo card ao clicar no botão
+    $('.show-new-card-form').on('click', function(e) {
+      e.preventDefault();
+      var column = $(this).closest('.column');
+      column.find('.add-card-button').hide();
+      column.find('.new-card-form').show();
+      column.find('.card-title-input').focus();
+    });
+
+// Submeter o formulário ao pressionar Enter
+  $(document).on('keypress', '.card-title-input', function(e) {
+    if (e.which == 13) { // Código da tecla Enter
+      e.preventDefault();
+      var form = $(this).closest('form');
+      var column = form.closest('.column');
+      var columnId = column.data('board-item-id');
+      var cardTitle = $(this).val();
+
+      // Enviar requisição AJAX para criar o card
+      $.ajax({
+        url: form.attr('action'),
+        method: 'POST',
+        data: form.serialize(),
+        dataType: 'json',
+        success: function(response) {
+          if (response.success) {
+            // Inserir o HTML do cartão renderizado
+            var newCard = $(response.rendered_card).hide(); // Esconder inicialmente para aplicar o fade in
+            
+            // Adicionar o novo card à última posição da coluna e aplicar fade in
+            column.find('.cards').append(newCard);
+            newCard.fadeIn(300);
+
+            // Limpar e esconder o formulário
+            form.find('.card-title-input').val('');
+            form.closest('.new-card-form').hide();
+            column.find('.add-card-button').show();
+
+            // Reativar o sortable (se estiver usando jQuery UI Sortable ou similar)
+            $(".cards").sortable("refresh");
+              setTimeout(() => {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }, 100);
+          } else {
+            alert('Erro ao criar o card: ' + response.message);
+          }
+        },
+        error: function() {
+          alert('Erro ao criar o card. Por favor, tente novamente.');
+        }
+      });
+    }
+  });
+
+    // Fechar o formulário ao clicar fora
+    $(document).on('click', function(e) {
+      var target = $(e.target);
+      if (!target.closest('.new-card-form').length && !target.closest('.show-new-card-form').length) {
+        $('.new-card-form').hide();
+        $('.add-card-button').show();
+      }
+    });
+
+
+
+ $('.show-new-column-form').on('click', function(e) {
+    e.preventDefault();
+    var board = $('#kanban-board');
+    board.find('.add-column-button').hide();
+    board.find('.new-column-form').show();
+    board.find('.column-name-input').focus();
+  });
+
+
+$(document).on('click', '.delete-column-button', function(e) {
+    e.stopPropagation(); // Evita que o evento de clique seja propagado para outros handlers
+
+    var button = $(this);
+    var columnId = button.data('column-id');
+    var column = button.closest('.column');
+
+    // Verificar se a coluna contém cards
+    var hasCards = column.find('.card').length > 0;
+    var confirmationMessage = hasCards ? 
+      'Esta coluna contém cards. Ao excluir a coluna, todos os cards também serão excluídos. Deseja continuar?' : 
+      'Tem certeza que deseja excluir esta coluna?';
+
+    if (confirm(confirmationMessage)) {
+      var boardId = $('#kanban-board').data('board-id');
+      var deleteUrl = '/boards/' + boardId + '/board_items/' + columnId;
+
+      $.ajax({
+        url: deleteUrl,
+        method: 'DELETE',
+        success: function(response) {
+          if (response.success) {
+            // Remover a coluna do DOM com efeito de fadeOut
+            column.fadeOut(300, function() {
+              $(this).remove();
+            });
+          } else {
+            alert('Erro ao excluir a coluna: ' + response.message);
+          }
+        },
+        error: function() {
+          alert('Erro ao excluir a coluna. Por favor, tente novamente.');
+        }
+      });
+    }
+  });
+
+
+  // Fechar o formulário de nova coluna ao clicar fora
+  $(document).on('click', function(e) {
+    var target = $(e.target);
+    if (!target.closest('.new-column-form').length && !target.closest('.show-new-column-form').length) {
+      $('.new-column-form').hide();
+      $('.add-column-button').show();
+    }
+  });
+
+
+
+
+
+
+    // Handler para o botão de excluir
+    $(document).on('click', '.delete-card-button', function(e) {
+      e.stopPropagation();
+      var card = $(this).closest('.card');
+      var cardId = card.data('card-id');
+      var boardItemId = card.closest('.column').data('board-item-id');
+      var boardId = $('#kanban-board').data('board-id');
+
+      if (confirm('Tem certeza que deseja excluir este card?')) {
+        $.ajax({
+          url: `/boards/${boardId}/board_items/${boardItemId}/cards/${cardId}`,
+          method: 'DELETE',
+          success: function() {
+            card.fadeOut(300, function() {
+              card.remove();
+              console.log('Card excluído com sucesso.');
+            });
+          },
+          error: function() {
+            alert('Erro ao excluir o card.');
+          }
+        });
+      }
+    });
+
+
+
+
+
+  $('#kanban-board').on('click', '.column-name', function() {
+    var span = $(this);
+    var currentName = span.text();
+    var columnId = span.data('column-id');
+
+    // Criar um campo de input com o nome atual
+    var input = $('<input>', {
+      type: 'text',
+      class: 'form-control column-name-input',
+      value: currentName
+    });
+
+    // Substituir o span pelo input
+    span.replaceWith(input);
+    input.focus();
+
+    // Selecionar o texto no input
+    input.select();
+  });
+
+  // Handler para salvar o nome da coluna ao pressionar Enter
+  $('#kanban-board').on('keypress', '.column-name-input', function(e) {
+    if (e.which == 13) { // Tecla Enter
+      e.preventDefault();
+      var input = $(this);
+      var newName = input.val().trim();
+      var columnId = input.closest('.column').data('board-item-id');
+      var form = $(this).closest('form');
+      var board = $('#kanban-board');
+      
+      if (newName === "") {
+        alert('O nome da coluna não pode estar vazio.');
+        return;
+      }
+
+      console.log(columnId)
+
+      if(columnId == undefined){
+        // Enviar requisição AJAX para criar a coluna
+        $.ajax({
+          url: form.attr('action'),
+          method: 'POST',
+          data: form.serialize(),
+          dataType: 'json',
+          success: function(response) {
+            if (response.success) {
+              // Criar a nova coluna ocultamente para aplicar o fade in
+              var newColumn = $(response.rendered_column).hide();
+
+              // Inserir a nova coluna antes do botão de adicionar coluna
+              board.find('.add-column-button').before(newColumn);
+              newColumn.fadeIn(300);
+
+              // Limpar e esconder o formulário
+              form.find('.column-name-input').val('');
+              form.closest('.new-column-form').hide();
+              board.find('.add-column-button').show();
+
+              // Reativar o sortable para a nova coluna
+              //$(".cards").sortable("refresh");
+               location.reload()
+            } else {
+              alert('Erro ao criar a coluna: ' + response.message);
+            }
+          },
+          error: function() {
+            alert('Erro ao criar a coluna. Por favor, tente novamente.');
+          }
+        });
+      }else{
+     // Enviar requisição AJAX para atualizar o nome da coluna
+        $.ajax({
+          url: '/boards/' + $('#kanban-board').data('board-id') + '/board_items/' + columnId,
+          method: 'PATCH',
+          data: {
+            board_item: { name: newName }
+          },
+          dataType: 'json',
+          success: function(response) {
+            if (response.success) {
+              // Atualizar o nome na interface
+               console.log( response.board_item.name)
+             var updatedSpan = $('<span>', {
+                class: 'column-name',
+                'data-column-id': columnId,
+                text: response.board_item.name
+              });
+              console.log(updatedSpan)
+              input.replaceWith(updatedSpan);
+
+            } else {
+              alert('Erro ao atualizar o nome da coluna: ' + response.message);
+              // Reverter para o nome original em caso de erro
+              var revertedSpan = $('<span>', {
+                class: 'column-name',
+                'data-column-id': columnId,
+                text: currentName
+              });
+              input.replaceWith(revertedSpan);
+            }
+          },
+          error: function() {
+            alert('Erro ao atualizar o nome da coluna. Por favor, tente novamente.');
+            // Reverter para o nome original em caso de erro
+            var revertedSpan = $('<span>', {
+              class: 'column-name',
+              'data-column-id': columnId,
+              text: currentName
+            });
+            input.replaceWith(revertedSpan);
+          }
+        });
+      }
+ 
+    }
+  });
+
+
+function addTag(tag, containerId, hiddenFieldId) {
+      tag = tag.trim();
+      if (tag === '') return;
+
+      // Verificar se a tag já existe (case-insensitive)
+      var existingTags = $(`#${containerId} .tag-badge`).map(function() {
+        return $(this).data('tag').toLowerCase();
+      }).get();
+
+      if (existingTags.includes(tag.toLowerCase())) {
+        alert('Essa tag já foi adicionada.');
+        return;
+      }
+
+      // Criar o elemento da tag
+      var tagBadge = $(`
+        <span class="tag-badge" data-tag="${tag}">
+          ${tag}
+          <span class="remove-tag">&times;</span>
+        </span>
+      `);
+
+      // Adicionar a tag ao container
+      $(`#${containerId}`).append(tagBadge);
+
+      // Atualizar o campo hidden
+      var currentTags = $(`#${hiddenFieldId}`).val();
+      if (currentTags) {
+        $(`#${hiddenFieldId}`).val(currentTags + ',' + tag);
+      } else {
+        $(`#${hiddenFieldId}`).val(tag);
+      }
+    }
+
+    // Função para remover uma tag
+    function removeTag(tag, containerId, hiddenFieldId) {
+      $(`#${containerId} .tag-badge[data-tag="${tag}"]`).remove();
+
+      // Atualizar o campo hidden
+      var currentTags = $(`#${hiddenFieldId}`).val().split(',');
+      var updatedTags = currentTags.filter(function(t) {
+        return t.trim().toLowerCase() !== tag.trim().toLowerCase();
+      });
+      $(`#${hiddenFieldId}`).val(updatedTags.join(','));
+    }
+
+    // Manipuladores para adicionar tags no formulário de criação
+    $('#tag-input-new').on('keypress', function(e) {
+      if (e.which == 13) { // Tecla Enter
+        e.preventDefault();
+        var tag = $(this).val();
+        addTag(tag, 'tag-container-new', 'card_tags_new');
+        $(this).val('');
+      }
+    });
+
+    // Manipuladores para remover tags no formulário de criação
+    $('#tag-container-new').on('click', '.remove-tag', function() {
+      var tag = $(this).parent().data('tag');
+      removeTag(tag, 'tag-container-new', 'card_tags_new');
+    });
+
+    // Manipuladores para adicionar tags no formulário de edição
+    $('#tag-input-edit').on('keypress', function(e) {
+      if (e.which == 13) { // Tecla Enter
+        e.preventDefault();
+        var tag = $(this).val();
+        addTag(tag, 'tag-container-edit', 'card_tags_edit');
+        $(this).val('');
+      }
+    });
+
+    // Manipuladores para remover tags no formulário de edição
+    $('#tag-container-edit').on('click', '.remove-tag', function() {
+      var tag = $(this).parent().data('tag');
+      removeTag(tag, 'tag-container-edit', 'card_tags_edit');
+    });
+
+  // Manipulador para o botão de excluir o board
+  $('#delete-board-button').on('click', function(e) {
+    e.preventDefault();
+
+
+    if (confirm('Tem certeza que deseja excluir este board? Todas as colunas e cards associados também serão excluídos.')) {
+      var boardId = $('#kanban-board').data('board-id');
+    
+      // Enviar requisição AJAX para excluir o board
+      $.ajax({
+        url: '/boards/' + boardId,
+        method: 'DELETE',
+        success: function(response) {
+          if (response.success) {
+            window.location.href = '/';  // Redireciona para a página inicial após a exclusão
+          } else {
+            alert('Erro ao excluir o board: ' + response.message);
+          }
+        },
+        error: function() {
+          alert('Erro ao excluir o board. Por favor, tente novamente.');
+        }
+      });
+    }
+  });
+// Handler para o botão de duplicar o board
+$('#duplicate-board-button').on('click', function(e) {
+  e.preventDefault();
+
+  if (confirm('Tem certeza que deseja duplicar este board? As colunas serão duplicadas, mas os cards não.')) {
+    var boardId = $('#kanban-board').data('board-id');
+
+    // Enviar requisição AJAX para duplicar o board
+    $.ajax({
+      url: '/boards/' + boardId + '/duplicate',
+      method: 'POST',
+      success: function(response) {
+        if (response.success) {
+          // Redirecionar para o novo board após a duplicação
+          window.location.href = '/boards/' + response.new_board_id;
+        } else {
+          alert('Erro ao duplicar o board: ' + response.message);
+        }
+      },
+      error: function() {
+        alert('Erro ao duplicar o board. Por favor, tente novamente.');
+      }
+    });
+  }
+});
+
+
+
+  });
+
+</script>

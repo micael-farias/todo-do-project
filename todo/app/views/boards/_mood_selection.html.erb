@@ -1,0 +1,27 @@
+<div class="mood-selection mb-4" id="mood-selection" style="<%= 'display: none;' if @has_mood_today %>">
+  <h2>Como vai, <%= current_user.name %>?</h2>
+  <% mood_category = MoodCategory.find(current_user.mood_category_id) %>
+  <h2>Hoje queremos gerar seu quadro de tarefas diário baseado no seu humor. Em uma escala <%= mood_category.name %>, como você está hoje?</h2>
+  
+  <%= form_with url: create_daily_board_boards_path, method: :post, remote: true, html: { id: 'daily-board-form' } do |f| %>
+    <div class="moods-container">
+      <% theme_moods = ThemeMood.where(mood_category_id: mood_category.id).order(:mood_id) %>
+      <% theme_moods.each do |theme_mood| %>
+        <% user_mood = current_user.user_moods.find_by(mood_id: theme_mood.mood_id) %>
+        <div class="mood-item <%= 'selected' if user_mood&.active %>" data-mood-id="<%= theme_mood.mood_id %>">
+          <img src="<%= theme_mood.image_url %>" alt="<%= theme_mood.mood.name %>" class="mood-image">
+          <p class="mood-name"><%= theme_mood.mood.name %></p>
+        </div>
+      <% end %>
+    </div>
+    <%= hidden_field_tag :selected_mood_id, '', id: 'selected_mood_id' %>
+    
+    <!-- Botão para Gerar o Board Diário -->
+    <div class="generate-board-container">
+      <button class="generate-board-button" id="generate-board-button">
+        <i class="bi bi-chevron-double-down"></i>
+      </button>
+      <div class="generate-board-legend">Clique aqui para salvar seu humor diário</div>
+    </div>
+  <% end %>
+</div>

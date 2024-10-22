@@ -1,0 +1,13 @@
+<!-- app/views/boards/_kanban_board.html.erb -->
+<div style="background-color: #352D78;" id="kanban-board" data-board-id="<%= @board.id %>">
+  <% if @board.board_items.any? %>
+    <% last_column_id = @board.board_items.last.id %> <!-- Identifica o ID da última coluna -->
+    <% @board.board_items.each do |item| %>
+      <%= render 'column', item: item, last_column_id: last_column_id %>
+    <% end %>
+  <% end %>
+  
+  <% unless @board.title.include?('Board Diário') %>
+    <%= render 'new_column_form' %>
+  <% end %>
+</div>

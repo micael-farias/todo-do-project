@@ -1,4 +1,5 @@
 class UserMood < ApplicationRecord
-    belongs_to :user
-    belongs_to :mood
-  end
+  # Associations
+  belongs_to :user
+  belongs_to :mood
+end

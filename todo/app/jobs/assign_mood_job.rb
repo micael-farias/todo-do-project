@@ -10,7 +10,7 @@ class AssignMoodJob < ApplicationJob
       title = card.title
   
       client = OpenAI::Client.new(
-        access_token: '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'     # ID da sua organização
+        access_token: ''     # ID da sua organização
         )
   
       # Construir o prompt para o ChatGPT
