@@ -2,7 +2,7 @@ class Users::RegistrationsController < Devise::RegistrationsController
     before_action :configure_permitted_parameters, only: [:create, :update]
 
     def edit
-      Rails.logger.info "Usuario aqui  #{current_user.show_priority}"
+      Rails.logger.info "Usuario aqui  #{current_user.show_card_priority}"
       @user = current_user # Certifique-se de que o usuário correto está sendo carregado
     end
 
@@ -16,9 +16,9 @@ class Users::RegistrationsController < Devise::RegistrationsController
         :show_recent_boards,
         :show_popular_boards,
         :show_daily_board,
-        :show_priority,
-        :show_due_date,
-        :show_mood,
+        :show_card_priority,
+        :show_card_due_date,
+        :show_card_mood,
         :mood_category_id,
         :name
       ])

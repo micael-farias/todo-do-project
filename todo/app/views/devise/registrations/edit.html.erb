@@ -67,18 +67,18 @@
     <div style="margin-bottom: 40px;">
       <h4>Configurações dos Cards</h4>
       <div class="form-check form-switch mb-3">
-      <% Rails.logger.info "Valor de show_priority: #{resource.show_priority}" %>
-<%= f.check_box :show_priority, class: "form-check-input", id: "show_priority" %>
+      <% Rails.logger.info "Valor de show_card_priority: #{resource.show_card_priority}" %>
+<%= f.check_box :show_card_priority, class: "form-check-input", id: "show_card_priority" %>
 
-        <%= f.label :show_priority, "Mostrar prioridade", class: "form-check-label", for: "show_priority" %>
+        <%= f.label :show_card_priority, "Mostrar prioridade", class: "form-check-label", for: "show_card_priority" %>
       </div>
       <div class="form-check form-switch mb-3">
-        <%= f.check_box :show_due_date, class: "form-check-input", id: "show_due_date" %>
-        <%= f.label :show_due_date, "Mostrar data de vencimento", class: "form-check-label", for: "show_due_date" %>
+        <%= f.check_box :show_card_due_date, class: "form-check-input", id: "show_card_due_date" %>
+        <%= f.label :show_card_due_date, "Mostrar data de vencimento", class: "form-check-label", for: "show_card_due_date" %>
       </div>
       <div class="form-check form-switch mb-3">
-        <%= f.check_box :show_mood, class: "form-check-input", id: "show_mood" %>
-        <%= f.label :show_mood, "Mostrar humor", class: "form-check-label", for: "show_mood" %>
+        <%= f.check_box :show_card_mood, class: "form-check-input", id: "show_card_mood" %>
+        <%= f.label :show_card_mood, "Mostrar humor", class: "form-check-label", for: "show_card_mood" %>
       </div>
     </div>
 
@@ -108,6 +108,7 @@
       <!-- Seletor Visual de Categoria de Humor -->
       <div class="mood-category-selection mb-4" id="mood-category-selection">
         <h5>Selecione uma categoria de humor:</h5>
+        <p>Para poder ter acesso as funcionalidades o board diário deve estar ativo</p>
 
         <!-- Container das Categorias -->
         <div class="mood-categories-container" style="padding-top: 10px">
@@ -211,7 +212,14 @@
     /* Seletor Visual de Categoria de Humor */
     .mood-category-selection h5 {
       color: #eee;
+      margin-bottom: 5px;
+      text-align: center;
+    }
+
+    .mood-category-selection p {
+      color: #7e7e7e;
       margin-bottom: 15px;
+      font-size: 14px;
       text-align: center;
     }
 

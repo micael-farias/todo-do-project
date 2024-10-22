@@ -11,7 +11,6 @@ class CardsController < ApplicationController
 
       if @card.save
         #AssignMoodJob.perform_later(@card.id)
-
   
         last_board_item = @card.board_item.board.board_items.order(:position).last
         card_in_last_column = params[:board_item_id].to_i == last_board_item.id
@@ -59,7 +58,7 @@ def update
     end
 
     respond_to do |format|
-      format.json { render json: { success: true, card: @card.as_json(include: :tags) }, status: :ok }
+      format.json { render json: { success: true, card: @card.as_json(include: :tags), user: current_user.as_json(only: [:show_card_due_date, :show_card_mood, :show_card_priority]) }, status: :ok }
       format.html { redirect_to board_path(@board), notice: 'Card was successfully updated.' }
     end
   else

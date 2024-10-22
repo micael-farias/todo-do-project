@@ -1,209 +1,186 @@
 <!-- app/views/boards/index.html.erb -->
-
 <!-- Seção de Seleção de Humor -->
-<div style="padding-left: 10px">
-
- <div class="mood-selection mb-4" id="mood-selection" style="<%= 'display: none;' if @has_mood_today %>">
-    <h2>Como vai, Michael?</h2>
-    <% mood_category = MoodCategory.find(current_user.mood_category_id) %>
-
-    <h2>Hoje queremos gerar seu quadro de tarefas diário baseado no seu humor. Em uma escala <%= mood_category.name %>, como você está hoje?</h2>
-    
-    <%= form_with url: create_daily_board_boards_path, method: :post, remote: true, html: { id: 'daily-board-form' } do |f| %>
+<div style="margin-left: 20px;">
+   <% if current_user.show_daily_board && current_user.cards.exists? %>
+   <div class="mood-selection mb-4" id="mood-selection" style="<%= 'display: none;' if @has_mood_today %>">
+      <h2>Como vai, Michael?</h2>
+      <% mood_category = MoodCategory.find(current_user.mood_category_id) %>
+      <h2>Hoje queremos gerar seu quadro de tarefas diário baseado no seu humor. Em uma escala <%= mood_category.name %>, como você está hoje?</h2>
+      <%= form_with url: create_daily_board_boards_path, method: :post, remote: true, html: { id: 'daily-board-form' } do |f| %>
       <div class="moods-container">
-        <% theme_moods = ThemeMood.where(mood_category_id: mood_category.id).limit(5) %>
-
-        <% theme_moods.each do |theme_mood| %>
-          <% user_mood = current_user.user_moods.find_by(mood_id: theme_mood.mood_id) %>       
-          <div class="mood-item <%= 'selected' if user_mood&.active %>" data-mood-id="<%= theme_mood.mood_id %>">
+         <% theme_moods = ThemeMood.where(mood_category_id: mood_category.id).limit(5) %>
+         <% theme_moods.each do |theme_mood| %>
+         <% user_mood = current_user.user_moods.find_by(mood_id: theme_mood.mood_id) %>       
+         <div class="mood-item <%= 'selected' if user_mood&.active %>" data-mood-id="<%= theme_mood.mood_id %>">
             <img src="<%=theme_mood.image_url%>" alt="<%= theme_mood.mood.name %>" class="mood-image">
             <p class="mood-name"><%= theme_mood.mood.name %></p>
-          </div>
-        <% end %>
+         </div>
+         <% end %>
       </div>
       <%= hidden_field_tag :selected_mood_id, '', id: 'selected_mood_id' %>
       <!-- Botão para Gerar o Board Diário -->
       <div class="generate-board-container">
-        <button class="generate-board-button" id="generate-board-button">
-          <i class="bi bi-chevron-double-down"></i>
-        </button>
-        <div class="generate-board-legend">Clique aqui para salvar seu humor diário</div>
+         <button class="generate-board-button" id="generate-board-button">
+         <i class="bi bi-chevron-double-down"></i>
+         </button>
+         <div class="generate-board-legend">Clique aqui para salvar seu humor diário</div>
       </div>
-    <% end %>
-  </div>
-  <div style="height: 20px" id="mood-message-above-section"></div>
-  <div class="mood-message-section" style="position: relative; background-color: black; <%= 'display: none;' if @has_mood_today %>" id="mood-message-section">
- <!-- Atualiza o título com base no humor atual -->
-<h3 id="selected-mood-text">Sua Análise de Humor: <%= @active_mood.present? ? @active_mood.mood.name : "Nenhum humor selecionado ainda" %></h3>
+      <% end %>
+   </div>
+   <div style="height: 20px" id="mood-message-above-section"></div>
+   <div class="mood-message-section" style="position: relative; background-color: black; <%= 'display: none;' if @has_mood_today %>" id="mood-message-section">
+      <!-- Atualiza o título com base no humor atual -->
+      <h3 id="selected-mood-text">Sua Análise de Humor: <%= @active_mood.present? ? @active_mood.mood.name : "Nenhum humor selecionado ainda" %></h3>
+      <div style="display: flex; align-items: flex-start; justify-content: center;">
+         <!-- Primeira coluna: Análise de Humor e Imagem -->
+         <div style="display: flex; flex-direction: column; align-items: flex-start;">
+            <!-- Atualiza a imagem com base no humor atual -->
+            <div style="position: relative; width: 250px; height: 250px; overflow: hidden; border-radius: 20px;">
+               <img id="mood-image" src="<%= @active_mood.image_url || 'https://via.placeholder.com/250' %>" alt="Imagem de Humor" style="width: 100%; height: 100%; object-fit: cover; border-radius: 20px;">
+            </div>
+         </div>
+         <!-- Linha vertical branca separando -->
+         <div style="width: 2px; height: 250px; background-color: white; margin: 0 20px;"></div>
+         <!-- Segunda coluna: Texto explicando o humor -->
+         <div style="display: flex; flex-direction: column; justify-content: center;">
+            <!-- Atualiza a mensagem com base no humor atual -->
+            <p id="mood-message" style="font-size: 18px; color: #333;">
+               <%= @active_mood.message || "Texto falando algo sobre o humor atual. Aqui você pode descrever o que o humor selecionado significa ou fornecer detalhes adicionais." %>
+            </p>
+         </div>
+      </div>
+      <% end %>
+   </div>
+   <!-- Seção do Gráfico de Cards (Board Diário) -->
+      <% if current_user.cards.exists? %>
 
-<div style="display: flex; align-items: flex-start; justify-content: center;">
-  <!-- Primeira coluna: Análise de Humor e Imagem -->
-  <div style="display: flex; flex-direction: column; align-items: flex-start;">
-    <!-- Atualiza a imagem com base no humor atual -->
-    <div style="position: relative; width: 250px; height: 250px; overflow: hidden; border-radius: 20px;">
-      <img id="mood-image" src="<%= @active_mood.image_url || 'https://via.placeholder.com/250' %>" alt="Imagem de Humor" style="width: 100%; height: 100%; object-fit: cover; border-radius: 20px;">
-    </div>
-  </div>
-
-  <!-- Linha vertical branca separando -->
-  <div style="width: 2px; height: 250px; background-color: white; margin: 0 20px;"></div>
-
-  <!-- Segunda coluna: Texto explicando o humor -->
-  <div style="display: flex; flex-direction: column; justify-content: center;">
-    <!-- Atualiza a mensagem com base no humor atual -->
-    <p id="mood-message" style="font-size: 18px; color: #333;">
-      <%= @active_mood.message || "Texto falando algo sobre o humor atual. Aqui você pode descrever o que o humor selecionado significa ou fornecer detalhes adicionais." %>
-    </p>
-  </div>
-</div>
-
-</div>
-
-
-
- 
-
-<!-- Seção do Gráfico de Cards (Board Diário) -->
-<h2 style="padding-top: 20px; padding-bottom: 20px;">Atividade de Cards - Intervalo 30 dias</h2>
-
-<div class="cards-graph-content" id="cards-graph-content">
-  <div class="cards-graph-section mb-5">
-    <div class="graph-dates">
-      <span class="start-date"><%= @first_card_date.strftime('%d/%m/%Y') %> </span>
-      <span class="end-date"><%= @last_card_date.strftime('%d/%m/%Y') %></span>
-    </div>
-    <div class="cards-graph">
-      <% @cards_by_date.each do |day| %>
-        <div class="graph-day" title="<%= day[:date].strftime('%d/%m/%Y') %>">
-          <% day[:cards].each do |card| %>
-            <% if card.present? %>
-              <div 
-                class="graph-square priority-<%= card.priority || 0 %> <%= 'completed' if card.completed %>" 
-                title="<%= card.title %>" 
-                data-board-id="<%= card.board_item.board_id %>"
-                data-card-id="<%= card.id %>"
-              ></div>
-            <% else %>
-              <div class="graph-square empty"></div>
+   <h2 style="margin-left: 20px;padding-top: 20px; padding-bottom: 20px;">Atividade de Cards - Intervalo 30 dias</h2>
+   <div class="cards-graph-content" id="cards-graph-content">
+      <div class="cards-graph-section mb-5">
+         <div class="graph-dates">
+            <span class="start-date"><%= @first_card_date.strftime('%d/%m/%Y') %> </span>
+            <span class="end-date"><%= @last_card_date.strftime('%d/%m/%Y') %></span>
+         </div>
+         <div class="cards-graph">
+            <% @cards_by_date.each do |day| %>
+            <div class="graph-day" title="<%= day[:date].strftime('%d/%m/%Y') %>">
+               <% day[:cards].each do |card| %>
+               <% if card.present? %>
+               <div 
+                  class="graph-square priority-<%= card.priority || 0 %> <%= 'completed' if card.completed %>" 
+                  title="<%= card.title %>" 
+                  data-board-id="<%= card.board_item.board_id %>"
+                  data-card-id="<%= card.id %>"
+                  ></div>
+               <% else %>
+               <div class="graph-square empty"></div>
+               <% end %>
+               <% end %>
+            </div>
             <% end %>
-          <% end %>
-        </div>
-      <% end %>
-    </div>
-    <!-- Legenda de Prioridades -->
-    <div class="priority-legend mt-4">
-      <div class="legend-items">
-        <span>Menor Prioridade</span>
-        <div class="legend-item">
-          <div class="graph-square priority-0 completed" title="Não informada"></div>
-        </div>
-        <div class="legend-item">
-          <div class="graph-square priority-1 completed" title="Baixa"></div>
-        </div>
-        <div class="legend-item">
-          <div class="graph-square priority-2 completed" title="Média"></div>
-        </div>
-        <div class="legend-item">
-          <div class="graph-square priority-3 completed" title="Alta"></div>
-        </div>
-        <span>Maior Prioridade</span>
+         </div>
+         <!-- Legenda de Prioridades -->
+         <div class="priority-legend mt-4">
+            <div class="legend-items">
+               <span>Menor Prioridade</span>
+               <div class="legend-item">
+                  <div class="graph-square priority-0 completed" title="Não informada"></div>
+               </div>
+               <div class="legend-item">
+                  <div class="graph-square priority-1 completed" title="Baixa"></div>
+               </div>
+               <div class="legend-item">
+                  <div class="graph-square priority-2 completed" title="Média"></div>
+               </div>
+               <div class="legend-item">
+                  <div class="graph-square priority-3 completed" title="Alta"></div>
+               </div>
+               <span>Maior Prioridade</span>
+            </div>
+         </div>
       </div>
-    </div>
-  </div>
-</div>
+   </div>
 
-<!-- Seção de Boards Existentes -->
-<h2>Boards</h2>
+         <% end %>
 
-<div class="board-container">
-  <!-- Card para Adicionar Novo Board -->
-    <div class="board-card new-board-card" id="add-board-button">
-      <div class="card-body">
-        <i class="bi bi-plus-lg" aria-label="Adicionar Novo Board"></i>
+   <!-- Seção de Boards Existentes -->
+   <h2 style="margin-left: 20px;">Boards</h2>
+   <div class="board-container">
+      <!-- Card para Adicionar Novo Board -->
+      <div class="board-card new-board-card" id="add-board-button">
+         <div class="card-body">
+            <i class="bi bi-plus-lg" aria-label="Adicionar Novo Board"></i>
+         </div>
       </div>
-    </div>
-
-    <!-- Formulário oculto para adicionar um novo board -->
-    <div class="new-board-form" style="display: none;">
-      <%= form_with(model: Board.new, url: boards_path, html: { class: 'create-board-form' }) do |form| %>
-        <div class="field mb-3">
-          <%= form.text_field :title, placeholder: "Nome do novo board", class: 'form-control board-title-input', required: true %>
-        </div>
-      <% end %>
-    </div>
-
-  <!-- Cards dos Boards Existentes -->
-  <% @boards.each do |board| %>
-    <div class="board-card">
-      <%= link_to board_path(board), class: 'board-link' do %>
-        <div class="card-body">
-          <h5 class="card-title"><%= board.title %></h5>
-        </div>
-      <% end %>
-    </div>
-  <% end %>
-</div>
-
-
-<!-- Seção do Board Diário -->
-<h2>Board diário - <%= Date.today.strftime('%d/%m') %></h2>
-
-<!-- Mensagem Informativa com Link para Editar Humor -->
-<div class="edit-mood-message alert alert-info d-flex align-items-center" role="alert" style="margin-bottom: 20px;">
-  <span>
-    O board diário foi criado a partir do seu humor diário. Você pode <a href="#" id="edit-mood-button" class="alert-link">alterar seu humor diário e gerar um novo board</a>.
-  </span>
-</div>
-
-<div class="board-container">
-  <!-- Card do Board Diário Existente -->
-  <div class="board-card">
-    <%= link_to board_path(@daily_board), class: 'board-link' do %>
-      <div class="card-body">
-        <h5 class="card-title"><%= @daily_board.title %></h5>
+      <!-- Formulário oculto para adicionar um novo board -->
+      <div class="new-board-form" style="display: none;">
+         <%= form_with(model: Board.new, url: boards_path, html: { class: 'create-board-form' }) do |form| %>
+         <div class="field mb-3">
+            <%= form.text_field :title, placeholder: "Nome do novo board", class: 'form-control board-title-input', required: true %>
+         </div>
+         <% end %>
       </div>
-    <% end %>
-  </div>
-</div>
-
-
-
-
-<h2>Últimos acessados</h2>
-
-<div class="board-container">
-
-
-  <!-- Cards dos Boards Existentes -->
-  <% @last_accessed_boards.each do |board| %>
-    <div class="board-card">
-      <%= link_to board_path(board), class: 'board-link' do %>
-        <div class="card-body">
-          <h5 class="card-title"><%= board.title %></h5>
-        </div>
-      <% end %>
-    </div>
-  <% end %>
-</div>
-
-<h2>Mais acessados</h2>
-
-<div class="board-container">
-
-
-  <!-- Cards dos Boards Existentes -->
-  <% current_user.boards.order(access_count: :desc).each do |board| %>
-  <div class="board-card">
-    <%= link_to board_path(board['id']), class: 'board-link' do %>
-      <div class="card-body">
-        <h5 class="card-title"><%= board['title'] %></h5>
+      <!-- Cards dos Boards Existentes -->
+      <% @boards.each do |board| %>
+      <div class="board-card">
+         <%= link_to board_path(board), class: 'board-link' do %>
+         <div class="card-body">
+            <h5 class="card-title"><%= board.title %></h5>
+         </div>
+         <% end %>
       </div>
-    <% end %>
-  </div>
-<% end %>
-
-</div>
-
+      <% end %>
+   </div>
+   <!-- Seção do Board Diário -->
+   <% if current_user.show_daily_board && current_user.cards.exists?%>
+   <h2 style="margin-left: 20px;">Board diário - <%= Date.today.strftime('%d/%m') %></h2>
+   <!-- Mensagem Informativa com Link para Editar Humor -->
+   <div class="edit-mood-message alert alert-info d-flex align-items-center" role="alert" style="margin-bottom: 20px;">
+      <span>
+      O board diário foi criado a partir do seu humor diário. Você pode <a href="#" id="edit-mood-button" class="alert-link">alterar seu humor diário e gerar um novo board</a>.
+      </span>
+   </div>
+   <div class="board-container">
+      <!-- Card do Board Diário Existente -->
+      <div class="board-card">
+         <%= link_to board_path(@daily_board), class: 'board-link' do %>
+         <div class="card-body">
+            <h5 class="card-title"><%= @daily_board.title %></h5>
+         </div>
+         <% end %>
+      </div>
+   </div>
+   <% end %>
+   <% if current_user.show_recent_boards && current_user.boards.where(active: true).exists? %>
+   <h2 style="margin-left: 20px;">Últimos acessados</h2>
+   <div class="board-container">
+      <!-- Cards dos Boards Existentes -->
+      <% @last_accessed_boards.each do |board| %>
+      <div class="board-card">
+         <%= link_to board_path(board), class: 'board-link' do %>
+         <div class="card-body">
+            <h5 class="card-title"><%= board.title %></h5>
+         </div>
+         <% end %>
+      </div>
+      <% end %>
+   </div>
+   <% end %>
+   <% if current_user.show_popular_boards && current_user.boards.where(active: true).exists? %>
+   <h2 style="margin-left: 20px;">Mais acessados</h2>
+   <div class="board-container">
+      <!-- Cards dos Boards Existentes -->
+      <% current_user.boards.where(active: true).order(access_count: :desc).each do |board| %>
+      <div class="board-card">
+         <%= link_to board_path(board['id']), class: 'board-link' do %>
+         <div class="card-body">
+            <h5 class="card-title"><%= board['title'] %></h5>
+         </div>
+         <% end %>
+      </div>
+      <% end %>
+   </div>
+   <% end %>
 </div>
 <!-- Scripts JavaScript -->
 <script>

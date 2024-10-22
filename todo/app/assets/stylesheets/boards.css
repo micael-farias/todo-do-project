@@ -434,7 +434,6 @@
   align-items: flex-end; /* Alinha as colunas na base */
   justify-content: center;
   gap: 5px; /* Espaçamento entre as colunas */
-  overflow-x: auto; /* Permite rolagem horizontal se necessário */
   padding: 5px 0;
 }
 

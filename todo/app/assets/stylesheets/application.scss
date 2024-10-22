@@ -57,12 +57,25 @@ span {
     color: #666;
 }
 
+.teste h2 {
+  /* Adicione aqui os estilos que deseja aplicar a todos os parágrafos */
+  font-size: 25px;
+  width: 50%;
+  font-weight: 300; /* Deixa o texto mais fino */
+  line-height: 1.5;
+  margin-left: 20px;
+  color: #ffffff;
+}
+
+
+
 h2 {
   /* Adicione aqui os estilos que deseja aplicar a todos os parágrafos */
   font-size: 25px;
   width: 50%;
   font-weight: 300; /* Deixa o texto mais fino */
   line-height: 1.5;
+  margin-left: 0px;
   color: #ffffff;
 }
 

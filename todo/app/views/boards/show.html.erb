@@ -324,7 +324,6 @@
              // Preencher as tags existentes
           if (data.tags && data.tags.length > 0) {
             data.tags.forEach(function(tag) {
-              console.log("snerorooroo")
               addTag(tag.name, 'tag-container-edit', 'card_tags_edit');
             });
           }
@@ -355,7 +354,8 @@
           if (data.success) {
   // Atualizar o card na interface
   var card = $(`.card[data-card-id="${data.card.id}"]`);
-  
+      const user = data.user;
+
   // Atualizar o conteúdo do card, refletindo a nova estrutura
               card.html(`
                 <!-- Círculo azul no canto superior com prioridade -->
@@ -371,9 +371,9 @@
                   </h4>
 
                   <div class="card-info">
-                    <p><strong>Humor pra realizar:</strong> ${data.card.mood ? data.card.mood.name : 'Não definido'}</p>
-                    ${data.card.due_date ? `<p><strong>Vencimento:</strong> ${new Date(data.card.due_date).toLocaleDateString()}</p>` : ''}
-                    ${data.card.priority != null && data.card.priority !== 0 ? `<p><strong>Prioridade:</strong> ${['Baixa', 'Média', 'Alta'][data.card.priority] || 'Não definida'}</p>` : ''}
+                    ${user.show_card_mood ? `<p><strong>Humor pra realizar:</strong> ${data.card.mood ? data.card.mood.name : 'Não definido'}</p>` : ''}
+                    ${data.card.due_date && user.show_card_due_date ? `<p><strong>Vencimento:</strong> ${new Date(data.card.due_date).toLocaleDateString()}</p>` : ''}
+                    ${data.card.priority != null && data.card.priority !== 0 && user.show_card_priority ? `<p><strong>Prioridade:</strong> ${['Baixa', 'Média', 'Alta'][data.card.priority] || 'Não definida'}</p>` : ''}
                   </div>
 
                   <!-- Tags -->
@@ -522,14 +522,13 @@
             // Limpar e esconder o formulário
             form.find('.card-title-input').val('');
             form.closest('.new-card-form').hide();
-            column.find('.add-card-button').hide();
-location.reload();
+            column.find('.add-card-button').show();
 
             // Reativar o sortable (se estiver usando jQuery UI Sortable ou similar)
-            //$(".cards").sortable("refresh");
-             // setTimeout(() => {
-            //window.scrollTo({ top: 0, behavior: 'smooth' });
-        //}, 100);
+            $(".cards").sortable("refresh");
+              setTimeout(() => {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }, 100);
           } else {
             alert('Erro ao criar o card: ' + response.message);
           }
@@ -544,7 +543,6 @@ location.reload();
     // Fechar o formulário ao clicar fora
     $(document).on('click', function(e) {
       var target = $(e.target);
-      console.log("oiii")
       if (!target.closest('.new-card-form').length && !target.closest('.show-new-card-form').length) {
         $('.new-card-form').hide();
         $('.add-card-button').show();
@@ -553,14 +551,13 @@ location.reload();
 
 
 
-$(document).on('click', '.show-new-column-form', function(e) {
-  e.preventDefault();
-  var board = $('#kanban-board');
-  board.find('.add-column-button').hide();
-  board.find('.new-column-form').show();
-  board.find('.column-name-input').focus();
-});
-
+ $('.show-new-column-form').on('click', function(e) {
+    e.preventDefault();
+    var board = $('#kanban-board');
+    board.find('.add-column-button').hide();
+    board.find('.new-column-form').show();
+    board.find('.column-name-input').focus();
+  });
 
 
 $(document).on('click', '.delete-column-button', function(e) {
@@ -649,8 +646,6 @@ $(document).on('click', '.delete-column-button', function(e) {
     var currentName = span.text();
     var columnId = span.data('column-id');
 
-    console.log("ahahahah")
-
     // Criar um campo de input com o nome atual
     var input = $('<input>', {
       type: 'text',
@@ -705,10 +700,8 @@ $(document).on('click', '.delete-column-button', function(e) {
               board.find('.add-column-button').show();
 
               // Reativar o sortable para a nova coluna
-              $(".cards").sortable("refresh");
-
-          
-               
+              //$(".cards").sortable("refresh");
+               location.reload()
             } else {
               alert('Erro ao criar a coluna: ' + response.message);
             }

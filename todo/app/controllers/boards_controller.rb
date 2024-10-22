@@ -35,8 +35,8 @@ class BoardsController < ApplicationController
   
 
   def index
-    @boards = current_user.boards.order(created_at: :desc)
-    @last_accessed_boards = current_user.boards.order(last_access: :desc)
+    @boards = current_user.boards.where(active: true).order(created_at: :desc)
+    @last_accessed_boards = current_user.boards.where(active: true).order(last_access: :desc)
     @today = Time.current
     @daily_board = current_user.boards.where("title LIKE ?", "%Board Diário%").first
     @active_mood = current_user.active_theme_mood

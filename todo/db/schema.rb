@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2024_10_21_234039) do
+ActiveRecord::Schema[7.2].define(version: 2024_10_22_031147) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -78,6 +78,7 @@ ActiveRecord::Schema[7.2].define(version: 2024_10_21_234039) do
     t.datetime "updated_at", null: false
     t.datetime "last_access"
     t.integer "access_count"
+    t.boolean "active", default: true
     t.index ["user_id"], name: "index_boards_on_user_id"
   end
 
@@ -163,9 +164,9 @@ ActiveRecord::Schema[7.2].define(version: 2024_10_21_234039) do
     t.boolean "show_recent_boards"
     t.boolean "show_popular_boards"
     t.boolean "show_daily_board"
-    t.boolean "show_priority"
-    t.boolean "show_due_date"
-    t.boolean "show_mood"
+    t.boolean "show_card_priority"
+    t.boolean "show_card_due_date"
+    t.boolean "show_card_mood"
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
