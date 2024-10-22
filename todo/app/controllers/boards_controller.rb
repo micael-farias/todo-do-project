@@ -39,14 +39,12 @@ class BoardsController < ApplicationController
     @last_accessed_boards = current_user.boards.order(last_access: :desc)
     @today = Time.current
     @daily_board = current_user.boards.where("title LIKE ?", "%Board Diário%").first
-    
-    
-    @active_mood = current_user.user_moods.find_by(active: true)&.mood
+    @active_mood = current_user.active_theme_mood
+    Rails.logger.info "Mooscsassadds: #{@active_mood.to_json}"
 
+    
     @user_moods_today = current_user.user_moods.where(updated_at: @today.beginning_of_day..@today.end_of_day, active: true)
-    Rails.logger.info "Moods: #{@today}"
     @has_mood_today = @user_moods_today.exists?
-    Rails.logger.info "Moods: #{@has_mood_today}"
 
     @selected_moods = @has_mood_today ? @user_moods_today.pluck(:mood_id) : []
     
@@ -72,7 +70,6 @@ class BoardsController < ApplicationController
 
      # Preencher os dias com menos cards para igualar à quantidade máxima
      @cards_by_date.each do |day|
-      Rails.logger.info "Diaaa #{day}"
        if day[:cards].size < max_cards
          # Adiciona entradas nil para representar espaços vazios
          (max_cards - day[:cards].size).times do        

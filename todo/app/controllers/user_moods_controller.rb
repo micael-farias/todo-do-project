@@ -27,21 +27,21 @@ class UserMoodsController < ApplicationController
     
 
     def update_user_moods
-      mood_id = params[:mood_id]
-  
-      if mood_id.present?
-        current_user.user_moods.update_all(active: false)
-        user_mood = current_user.user_moods.find_or_initialize_by(mood_id: mood_id)
-        user_mood.active = true
-        if user_mood.save
-          render json: { success: true }
-        else
-          render json: { success: false, error: user_mood.errors.full_messages.join(", ") }
-        end
+      selected_mood_id = params[:mood_id]
+      current_user.user_moods.update_all(active: false)
+      user_mood = current_user.user_moods.find_or_initialize_by(mood_id: selected_mood_id)
+      user_mood.active = true
+    
+      if user_mood.save
+        # Busca o theme_mood correspondente
+        theme_mood = ThemeMood.find_by(mood_id: selected_mood_id, mood_category_id: current_user.mood_category_id)
+    
+        render json: { success: true, theme_mood: { image_url: theme_mood.image_url, message: theme_mood.message } }
       else
-        render json: { success: false, error: "Nenhum humor selecionado." }
+        render json: { success: false, error: user_mood.errors.full_messages.join(", ") }
       end
     end
+    
   
     private
   

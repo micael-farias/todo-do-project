@@ -1,0 +1,13 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  mood_category: one
+  mood: one
+  image_url: MyString
+  message: MyText
+
+two:
+  mood_category: two
+  mood: two
+  image_url: MyString
+  message: MyText

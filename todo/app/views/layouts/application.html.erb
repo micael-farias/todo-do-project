@@ -58,13 +58,13 @@
       <!-- Seção de saudação e imagem do usuário com dropdown -->
       <%if current_user != nil%>
       <div class="d-flex align-items-center">
-        <span class="text-white me-2">Vamos trabalhar Michael! <%= current_user.name %></span>
+        <span class="text-white me-2">Vamos trabalhar <%= current_user.name %> !</span>
 
         <!-- Dropdown para o avatar -->
         <div class="dropdown">
           <a href="#" class="d-flex align-items-center" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
             <% if current_user.avatar.attached? %>
-              <%= image_tag current_user.avatar.variant(resize_to_limit: [40, 40]), class: 'rounded-circle' %>
+              <%= image_tag current_user.avatar, class: 'rounded-circle',style: "width: 40px; height: 40px; border-radius: 50%; object-fit: cover;" %>
             <% else %>
               <%= image_tag 'default_avatar.png', class: 'rounded-circle', alt: 'Usuário', width: '40', height: '40' %>
             <% end %>

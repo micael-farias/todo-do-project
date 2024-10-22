@@ -1,13 +1,18 @@
-<!-<!-- app/views/devise/registrations/edit.html.erb -->
+<!-- app/views/devise/registrations/edit.html.erb -->
 <div style="background-color: #22272B; color: #eee; min-height: 100vh; padding: 40px;">
-  <h2 style="text-align: center; margin-bottom: 40px;">Editar Perfil</h2>
 
-  <form action="#" method="post" enctype="multipart/form-data">
+  <%= form_for(resource, as: resource_name, url: registration_path(resource_name), html: { method: :put, multipart: true, id: 'edit-profile-form' }) do |f| %>
+    <%= devise_error_messages! %>
+
     <!-- Seção Superior: Foto do Usuário e Nome -->
-    <div style="display: flex; align-items: center; margin-bottom: 40px;">
+<div style="display: flex; align-items: center; justify-content: flex-start; margin-bottom: 40px;">
       <div style="position: relative; margin-right: 30px;">
         <!-- Avatar do Usuário -->
-        <img src="default_avatar.png" alt="Avatar" class="avatar-image" style="width: 150px; height: 150px; border-radius: 50%; object-fit: cover;">
+        <% if resource.avatar.attached? %>
+          <%= image_tag resource.avatar, alt: "Avatar", class: "avatar-image", style: "width: 150px; height: 150px; border-radius: 50%; object-fit: cover;" %>
+        <% else %>
+          <img src="default_avatar.png" alt="Avatar" class="avatar-image" style="width: 150px; height: 150px; border-radius: 50%; object-fit: cover;">
+        <% end %>
 
         <!-- Ícone de Editar Foto -->
         <label for="avatar-upload" class="edit-avatar-overlay" style="
@@ -27,224 +32,292 @@
         ">
           <i class="bi bi-pencil-square" style="color: #eee; font-size: 24px;"></i>
         </label>
-        <input type="file" id="avatar-upload" name="avatar" style="display: none;">
+        <%= f.file_field :avatar, id: "avatar-upload", style: "display: none;", accept: "image/*" %>
       </div>
       <div>
-        <h3>Nome do Usuário</h3>
-        <p>email@exemplo.com</p>
+        <h3 style="margin: 0;"><%= resource.name %></h3>
+        <p style="margin: 5px 0; color: #eee"><%= resource.email %></p>
       </div>
     </div>
 
     <!-- Separador -->
-    <hr style="border-top: 1px solid #eee; margin-bottom: 40px;">
+    <hr>
 
     <!-- Configurações dos Boards -->
     <div style="margin-bottom: 40px;">
       <h4>Configurações dos Boards</h4>
       <div class="form-check form-switch mb-3">
-        <input class="form-check-input" type="checkbox" id="show_recent_boards">
-        <label class="form-check-label" for="show_recent_boards">Mostrar últimos acessados</label>
+        <%= f.check_box :show_recent_boards, class: "form-check-input", id: "show_recent_boards" %>
+        <%= f.label :show_recent_boards, "Mostrar últimos acessados", class: "form-check-label", for: "show_recent_boards" %>
+    </div>
+      <div class="form-check form-switch mb-3">
+        <%= f.check_box :show_popular_boards, class: "form-check-input", id: "show_popular_boards" %>
+        <%= f.label :show_popular_boards, "Mostrar mais acessados", class: "form-check-label", for: "show_popular_boards" %>
       </div>
       <div class="form-check form-switch mb-3">
-        <input class="form-check-input" type="checkbox" id="show_popular_boards">
-        <label class="form-check-label" for="show_popular_boards">Mostrar mais acessados</label>
-      </div>
-      <div class="form-check form-switch mb-3">
-        <input class="form-check-input" type="checkbox" id="show_daily_board">
-        <label class="form-check-label" for="show_daily_board">Mostrar board diário</label>
+        <%= f.check_box :show_daily_board, class: "form-check-input", id: "show_daily_board" %>
+        <%= f.label :show_daily_board, "Mostrar board diário", class: "form-check-label", for: "show_daily_board" %>
       </div>
     </div>
 
     <!-- Separador -->
-    <hr style="border-top: 1px solid #eee; margin-bottom: 40px;">
+    <hr>
 
     <!-- Configurações dos Cards -->
     <div style="margin-bottom: 40px;">
       <h4>Configurações dos Cards</h4>
       <div class="form-check form-switch mb-3">
-        <input class="form-check-input" type="checkbox" id="show_priority">
-        <label class="form-check-label" for="show_priority">Mostrar prioridade</label>
+      <% Rails.logger.info "Valor de show_priority: #{resource.show_priority}" %>
+<%= f.check_box :show_priority, class: "form-check-input", id: "show_priority" %>
+
+        <%= f.label :show_priority, "Mostrar prioridade", class: "form-check-label", for: "show_priority" %>
       </div>
       <div class="form-check form-switch mb-3">
-        <input class="form-check-input" type="checkbox" id="show_due_date">
-        <label class="form-check-label" for="show_due_date">Mostrar data de vencimento</label>
+        <%= f.check_box :show_due_date, class: "form-check-input", id: "show_due_date" %>
+        <%= f.label :show_due_date, "Mostrar data de vencimento", class: "form-check-label", for: "show_due_date" %>
       </div>
       <div class="form-check form-switch mb-3">
-        <input class="form-check-input" type="checkbox" id="show_mood">
-        <label class="form-check-label" for="show_mood">Mostrar humor</label>
+        <%= f.check_box :show_mood, class: "form-check-input", id: "show_mood" %>
+        <%= f.label :show_mood, "Mostrar humor", class: "form-check-label", for: "show_mood" %>
       </div>
     </div>
 
     <!-- Separador -->
-    <hr style="border-top: 1px solid #eee; margin-bottom: 40px;">
+    <hr>
 
-    <!-- Campos de Nome e Email -->
+    <!-- Campos de Nome, Email e Seletor de Categoria de Humor -->
     <div style="display: flex; flex-direction: column; gap: 20px; margin-bottom: 40px;">
-      <!-- Nome -->
-      <div>
-        <label for="name" class="form-label" style="display: block; margin-bottom: 5px;">Nome</label>
-        <input type="text" id="name" name="name" class="form-control" style="
-          background-color: #333;
-          color: #eee;
-          border: 1px solid #555;
-          padding: 10px;
-          width: 100%;
-          border-radius: 5px;
-        " placeholder="Digite seu nome">
-      </div>
-
-      <!-- Email (não editável) -->
-      <div>
-        <label for="email" class="form-label" style="display: block; margin-bottom: 5px;">Email</label>
-        <input type="email" id="email" name="email" class="form-control" readonly style="
-          background-color: #333;
-          color: #eee;
-          border: 1px solid #555;
-          padding: 10px;
-          width: 100%;
-          border-radius: 5px;
-        " value="email@exemplo.com">
-      </div>
-
-      <!-- Outro Campo de Nome (Exemplo) -->
-      <div>
-        <label for="username" class="form-label" style="display: block; margin-bottom: 5px;">Nome de Usuário</label>
-        <input type="text" id="username" name="username" class="form-control" style="
-          background-color: #333;
-          color: #eee;
-          border: 1px solid #555;
-          padding: 10px;
-          width: 100%;
-          border-radius: 5px;
-        " placeholder="Digite seu nome de usuário">
-      </div>
-    </div>
-
-    <!-- Seletor de Humor (Categorias com Moods) -->
-    <div class="mood-selection mb-4" id="mood-selection" style="display: flex; flex-direction: column; gap: 15px;">
-      <h5>Qual tema para escolher o humor que você deseja?</h5>
-      
-      <!-- Categoria: Gretchen -->
-      <div class="mood-category" style="margin-bottom: 20px;">
-        <h6>Gretchen</h6>
-        <div class="moods-container" style="display: flex; gap: 10px;">
-          <!-- Mood Item 1: Bom -->
-          <div class="mood-item selected" data-mood-id="1" data-category="Gretchen" style="
-            cursor: pointer;
-            position: relative;
-            text-align: center;
-          ">
-            <img src="https://via.placeholder.com/50" alt="Bom" class="mood-image" style="
-              width: 50px;
-              height: 50px;
-              border-radius: 50%;
-              object-fit: cover;
-            ">
-            <p class="mood-name" style="margin-top: 5px;">Bom</p>
-            <span style="position: absolute; top: 5px; right: 5px; color: #eee;">
-              <i class="bi bi-check-circle"></i>
-            </span>
-          </div>
-          <!-- Mood Item 2: Excelente -->
-          <div class="mood-item" data-mood-id="2" data-category="Gretchen" style="
-            cursor: pointer;
-            position: relative;
-            text-align: center;
-          ">
-            <img src="https://via.placeholder.com/50" alt="Excelente" class="mood-image" style="
-              width: 50px;
-              height: 50px;
-              border-radius: 50%;
-              object-fit: cover;
-            ">
-            <p class="mood-name" style="margin-top: 5px;">Excelente</p>
-          </div>
+      <!-- Nome e Email -->
+      <div style="width: 100%;">
+        <!-- Nome -->
+        <div style="margin-bottom: 20px;">
+          <%= f.label :name, "Nome", class: "form-label", style: "display: block; margin-bottom: 5px;" %>
+          <%= f.text_field :name, class: "form-control custom-input", placeholder: "Digite seu nome" %>
         </div>
-      </div>
 
-      <!-- Categoria: Shrek -->
-      <div class="mood-category" style="margin-bottom: 20px;">
-        <h6>Shrek</h6>
-        <div class="moods-container" style="display: flex; gap: 10px;">
-          <!-- Mood Item 3: Bom -->
-          <div class="mood-item" data-mood-id="3" data-category="Shrek" style="
-            cursor: pointer;
-            position: relative;
-            text-align: center;
-          ">
-            <img src="https://via.placeholder.com/50" alt="Bom" class="mood-image" style="
-              width: 50px;
-              height: 50px;
-              border-radius: 50%;
-              object-fit: cover;
-            ">
-            <p class="mood-name" style="margin-top: 5px;">Bom</p>
-          </div>
-          <!-- Mood Item 4: Excelente -->
-          <div class="mood-item" data-mood-id="4" data-category="Shrek" style="
-            cursor: pointer;
-            position: relative;
-            text-align: center;
-          ">
-            <img src="https://via.placeholder.com/50" alt="Excelente" class="mood-image" style="
-              width: 50px;
-              height: 50px;
-              border-radius: 50%;
-              object-fit: cover;
-            ">
-            <p class="mood-name" style="margin-top: 5px;">Excelente</p>
-            <span style="position: absolute; top: 5px; right: 5px; color: #eee;">
-              <i class="bi bi-check-circle"></i>
-            </span>
-          </div>
+        <!-- Email (não editável) -->
+        <div>
+          <%= f.label :email, "Email", class: "form-label", style: "display: block; margin-bottom: 5px;" %>
+          <%= f.email_field :email, class: "form-control custom-input", readonly: true %>
         </div>
+
+        
       </div>
 
-      <input type="hidden" id="selected_mood_id" name="selected_mood_id" value="1">
+
+      <!-- Seletor Visual de Categoria de Humor -->
+      <div class="mood-category-selection mb-4" id="mood-category-selection">
+        <h5>Selecione uma categoria de humor:</h5>
+
+        <!-- Container das Categorias -->
+        <div class="mood-categories-container" style="padding-top: 10px">
+          <% MoodCategory.all.each do |category| %>
+            <div class="mood-category-item <%= 'selected' if resource.mood_category_id == category.id %>" data-category-id="<%= category.id %>">
+              <img src="<%= category.image_url.present? ? category.image_url : 'https://via.placeholder.com/150' %>" alt="<%= category.name %>" class="category-image">
+              <p class="category-name"><%= category.name %></p>
+              <% if resource.mood_category_id == category.id %>
+                <span class="selected-icon">
+                  <i class="bi bi-check-circle"></i>
+                </span>
+              <% end %>
+            </div>
+          <% end %>
+        </div>
+
+        <!-- Campo Oculto para armazenar a categoria selecionada -->
+        <%= f.hidden_field :mood_category_id, value: resource.mood_category_id, id: 'selected_mood_category_id' %>
+      </div>
     </div>
 
     <!-- Botões de Ação -->
     <div class="actions" style="display: flex; gap: 20px;">
-      <button type="submit" class="btn btn-primary" style="
-        background-color: #4CAF50;
-        color: #eee;
-        border: none;
-        padding: 10px 20px;
-        border-radius: 5px;
-        cursor: pointer;
-      ">Atualizar</button>
-      <button type="button" class="btn btn-danger" style="
-        background-color: #f44336;
-        color: #eee;
-        border: none;
-        padding: 10px 20px;
-        border-radius: 5px;
-        cursor: pointer;
-      " onclick="confirm('Tem certeza que deseja cancelar sua conta?') && location.href='#'">Cancelar minha conta</button>
+      <%= f.submit "Atualizar", class: "btn btn-primary" %>
+      <%= link_to "Cancelar minha conta", registration_path(resource_name), method: :delete, data: { confirm: "Tem certeza?" }, class: "btn btn-danger" %>
     </div>
-  </form>
+  <% end %>
 
   <!-- CSS Personalizado -->
   <style>
-    /* Hover na foto para mostrar o ícone de edição */
-    .avatar-image:hover + .edit-avatar-overlay {
-      opacity: 1;
+    /* Inputs com fundo consistente e branco ao focar */
+    .custom-input {
+      background-color: #333 !important; /* Fundo escuro */
+      color: #eee;
+      border: 1px solid #555;
+      padding: 10px;
+      width: 100%;
+      border-radius: 5px;
+      transition: border-color 0.3s;
+    }
+
+    .custom-input:focus {
+      background-color: #333 !important; /* Mantém fundo escuro ao focar */
+      color: #eee;
+      outline: none;
+      border-color: #00ff00;
+    }
+
+    .custom-input::placeholder {
+      color: #888;
     }
 
     /* Estilos para os switches */
     .form-check-input {
       width: 2em;
       height: 1em;
+      background-color: #333;
+      border: 1px solid #555;
+      transition: background-color 0.3s, border-color 0.3s;
+    }
+
+    .form-check-input:checked {
+      background-color: #00ff00;
+      border-color: #00ff00;
+    }
+
+    /* Estilos para o avatar e overlay */
+    .edit-avatar-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 150px;
+      height: 150px;
+      border-radius: 50%;
+      background: rgba(0, 0, 0, 0.5);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      cursor: pointer;
+      color: white;
+      font-size: 24px;
+    }
+
+    .edit-avatar-overlay:hover {
+      opacity: 1;
     }
 
     /* Seletor de Humor */
     .mood-item.selected {
-      border: 2px solid #00ff00;
+      border: 3px solid #00ff00;
       border-radius: 50%;
+      transform: scale(1.1);
     }
 
     .mood-item:hover {
       opacity: 0.8;
+    }
+
+    /* Seletor Visual de Categoria de Humor */
+    .mood-category-selection h5 {
+      color: #eee;
+      margin-bottom: 15px;
+      text-align: center;
+    }
+
+    .mood-categories-container {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 30px;
+    }
+
+    .mood-category-item {
+      background-color: #444;
+      color: #eee;
+      transition: background-color 0.3s, border 0.3s, transform 0.3s;
+      border: 2px solid transparent;
+      border-radius: 15px;
+      padding: 20px;
+      width: 200px;
+      text-align: center;
+      position: relative;
+      cursor: pointer;
+    }
+
+    .mood-category-item:hover {
+      background-color: #555;
+      transform: scale(1.05);
+    }
+
+    .mood-category-item.selected {
+      border: 3px solid #00ff00;
+      background-color: #555;
+      transform: scale(1.1);
+    }
+
+    .category-image {
+      width: 150px;
+      height: 150px;
+      border-radius: 50%;
+      object-fit: cover;
+      transition: transform 0.3s;
+      margin-bottom: 15px;
+    }
+
+    .category-name {
+      font-size: 1.2em;
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
+
+    .selected-icon {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      color: #00ff00;
+      font-size: 1.5em;
+    }
+
+    /* Estilos para os botões */
+    .btn {
+      padding: 10px 20px;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 1em;
+      transition: background-color 0.3s, transform 0.2s;
+      text-decoration: none;
+      display: inline-block;
+      text-align: center;
+    }
+
+    .btn-primary {
+      background-color: #4CAF50;
+      color: #eee;
+      border: none;
+    }
+
+    .btn-primary:hover {
+      background-color: #45a049;
+      transform: scale(1.05);
+    }
+
+    .btn-danger {
+      background-color: #f44336;
+      color: #eee;
+      border: none;
+    }
+
+    .btn-danger:hover {
+      background-color: #da190b;
+      transform: scale(1.05);
+    }
+
+    /* Responsividade */
+    @media (max-width: 600px) {
+      .mood-category-item {
+        width: 150px;
+        padding: 15px;
+      }
+
+      .category-image {
+        width: 100px;
+        height: 100px;
+      }
+
+      .category-name {
+        font-size: 1em;
+      }
     }
   </style>
 
@@ -261,30 +334,60 @@
           var reader = new FileReader();
           reader.onload = function(e) {
             $('.avatar-image').attr('src', e.target.result);
-            alert('Foto de perfil atualizada!');
+            // A imagem será enviada ao clicar em "Atualizar"
           }
           reader.readAsDataURL(file);
         }
       });
 
-      // Interação para seleção de humor
+      // Interação para seleção de categoria de humor
+      $('.mood-category-item').on('click', function() {
+        // Remove a classe 'selected' de todas as categorias
+        $('.mood-category-item').removeClass('selected');
+        // Adiciona a classe 'selected' à categoria clicada
+        $(this).addClass('selected');
+        // Atualiza o valor do campo hidden com o ID da categoria selecionada
+        var selectedCategoryId = $(this).data('category-id');
+        $('#selected_mood_category_id').val(selectedCategoryId);
+      });
+
+      // Opcional: Interação para seleção de mood (se aplicável)
       $('.mood-item').on('click', function() {
         // Remove a classe 'selected' de todos os humores
         $('.mood-item').removeClass('selected');
         // Adiciona a classe 'selected' ao humor clicado
         $(this).addClass('selected');
         // Atualiza o valor do campo hidden com o ID do humor selecionado
-        var selectedMoodId = $(this).data('mood-id');
+        var selectedMoodId = $(this).data('theme-mood-id');
         $('#selected_mood_id').val(selectedMoodId);
       });
 
-      // Submit do formulário de humor (simulado)
-      $('#mood-selection').on('submit', function(e) {
+      // Submissão do formulário via AJAX (Opcional)
+      // Se desejar usar AJAX para submissão, descomente o bloco abaixo
+      /*
+      $('#edit-profile-form').on('submit', function(e) {
         e.preventDefault();
-        var selectedMoodId = $('#selected_mood_id').val();
-        alert('Humor selecionado: ' + selectedMoodId);
-        // Aqui você pode adicionar a lógica para enviar via AJAX
+
+        var form = $(this);
+        var formData = new FormData(this);
+
+        $.ajax({
+          url: form.attr('action'),
+          type: form.attr('method'),
+          data: formData,
+          processData: false,
+          contentType: false,
+          success: function(response) {
+            alert('Perfil atualizado com sucesso!');
+            // Opcional: Atualizar elementos da página conforme necessário
+          },
+          error: function(xhr) {
+            alert('Erro ao atualizar o perfil.');
+            // Opcional: Mostrar mensagens de erro detalhadas
+          }
+        });
       });
+      */
     });
   </script>
 </div>

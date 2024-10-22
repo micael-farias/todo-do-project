@@ -338,11 +338,10 @@
 }
 
 .mood-item {
-  width: 100px;
-  height: 140px; /* Ajustar altura para dar espaço para o texto */
+  width: 250px; /* Aumenta o tamanho dos itens */
+  height: 250px; /* Ajustar altura para dar espaço para o texto */
   background-color: #f0f0f0;
   border: 2px solid #ccc;
-  border-radius: 15px;
   margin: 10px;
   display: flex;
   flex-direction: column;
@@ -351,6 +350,8 @@
   cursor: pointer;
   transition: transform 0.3s, border-color 0.3s;
   position: relative;
+  padding: 10px;
+  border-radius: 10px;
 }
 
 .mood-item.selected {
@@ -567,16 +568,6 @@
   gap: 20px;
 }
 
-.mood-item {
-  width: 220px; /* Aumenta o tamanho dos itens */
-  height: 220px;
-  padding: 10px;
-  border: 2px solid #17a2b8;
-  border-radius: 10px;
-  cursor: pointer;
-  transition: transform 0.3s, box-shadow 0.3s;
-}
-
 .mood-item.selected {
   background-color: #17a2b8;
   color: white;
@@ -613,13 +604,13 @@
   border: none;     /* Remove borda */
   cursor: pointer;
   font-size: 2em;   /* Aumenta o tamanho do ícone */
-  color: #17a2b8;   /* Cor do ícone */
+  color: #dadada;   /* Cor do ícone */
   transition: transform 0.3s, color 0.3s;
   animation: float 2s infinite;
 }
 
 .generate-board-button:hover {
-  color: #138496;
+  color: #8aefff;
 }
 
 .generate-board-button i {
@@ -671,7 +662,7 @@
   text-align: center;
   margin-top: 10px;
   font-weight: bold;
-  color: #17a2b8;
+  color: #dadada;
 }
 
 /* Estilos para a seção de mensagem */
