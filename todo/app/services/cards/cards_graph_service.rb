@@ -1,9 +1,10 @@
-class CardsGraphService
+module Cards
+  class CardsGraphService
     def initialize(user)
       @user = user
       @cards = @user.cards.order(:created_at)
       @first_card_date = 30.days.ago.to_date
-      @last_card_date = @cards.last&.created_at&.to_date || DateService.today
+      @last_card_date = @cards.last&.created_at&.to_date || Utils::DateService.today
     end
   
     def cards_by_date
@@ -28,4 +29,4 @@ class CardsGraphService
   
     attr_reader :first_card_date, :last_card_date, :date_range
   end
-  
+end  

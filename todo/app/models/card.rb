@@ -40,7 +40,7 @@ class Card < ApplicationRecord
     if board_item_id_changed?
       if in_last_column?
         self.completed = true
-        self.completed_at = DateService.today
+        self.completed_at = Utils::DateService.today
       else
         self.completed = false
         self.completed_at = nil

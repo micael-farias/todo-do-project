@@ -9,9 +9,9 @@
   
   <!-- Formulário oculto para adicionar um novo board -->
   <div class="new-board-form" style="display: none;">
-    <%= render 'new_board_form' %>
+    <%= render 'boards/new' %>
   </div>
   
   <!-- Cards dos Boards Existentes -->
-  <%= render partial: 'board_card', collection: @boards, as: :board %>
+  <%= render partial: 'boards/card', collection: @boards, as: :board %>
 </div>

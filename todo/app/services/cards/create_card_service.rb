@@ -8,7 +8,7 @@ module Cards
     def call
       @card = @board_item.cards.new(@card_params)
       @card.completed = @card.board_item_id == @board_item.board.board_items.order(:position).last.id
-      @card.completed_at = @card.completed ? DateService.today : nil
+      @card.completed_at = @card.completed ? Utils::DateService.today : nil
       @card.priority ||= 0
 
       if @card.save

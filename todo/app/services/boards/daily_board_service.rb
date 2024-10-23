@@ -1,8 +1,9 @@
 # app/services/daily_board_service.rb
-class DailyBoardService
+module Boards
+  class DailyBoardService
     def initialize(user)
       @user = user
-      @today = DateService.today
+      @today = Utils::DateService.today
     end
   
     def fetch_daily_board
@@ -23,4 +24,4 @@ class DailyBoardService
       daily_board
     end
   end
-  
+end  

@@ -1,4 +1,5 @@
-class UserMoodUpdateService
+module Moods
+  class UserMoodUpdateService
     attr_reader :error_message, :theme_mood_data
   
     def initialize(user, selected_mood_id)
@@ -50,4 +51,4 @@ class UserMoodUpdateService
       }
     end
   end
-  
+end  

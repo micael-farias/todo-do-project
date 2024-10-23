@@ -1,4 +1,5 @@
-class FetchDailyBoardCardsService
+module Boards
+  class FetchDailyBoardCardsService
     def initialize(board, moods)
       @board = board
       @moods = moods
@@ -11,7 +12,7 @@ class FetchDailyBoardCardsService
       cards_due_soon = Card.joins(board_item: :board)
                            .where(boards: { user_id: @board.user_id })
                            .where(completed: false)
-                           .where(due_date: DateService.today..three_days_from_now)
+                           .where(due_date: Utils::DateService.today..three_days_from_now)
                            .order(due_date: :asc, priority: :desc)
   
       # 2. Cards que pertencem aos humores selecionados, excluindo os já encontrados
@@ -44,4 +45,4 @@ class FetchDailyBoardCardsService
     private
   
   end
-  
+end  
