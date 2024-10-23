@@ -19,10 +19,13 @@ class User < ApplicationRecord
 
   # Retorna o theme_mood ativo do usuário
   def active_theme_mood
-    active_mood = user_moods.find_by(active: true)
     return nil unless active_mood
 
     ThemeMood.find_by(mood: active_mood.mood, mood_category: mood_category)
+  end
+
+  def active_mood
+    active_mood = user_moods.find_by(active: true)
   end
 
   # Retorna os humores ativos do usuário no dia atual

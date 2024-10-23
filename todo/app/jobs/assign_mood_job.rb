@@ -9,17 +9,11 @@ class AssignMoodJob < ApplicationJob
       card = Card.find(card_id)
       title = card.title
   
-      client = OpenAI::Client.new(
-        access_token: ''     # ID da sua organização
-        )
-  
       # Construir o prompt para o ChatGPT
       prompt = "Dado o título da tarefa: '#{title}', qual seria o humor ideal para realizar essa tarefa? Escolha entre: Excelente, Bom, Neutro, Baixo, Pessimo. Responda apenas com um único humor."
-            Rails.logger.error "Humor '#{client}' não encontrado para o card ID #{card_id}."
 
-
-      response = client.chat(
-      parameters: {
+      response = OPENAI_CLIENT.chat(
+        parameters: {
         model: 'gpt-4', # You can use 'gpt-3.5-turbo' for GPT-3.5
         messages: [
             { role: "system", content: "Você é um assistente útil que categoriza tarefas com base no título." },
@@ -35,7 +29,7 @@ class AssignMoodJob < ApplicationJob
         mood = Mood.find_by(name: mood_response)
   
         if mood
-          card.update(mood: mood)
+          card.update(mood: mood, mood_source: 'ai_suggested')
         else
           Rails.logger.error "Humor '#{mood_response}' não encontrado para o card ID #{card_id}."
         end

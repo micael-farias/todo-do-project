@@ -9,7 +9,7 @@ module Cards
     def call
 
       ActiveRecord::Base.transaction do
-        if @card.update(@card_params)
+        if @card.update(@card_params.merge(mood_source: 'user_assigned'))
           update_tags if @card_params[:tags].present?
           { success: true, card: @card.as_json(include: [:tags, :mood]), user: @user_preferences }
         else

@@ -18,6 +18,9 @@ class Card < ApplicationRecord
   # Validations
   validates :title, presence: true
 
+  # Enums
+  enum mood_source: { user_assigned: 'user_assigned', ai_suggested: 'ai_suggested' }
+
   # Scopes
   scope :completed, -> { where(completed: true) }
   scope :not_completed, -> { where(completed: false) }

@@ -38,7 +38,8 @@
           <% if current_user.show_card_mood %>
 
       <p>
-        <strong>Humor pra realizar:</strong> <%= card.mood&.name || 'Não definido' %>
+        <strong>Humor pra realizar:</strong> 
+        <%= card.mood&.name ? "#{card.mood.name} #{card.mood_source == 'ai_suggested' ? '(sugerido por IA)' : ''}" : 'Não definido' %>
       </p>
       <% end %>
 

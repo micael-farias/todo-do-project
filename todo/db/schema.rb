@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2024_10_23_053617) do
+ActiveRecord::Schema[7.2].define(version: 2024_10_23_162832) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -89,6 +89,7 @@ ActiveRecord::Schema[7.2].define(version: 2024_10_23_053617) do
     t.datetime "due_date"
     t.integer "priority"
     t.integer "reminders_sent", default: [], array: true
+    t.string "mood_source"
     t.index ["board_item_id"], name: "index_cards_on_board_item_id"
     t.index ["completed"], name: "index_cards_on_completed"
     t.index ["due_date"], name: "index_cards_on_due_date"

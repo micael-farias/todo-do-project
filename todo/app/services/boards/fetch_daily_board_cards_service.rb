@@ -14,12 +14,11 @@ module Boards
                            .where(completed: false)
                            .where(due_date: Utils::DateService.today..three_days_from_now)
                            .order(due_date: :asc, priority: :desc)
-  
       # 2. Cards que pertencem aos humores selecionados, excluindo os já encontrados
       cards_by_mood = if @moods.present?
                         Card.joins(board_item: :board)
                             .where(boards: { user_id: @user.id })
-                            .where(completed: false, mood_id: @moods.pluck(:id))
+                            .where(completed: false, mood_id: @user.active_mood.mood_id)
                             .where.not(id: cards_due_soon.pluck(:id))
                             .order(priority: :desc)
                       else

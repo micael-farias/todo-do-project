@@ -7,6 +7,12 @@ class BoardItemsController < ApplicationController
     @board_item.position = (@board.board_items.maximum(:position) || 1) + 1
 
     if @board_item.save
+      last_board_item = @board.board_items.where.not(id: @board_item.id).order(position: :desc).first
+
+      if last_board_item
+        last_board_item.cards.update_all(completed: false, completed_at: nil)
+      end
+
       render_success(rendered_column: render_to_string(partial: 'board_items/column', locals: { item: @board_item }, formats: [:html]))
     else
       render_error(@board_item.errors.full_messages.join(", "))
@@ -23,6 +29,12 @@ class BoardItemsController < ApplicationController
 
   def destroy
     if @board_item.destroy
+      last_board_item = @board.board_items.order(position: :desc).first
+
+      if last_board_item
+        last_board_item.cards.update_all(completed: true, completed_at: Utils::DateService.today)
+      end
+
       render_success
     else
       render_error(@board_item.errors.full_messages.join(", "))

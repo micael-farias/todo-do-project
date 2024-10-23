@@ -1,20 +1,20 @@
 default: &default
   adapter: postgresql
   encoding: unicode
-  user: admin
-  password: todo_pass_123
   pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
-  #host: db 
-  #port: 5432
+  username: <%= ENV['POSTGRES_USER'] %>
+  password: <%= ENV['POSTGRES_PASSWORD'] %>
+  #host: <%= ENV['POSTGRES_HOST'] %>
+  #port: <%= ENV['POSTGRES_PORT'] || 5432 %>
 
 development:
   <<: *default
-  database: todo_development
+  database: <%= ENV['POSTGRES_DB_DEVELOPMENT'] %>
 
 test:
   <<: *default
-  database: todo_test
+  database: <%= ENV['POSTGRES_DB_TEST'] %>
 
 production:
   <<: *default
-  database: todo_prod
+  database: <%= ENV['POSTGRES_DB_PRODUCTION'] %>

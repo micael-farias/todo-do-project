@@ -9,6 +9,17 @@
       <button id="duplicate-board-button" title="Duplicar board" class="btn btn-link" style="float: right; color: white;">
         <i class="bi bi-files"></i>
       </button>
+
+    <% else %>  
+
+       <div style="margin-left: 20px; display: flex; align-items: center;">
+        <% if current_user.active_theme_mood %>
+          <span style="color: #FFA500; font-weight: bold; padding-right: 10px;">
+            Humor de hoje: <%= current_user.active_theme_mood.mood.name %>
+          </span>
+        <% end %>
+      </div>
+
     <% end %>
   </div>
-</h2>
+</h3>

@@ -146,7 +146,13 @@
                   </h4>
 
                   <div class="card-info">
-                    ${user.show_card_mood ? `<p><strong>Humor pra realizar:</strong> ${data.card.mood ? data.card.mood.name : 'Não definido'}</p>` : ''}
+                    ${user.show_card_mood ? 
+                      `<p><strong>Humor pra realizar:</strong> 
+                        ${data.card.mood ? 
+                          `${data.card.mood.name} ${data.card.mood_source === 'ai_suggested' ? '(sugerido por IA)' : ''}` 
+                          : 'Não definido'}
+                      </p>` 
+                      : ''}
                     ${data.card.due_date && user.show_card_due_date ? `<p><strong>Vencimento:</strong> ${new Date(data.card.due_date).toLocaleDateString()}</p>` : ''}
                     ${data.card.priority != null && data.card.priority !== 0 && user.show_card_priority ? `<p><strong>Prioridade:</strong> ${['Baixa', 'Média', 'Alta'][data.card.priority - 1] || 'Não definida'}</p>` : ''}
                   </div>
