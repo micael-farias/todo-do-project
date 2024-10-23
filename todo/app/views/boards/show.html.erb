@@ -1,59 +1,19 @@
 <!-- app/views/boards/show.html.erb -->
+<%= stylesheet_link_tag 'boards/boards_show', media: 'all', 'data-turbolinks-track': 'reload' %>
 
-<div style="background-color: #352D78; height: 100vh;">
+<div class="kanban">
   
-  <!-- Header do Board -->
-  <%= render 'kanban/header' %>
-  
-  <!-- Mensagem do Board Diário -->
-  <%= render 'kanban/daily_board_message' %>
-  
-  <!-- Seção do Kanban Board -->
-  <%= render 'kanban/board' %>
-  
-  <!-- Modal para Edição de Card -->
-  <%= render 'cards/edit' %>
-<!-- CSS para Melhor Desempenho e Estilização -->
-<style>
-  /* Placeholder estilizado para Sortable */
-  .card-placeholder {
-    background-color: #f0f0f0;
-    border: 2px dashed #ccc;
-    height: 80px; /* Ajuste conforme necessário */
-    margin-bottom: 10px;
-    /* Utilizar transform para hardware acceleration */
-    transform: translate3d(0, 0, 0);
-    transition: all 0.3s ease; /* Aumento da duração da transição */
-  }
+<!-- Header do Board -->
+<%= render 'kanban/header' %>
 
-  /* Transições suaves para cards */
-  .card {
-    transition: transform 0.3s ease, opacity 0.3s ease; /* Aumento da duração da transição */
-    cursor: pointer; /* Indica que o card é clicável */
-  }
+<!-- Mensagem do Board Diário -->
+<%= render 'kanban/daily_board_message' %>
 
-  /* Classe para cards concluídos */
-  .completed-card {
-    opacity: 0.6;
-  }
+<!-- Seção do Kanban Board -->
+<%= render 'kanban/board' %>
 
-  /* Estilização das Tags */
-  .tags {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 5px;
-  }
+<!-- Modal para Edição de Card -->
+<%= render 'cards/edit' %>
 
-  .tag-badge {
-    font-size: 0.85em;
-  }
-/* Adicione esta classe no seu bloco <style> existente */
-.processing-card {
-  opacity: 0.5; /* Ajuste o valor conforme necessário */
-  transition: opacity 0.3s ease; /* Transição suave */
-}
-
-  /* Outras estilizações conforme necessário */
-</style>
 <%= render 'script_show' %>
 

@@ -12,11 +12,14 @@ module Moods
       end
     
       def random_message
-        active_mood&.theme_mood_messages&.order("RANDOM()")&.first
+        messages = active_mood&.theme_mood_messages
+        return nil unless messages.present?
+      
+        messages.offset(rand(messages.count)).first
       end
-    
+      
       def user_moods_today
-        @user.user_moods.where(updated_at: @today.beginning_of_day..@today.end_of_day, active: true)
+        @user.user_moods.today.active
       end
     
       def has_mood_today?

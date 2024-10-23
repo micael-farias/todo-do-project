@@ -1,5 +1,7 @@
+<%= stylesheet_link_tag 'cards/cards_graph', media: 'all', 'data-turbolinks-track': 'reload' %>
+
 <% if current_user.cards.exists? %>
-  <h2 style="margin-left: 20px; padding-top: 20px; padding-bottom: 20px;">Atividade de Cards - Intervalo 30 dias</h2>
+  <h2 style="padding: 20px 0px 20px 0px;">Tarefas criadas - Intervalo 30 dias</h2>
   <div class="cards-graph-content" id="cards-graph-content">
     <div class="cards-graph-section mb-5">
       <div class="graph-dates">
@@ -18,7 +20,7 @@
                   data-card-id="<%= card.id %>"
                 ></div>
               <% else %>
-                <div class="graph-square empty"></div>
+                <div class="graph-square priority-nk completed"></div>
               <% end %>
             <% end %>
           </div>
@@ -28,7 +30,7 @@
       <!-- Legenda de Prioridades -->
       <div class="priority-legend mt-4">
         <div class="legend-items">
-          <span>Menor Prioridade</span>
+          <span class="label-priority">Menor Prioridade</span>
           <div class="legend-item">
             <div class="graph-square priority-0 completed" title="Não informada"></div>
           </div>
@@ -41,7 +43,7 @@
           <div class="legend-item">
             <div class="graph-square priority-3 completed" title="Alta"></div>
           </div>
-          <span>Maior Prioridade</span>
+          <span class="label-priority">Maior Prioridade</span>
         </div>
       </div>
     </div>

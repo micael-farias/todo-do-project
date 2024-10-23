@@ -2,11 +2,11 @@ module Utils
     class DateService
         
         def self.today
-            Date.current
+            DateTime.now  
         end
 
         def self.days_from_now(days)
-            Date.current + days.days
+            DateTime.now + days.days
         end
 
         def self.beginning_of_day(date)

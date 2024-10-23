@@ -1,5 +1,5 @@
-<div class="mood-message-section" style="position: relative; background-color: black; <%= 'display: none;' if @has_mood_today %>" id="mood-message-section">
-  <h3 id="selected-mood-text">Sua Análise de Humor: <%= @active_mood.present? ? @active_mood.mood.name : "Nenhum humor selecionado ainda" %></h3>
+<div class="mood-message-section" style="position: relative; background-color: #005a8c; <%= 'display: none;' if @has_mood_today %>" id="mood-message-section">
+  <h3 style="color: white" id="selected-mood-text">Sua Análise de Humor: <%= @active_mood.present? ? @active_mood.mood.name : "Nenhum humor selecionado ainda" %></h3>
   
   <div style="display: flex; align-items: flex-start; justify-content: center;">
     <!-- Primeira coluna: Análise de Humor e Imagem -->
@@ -14,11 +14,11 @@
 
     <!-- Segunda coluna: Texto explicando o humor -->
     <div style="display: flex; flex-direction: column; justify-content: center;">
-      <p id="mood-message" style="font-size: 18px; color: #333;">
+      <p id="mood-message" style="font-size: 18px; color: white;">
         <%= @random_message.present? ? @random_message.message : "Texto falando algo sobre o humor atual. Aqui você pode descrever o que o humor selecionado significa ou fornecer detalhes adicionais." %>
       </p>
       <%= link_to board_path(@daily_board), class: 'board-link' do %>
-        <u>Vamos ver seu board diário? Clique aqui</u>
+        <u>Vamos ver seu quadro de tarefas diário? Clique aqui</u>
       <% end %>
     </div>
   </div>

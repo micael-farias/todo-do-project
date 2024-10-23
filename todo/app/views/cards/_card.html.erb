@@ -1,17 +1,18 @@
 <!-- Assegure-se de que o arquivo CSS externo esteja incluído no seu layout principal, por exemplo: -->
 <!-- <link rel="stylesheet" href="/path/to/styles.css"> -->
+<%= stylesheet_link_tag 'cards/cards_card', media: 'all', 'data-turbolinks-track': 'reload' %>
 
 <div class="card" data-card-id="<%= card.id %>" style="background-color: #22272B;">
   
   <!-- Círculo azul no canto superior -->
-<div class="blue-circle" 
+<div class="priority_circle" 
   style="background-color: 
-    <% if card.priority == 3 %>
-      #00042E;
+    <% if card.priority == 1 %>
+      rgb(4, 51, 77);;
     <% elsif card.priority == 2 %>
-      #12155E;
-    <% elsif card.priority == 1 %>
-      #36487A;
+      rgb(56, 122, 158);
+    <% elsif card.priority == 3 %>
+      rgb(131, 198, 235);
     <% else %>
       #6f6f6f;
     <% end %>;"
@@ -28,9 +29,8 @@
 
   <div class="card-content">
     
-    <!-- Título do Cartão com Ícone de Prancheta -->
     <h4 class="card-title">
-      <!-- Adicione o ícone de prancheta aqui, se necessário -->
+
       <span class="title-text"><%= card.title %></span>
     </h4>
     

@@ -12,61 +12,31 @@
  *
  *= require_tree .
  *= require_self
- *= require cards
- *= require boards
  */
  
  @import "bootstrap";
- .list {
-    background-color: #f4f4f4;
-    border-radius: 5px;
-  }
-  
-  .card {
-    background-color: white;
-    border-radius: 5px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    cursor: grab;
-  }
 
-  .bg-orange {
-    border-bottom: 2px solid white; /* Linha branca de 2px abaixo da navbar */
-  }
-  .card:hover {
-    background-color: #f0f0f0;
-  }
-  .offset{
-    margin-top:-500px;
-   }
-  p {
-    /* Adicione aqui os estilos que deseja aplicar a todos os parágrafos */
-    font-size: 16px;
-    line-height: 1.5;
-    color: #333;
+
+ .line_horizontal {
+  border-bottom: 2px solid white; /* Linha branca de 2px abaixo da navbar */
 }
+
 .custom-dropdown-menu {
   background-color: #181C1F !important;
   color: #22272B; /* Cor do texto, se necessário */
 }
 
-
-/* Estilos globais para todos os spans */
-span {
-    /* Adicione aqui os estilos que deseja aplicar a todos os spans */
-    font-size: 14px;
-    color: #666;
-}
-
-.teste h2 {
-  /* Adicione aqui os estilos que deseja aplicar a todos os parágrafos */
-  font-size: 25px;
-  width: 50%;
-  font-weight: 300; /* Deixa o texto mais fino */
+p {
+  font-size: 16px;
   line-height: 1.5;
-  margin-left: 20px;
-  color: #ffffff;
+  color: #333;
 }
 
+span {
+  /* Adicione aqui os estilos que deseja aplicar a todos os spans */
+  font-size: 14px;
+  color: #666;
+}
 
 
 h2 {
@@ -75,7 +45,6 @@ h2 {
   width: 50%;
   font-weight: 300; /* Deixa o texto mais fino */
   line-height: 1.5;
-  margin-left: 0px;
+  margin-left: 20px;
   color: #ffffff;
 }
-

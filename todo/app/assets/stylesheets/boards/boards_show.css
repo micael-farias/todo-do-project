@@ -1,0 +1,191 @@
+/* app/assets/stylesheets/boards_show.css */
+
+/* Estilos para o Kanban Board */
+  #kanban-board {
+    display: flex;
+    overflow-x: auto;
+    padding-top: 10px;
+    padding-left: 10px;
+    padding-right: 10px;
+    width: 100%;
+    gap: 20px;
+  }
+  
+  #kanban-board::-webkit-scrollbar {
+    display: none; 
+  }
+  
+  .column {
+    border-radius: 10px;
+    width: 300px;
+    margin-bottom: 10px;
+    flex-shrink: 0;
+    display: flex;
+    background-color: #101204; 
+    padding: 10px;
+    flex-direction: column;
+  }
+  
+  .column-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    border-radius: 3px 3px 0 0; /* Arredondamento nos cantos superiores */
+    position: relative;
+  }
+  
+  .column-name {
+    font-size: 20px;
+    color: rgb(169, 169, 169);
+    cursor: pointer;
+  }
+  
+  .column-name-input {
+    width: 100%;
+  }
+  
+  .delete-column-button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 1.25em;
+  }
+  
+  .column-content {
+    flex: 1; /* Ocupa todo o espaço disponível na coluna */
+    display: flex;
+    flex-direction: column;
+    padding: 10px; /* Padding interno */
+  }
+  
+  .cards {
+    flex: 1; /* Permite que a área de cards cresça e ocupe o espaço */
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto; /* Permite rolagem vertical se houver muitos cards */
+  }
+  
+  /* Estilos para o botão de adicionar coluna */
+  .add-column {
+    width: 300px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  /* Estilização para o botão de adicionar coluna */
+  .add-column-button .new-column {
+    background-color: #22272B; /* Verde para diferenciar do botão de adicionar card */
+    color: white;
+    padding: 10px;
+    width: 300px;
+    border-radius: 5px;
+    text-align: center;
+    cursor: pointer;
+    display: flex;
+    align-items: center;  /* Alinha o ícone e o texto verticalmente */
+    justify-content: center; /* Centraliza o conteúdo horizontalmente */
+  }
+  
+  .add-column-text {
+    text-decoration: none;  /* Remove o sublinhado */
+    font-style: normal;     /* Remove o itálico */
+  }
+  
+  .new-column i {
+    margin-right: 8px; /* Espaçamento entre o ícone e o texto */
+  }
+  
+  .tag-badge {
+    background-color: #6c757d;
+    color: white;
+    padding: 5px 10px;
+    border-radius: 15px;
+    font-size: 0.85em;
+    display: inline-flex;
+    align-items: center;
+    margin-right: 5px;
+    margin-bottom: 5px;
+  }
+
+  .card-placeholder {
+    background-color: #f0f0f0;
+    border: 2px dashed #ccc;
+    height: 80px; /* Ajuste conforme necessário */
+    margin-bottom: 10px;
+    /* Utilizar transform para hardware acceleration */
+    transform: translate3d(0, 0, 0);
+    transition: all 0.3s ease; /* Aumento da duração da transição */
+  }
+
+
+  /* Classe para cards concluídos */
+  .completed-card {
+    opacity: 0.6;
+  }
+
+  /* Estilização das Tags */
+  .tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+  }
+
+/* Adicione esta classe no seu bloco <style> existente */
+  .processing-card {
+    opacity: 0.5; /* Ajuste o valor conforme necessário */
+    transition: opacity 0.3s ease; /* Transição suave */
+  }
+  
+  .tag-badge .remove-tag {
+    margin-left: 8px;
+    cursor: pointer;
+    font-weight: bold;
+  }
+  
+  .add-column-button .new-column:hover {
+    background-color: #181C1F;
+  }
+  
+  /* Alterar o background do campo de texto */
+  .custom-input {
+    background-color: #181C1F;  /* Cor de fundo desejada */
+    color: #fdfdfd;              /* Cor do texto normal */
+  }
+  
+  /* Alterar a cor do placeholder */
+  .custom-input::placeholder {
+    color: #fdfdfd; /* Cor do placeholder desejada */
+    opacity: 1;     /* Garante que a opacidade do placeholder seja plena */
+  }
+  
+  /* Opcional: Estilização para o formulário de nova coluna */
+  .new-column-form {
+    margin-top: 10px;
+    width: 300px;
+  }
+  
+  /* Estilos para o formulário de nova coluna */
+  .new-column-form {
+    width: 300px;
+  }
+  
+  .cancel-new-column-button {
+    margin-left: 10px;
+  }
+  
+  /* Estilos para o título da coluna durante a edição */
+  .column-header.editing .column-title {
+    display: none;
+  }
+  
+  .column-header.editing .column-title-input {
+    display: block;
+  }
+  
+  .kanban{
+    background-color: #352D78;
+    height: 100vh;
+  }

@@ -27,7 +27,7 @@ class UserMoodsController < ApplicationController
 
   # Atualiza o humor ativo do usuário
   def update_user_moods
-    mood_service = UserMoodUpUtils::DateService.new(current_user, params[:mood_id])
+    mood_service = Moods::UserMoodUpdateService.new(current_user, params[:mood_id])
 
     if mood_service.call
       render_success(theme_mood: mood_service.theme_mood_data)

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2024_10_22_190054) do
+ActiveRecord::Schema[7.2].define(version: 2024_10_23_053617) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -69,8 +69,10 @@ ActiveRecord::Schema[7.2].define(version: 2024_10_22_190054) do
     t.datetime "last_access", precision: nil
     t.integer "access_count"
     t.boolean "active", default: true
+    t.boolean "daily", default: false
     t.index ["active"], name: "index_boards_on_active"
     t.index ["last_access"], name: "index_boards_on_last_access"
+    t.index ["title", "user_id"], name: "index_boards_on_title_and_user_id", unique: true
     t.index ["user_id"], name: "index_boards_on_user_id"
   end
 
@@ -164,12 +166,12 @@ ActiveRecord::Schema[7.2].define(version: 2024_10_22_190054) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.bigint "mood_category_id"
-    t.boolean "show_recent_boards"
-    t.boolean "show_popular_boards"
-    t.boolean "show_daily_board"
-    t.boolean "show_card_priority"
-    t.boolean "show_card_due_date"
-    t.boolean "show_card_mood"
+    t.boolean "show_recent_boards", default: true
+    t.boolean "show_popular_boards", default: true
+    t.boolean "show_daily_board", default: true
+    t.boolean "show_card_priority", default: true
+    t.boolean "show_card_due_date", default: true
+    t.boolean "show_card_mood", default: true
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end

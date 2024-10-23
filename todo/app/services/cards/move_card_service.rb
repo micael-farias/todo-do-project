@@ -27,7 +27,7 @@ module Cards
       private
   
       def handle_daily_board_move(target_board_item)
-        last_column = @card.board_item.board.board_items.order(:position).last
+        last_column = @board.board_items.order(:position).last
         if @target_board_item_id == last_column.id
           original_last_item = @card.board_item.board.board_items.order(:position).last
           update_card(original_last_item, @target_position, completed: true, completed_at: Utils::DateService.today)
@@ -38,16 +38,28 @@ module Cards
       end
   
       def handle_normal_board_move(target_board_item)
-        update_card(target_board_item, @target_position, completed: @target_board_item_id == target_board_item.board.board_items.order(:position).last.id, completed_at: @target_board_item_id == target_board_item.board.board_items.order(:position).last.id ? Utils::DateService.today : nil)
+        update_card(target_board_item, @target_position, completed: @target_board_item_id == target_board_item.board.board_items.order(:position).last.id, completed_at: @target_board_item_id == target_board_item.board.board_items.order(:position).last.id ? Time.current : nil)
       end
   
       def update_card(target_board_item, position, completed:, completed_at:)
-        @card.update(
+        @card.assign_attributes(
           board_item_id: target_board_item.id,
           position: position,
           completed: completed,
           completed_at: completed_at
         )
+        
+        if @card.changed?
+          if @card.save
+            Rails.logger.info "Card atualizado com sucesso. Mudanças: #{@card.changes}"
+          else
+            Rails.logger.error "Falha ao atualizar o card: #{@card.errors.full_messages.join(', ')}"
+          end
+        else
+          Rails.logger.info "Nenhuma mudança detectada no card, atualização não necessária."
+        end
+        
+        
       end
     end
   end  

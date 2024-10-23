@@ -16,7 +16,6 @@ import './boards/mood_selection';
 import './boards/mood_message';
 import './boards/mood_update';
 
-console.log("aquiiiiiiiiii")
 document.addEventListener('turbo:load', () => {
   const lists = document.querySelectorAll('.cards');
 
@@ -36,3 +35,4 @@ document.addEventListener('turbo:load', () => {
     });
   });
 });
+

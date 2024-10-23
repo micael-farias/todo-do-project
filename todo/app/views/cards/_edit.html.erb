@@ -1,7 +1,7 @@
 <!-- app/views/boards/_edit_card_modal.html.erb -->
 <div class="modal fade" id="editCardModal" tabindex="-1" aria-labelledby="editCardModalLabel" aria-hidden="true">
   <div class="modal-dialog">
-    <div class="modal-content" style="background-color: #22272B;">
+    <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title" id="editCardModalLabel">Editar Card</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
@@ -26,7 +26,7 @@
           </div>
           <div class="mb-3">
             <%= form.label :priority, 'Prioridade', class: 'form-label' %>
-            <%= form.select :priority, [['Baixa', 0], ['Média', 1], ['Alta', 2]], { include_blank: 'Selecione a prioridade' }, class: 'form-select', id: 'card_priority' %>
+            <%= form.select :priority, [['Baixa', 1], ['Média', 2], ['Alta', 3]], { include_blank: 'Selecione a prioridade' }, class: 'form-select', id: 'card_priority' %>
           </div>
           <div class="mb-3">
             <%= form.label :tags, 'Tags', class: 'form-label' %>

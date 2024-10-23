@@ -1,16 +1,26 @@
 module Cards
   class CardsGraphService
+    attr_reader :first_card_date, :last_card_date, :date_range
+  
     def initialize(user)
       @user = user
-      @cards = @user.cards.order(:created_at)
       @first_card_date = 30.days.ago.to_date
-      @last_card_date = @cards.last&.created_at&.to_date || Utils::DateService.today
+      @last_card_date = Utils::DateService.today
+      @date_range = (@first_card_date..@last_card_date).to_a
+      @cards = @user.cards
+                    .where(created_at: @first_card_date.beginning_of_day..@last_card_date.end_of_day)
+                    .order(:created_at)
     end
   
     def cards_by_date
-      @cards_by_date ||= (@first_card_date..@last_card_date).to_a.map do |date|
-        cards_for_date = @cards.where(created_at: date.beginning_of_day..date.end_of_day).to_a
-        { date: date, cards: cards_for_date }
+      @cards_by_date ||= begin
+        # Agrupa os cartões por data de criação
+        grouped_cards = @cards.group_by { |card| card.created_at.to_date }
+  
+        # Cria um array com os cartões agrupados por data
+        @date_range.map do |date|
+          { date: date, cards: grouped_cards[date] || [] }
+        end
       end
     end
   
@@ -26,7 +36,6 @@ module Cards
       end
       cards_by_date
     end
-  
-    attr_reader :first_card_date, :last_card_date, :date_range
   end
+  
 end  

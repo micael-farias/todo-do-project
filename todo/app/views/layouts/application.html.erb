@@ -27,13 +27,15 @@
 
     <!-- Estilos e Scripts da Aplicação -->
     <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
+    <%= stylesheet_link_tag 'moods/mood_selection', media: 'all', 'data-turbolinks-track': 'reload' %>
+
     <%= javascript_importmap_tags %>
     <%= javascript_include_tag "//www.google.com/jsapi", "chartkick" %>
   </head>
 
   <body style="background-color: #1D2125">
     <!-- Navbar -->
-    <nav class="navbar navbar-expand-lg bg-orange">
+    <nav class="navbar navbar-expand-lg line_horizontal">
       <div class="container-fluid">
         <a class="navbar-brand text-white" href="<%= root_path %>">TO DO</a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Alternar navegação">

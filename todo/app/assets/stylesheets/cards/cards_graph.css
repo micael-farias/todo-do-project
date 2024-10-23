@@ -1,0 +1,160 @@
+/* Seção do Gráfico de Cards */
+.cards-graph-section {
+    text-align: center;
+    display: flex;
+    padding: 10px;
+    border: 2px solid rgb(171, 171, 171); /* Borda de 2px de espessura, sólida e preta */
+    border-radius: 10px;
+    padding-left: 20px;  /* Espaçamento à esquerda */
+    padding-right: 20px; /* Espaçamento à direita */
+    width: fit-content; /* A largura será definida pelo conteúdo */
+    background-color: rgba(24, 27, 30, 0.306);;
+    flex-direction: column; /* Faz com que os elementos fiquem empilhados verticalmente */
+    position: relative; /* Para posicionar os elementos relativos à seção */
+  }
+  .cards-graph-content {
+    display: flex;
+    justify-content: center; /* Centraliza horizontalmente */
+    align-items: center;     /* Centraliza verticalmente */
+  }
+  
+  /* Layout flex para alinhar as datas */
+  .graph-dates {
+    display: flex;
+    width: 100%; /* Faz o elemento ocupar 100% da largura do pai */
+  }
+  
+  
+  /* Estilo para a data inicial (esquerda) */
+  .start-date {
+    flex: 1;
+    text-align: start;
+    color: white;
+  }
+
+  .label-priority{
+    color: white;
+  }
+  
+  /* Estilo para a data final (direita) */
+  .end-date {
+    flex: 1;
+    text-align: end;
+    color: white;
+  }
+  
+  .cards-graph {
+    display: flex;
+    flex-direction: row; /* Garantir que as colunas fiquem lado a lado */
+    align-items: flex-end; /* Alinha as colunas na base */
+    justify-content: center;
+    gap: 5px; /* Espaçamento entre as colunas */
+    padding: 5px 0;
+  }
+  
+  /* Cada coluna representando um dia de atividades */
+  .graph-day {
+    display: flex;
+    flex-direction: column-reverse; /* Os cards mais antigos no fundo */
+    align-items: center;
+    gap: 5px; /* Espaçamento entre os quadrados de cards */
+  }
+  
+  /* Quadrados dos cards */
+  .graph-square {
+    width: 20px;
+    height: 20px;
+    border: 2px solid transparent;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: transform 0.2s, background-color 0.2s, border-color 0.2s;
+  }
+  
+  .graph-square:hover {
+    transform: scale(1.2);
+  }
+  
+  /* Estilos para cards completos */
+  .graph-square.completed {
+    border-color: transparent;
+  }
+  
+  /* Cards incompletos têm apenas borda */
+  .graph-square:not(.completed) {
+    background-color: transparent;
+    border-style: solid;
+  }
+  
+  /* Estilos para dias vazios */
+  .graph-square.empty {
+    background-color: #e9ecef; /* Cor de fundo para dias sem cards */
+    border: 2px solid #ced4da;
+    border-radius: 5px;
+  }
+  
+  .priority-0 {
+    background-color: #6f6f6f; /* Verde claro */
+    border-color: #6f6f6f;
+  }
+  
+  /* Cores por Prioridade (1 a 4) */
+  .priority-3 {
+    background-color: #d4edda; /* Verde claro */
+    border-color: rgb(131, 198, 235);
+  }
+  
+  .priority-2 {
+    background-color: #fff3cd; /* Amarelo claro */
+    border-color: rgb(56, 122, 158);
+  }
+  
+  .priority-1 {
+    background-color: #d1ecf1; /* Azul claro */
+    border-color: rgb(4, 51, 77);;
+  }
+   
+  
+  /* Cores para cards completos */
+  .graph-square.completed.priority-0 { background-color: #6f6f6f; }
+  .graph-square.completed.priority-3 { background-color: rgb(131, 198, 235); }
+  .graph-square.completed.priority-2 { background-color: rgb(56, 122, 158); }
+  .graph-square.completed.priority-1 { background-color: rgb(4, 51, 77);; }
+  .graph-square.completed.priority-nk { background-color: #38393a;}
+
+  /* Responsividade: Reduz tamanho dos quadrados em telas pequenas */
+  @media (max-width: 600px) {
+    .graph-square {
+      width: 15px;
+      height: 15px;
+    }
+  }
+  
+  
+  .priority-legend {
+    align-self: flex-end;
+    margin-top: 20px;
+  }
+  
+  .legend-items {
+    display: flex;
+    justify-content: center;
+    gap: 5px;
+  }
+  
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+  
+  .legend-color {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+  }
+  
+  .date-range {
+    margin-top: 20px;
+    font-weight: bold;
+    text-align: center;
+  }

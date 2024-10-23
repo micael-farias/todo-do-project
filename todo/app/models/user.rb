@@ -13,7 +13,7 @@ class User < ApplicationRecord
   has_many :parameters, dependent: :destroy
 
   # Callbacks
-  after_create :initialize_user_moods_and_daily_board
+  after_create :initialize_user_moods
 
   # Instance Methods
 
@@ -32,24 +32,16 @@ class User < ApplicationRecord
 
   private
 
-  # Inicializa os humores do usuário e cria o board diário padrão
-  def initialize_user_moods_and_daily_board
-    initialize_user_moods
-    create_daily_board
-  end
-
   # Cria humores para o usuário
   def initialize_user_moods
     Mood.find_each do |mood|
-      user_moods.create(mood: mood, active: false) # Define todos os humores como inativos inicialmente
+      user_moods.find_or_create_by(mood: mood) do |user_mood|
+        user_mood.active = false # Define todos os humores como inativos inicialmente
+      end
     end
-  end
 
-  # Cria o board diário padrão com as colunas "To Do" e "Done"
-  def create_daily_board
-    daily_board = boards.create(title: "Board Diário", active: false)
-
-    daily_board.board_items.create(name: 'To Do', position: 1)
-    daily_board.board_items.create(name: 'Done', position: 2)
+    if mood_category.nil?
+      update(mood_category: MoodCategory.first)
+    end
   end
 end

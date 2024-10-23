@@ -1,5 +1,7 @@
 <!-- app/views/boards/index.html.erb -->
-<div style="margin-left: 20px;">
+<%= stylesheet_link_tag 'boards/boards_index', media: 'all', 'data-turbolinks-track': 'reload' %>
+
+<div>
   
   <% if current_user.show_daily_board && @daily_board.present? %>
     <%= render 'mood/mood_selection' %>
@@ -15,10 +17,10 @@
   
   <!-- Seção do Board Diário -->
   <% if current_user.show_daily_board && @daily_board.present? %>
-    <h2 style="margin-left: 20px;">Board diário - <%= Utils::DateService.today.strftime('%d/%m') %></h2>
+    <h2>Tarefas diárias - <%= Utils::DateService.today.strftime('%d/%m') %></h2>
     
     <!-- Mensagem Informativa com Link para Editar Humor -->
-    <div class="edit-mood-message alert alert-info d-flex align-items-center" role="alert" style="margin-bottom: 20px;">
+    <div class="edit-mood-message alert alert-info d-flex align-items-center" role="alert" style="margin: 0px 20px 0px 20px;">
       <span>
         O board diário foi criado a partir do seu humor diário. Você pode <a href="#" id="edit-mood-button" class="alert-link">alterar seu humor diário e gerar um novo board</a>.
       </span>
@@ -37,15 +39,15 @@
   
   <!-- Seção dos Últimos Acessados -->
   <% if current_user.show_recent_boards && @last_accessed_boards.exists? %>
-    <h2 style="margin-left: 20px;">Últimos acessados</h2>
+    <h2>Últimos acessados</h2>
     <div class="board-container">
-      <%= render partial: 'board_card', collection: @last_accessed_boards, as: :board %>
+      <%= render partial: 'boards/card', collection: @last_accessed_boards, as: :board %>
     </div>
   <% end %>
   
   <!-- Seção dos Mais Acessados -->
   <% if current_user.show_popular_boards && current_user.boards.active.exists? %>
-    <h2 style="margin-left: 20px;">Mais acessados</h2>
+    <h2>Mais acessados</h2>
     <div class="board-container">
       <%= render partial: 'boards/card', collection: current_user.boards.active.order(access_count: :desc), as: :board %>
     </div>

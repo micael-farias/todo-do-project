@@ -134,8 +134,8 @@
   // Atualizar o conteúdo do card, refletindo a nova estrutura
               card.html(`
                 <!-- Círculo azul no canto superior com prioridade -->
-                <div class="blue-circle" style="background-color: 
-                  ${data.card.priority == 3 ? '#00042E' : data.card.priority == 2 ? '#12155E' : data.card.priority == 1 ? '#36487A' : '#6f6f6f'};"
+                <div class="priority_circle" style="background-color: 
+                  ${data.card.priority == 3 ? 'rgb(131, 198, 235);' : data.card.priority == 2 ? 'rgb(56, 122, 158)' : data.card.priority == 1 ? 'rgb(4, 51, 77)' : '#6f6f6f'};"
                   title="${data.card.priority == 3 ? 'Prioridade Alta' : data.card.priority == 2 ? 'Prioridade Média' : data.card.priority == 1 ? 'Prioridade Baixa' : 'Sem Prioridade'}">
                 </div>
 
@@ -148,7 +148,7 @@
                   <div class="card-info">
                     ${user.show_card_mood ? `<p><strong>Humor pra realizar:</strong> ${data.card.mood ? data.card.mood.name : 'Não definido'}</p>` : ''}
                     ${data.card.due_date && user.show_card_due_date ? `<p><strong>Vencimento:</strong> ${new Date(data.card.due_date).toLocaleDateString()}</p>` : ''}
-                    ${data.card.priority != null && data.card.priority !== 0 && user.show_card_priority ? `<p><strong>Prioridade:</strong> ${['Baixa', 'Média', 'Alta'][data.card.priority] || 'Não definida'}</p>` : ''}
+                    ${data.card.priority != null && data.card.priority !== 0 && user.show_card_priority ? `<p><strong>Prioridade:</strong> ${['Baixa', 'Média', 'Alta'][data.card.priority - 1] || 'Não definida'}</p>` : ''}
                   </div>
 
                   <!-- Tags -->

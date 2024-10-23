@@ -11,7 +11,7 @@
         <% if resource.avatar.attached? %>
           <%= image_tag resource.avatar, alt: "Avatar", class: "avatar-image", style: "width: 150px; height: 150px; border-radius: 50%; object-fit: cover;" %>
         <% else %>
-          <img src="default_avatar.png" alt="Avatar" class="avatar-image" style="width: 150px; height: 150px; border-radius: 50%; object-fit: cover;">
+          <img src="<%= asset_path('default_avatar.png') %>" alt="Avatar" class="avatar-image" style="width: 150px; height: 150px; border-radius: 50%; object-fit: cover;">
         <% end %>
 
         <!-- Ícone de Editar Foto -->
@@ -56,7 +56,7 @@
       </div>
       <div class="form-check form-switch mb-3">
         <%= f.check_box :show_daily_board, class: "form-check-input", id: "show_daily_board" %>
-        <%= f.label :show_daily_board, "Mostrar board diário", class: "form-check-label", for: "show_daily_board" %>
+        <%= f.label :show_daily_board, "Permitir criar quadro de tarefas diarias", class: "form-check-label", for: "show_daily_board" %>
       </div>
     </div>
 
@@ -67,8 +67,7 @@
     <div style="margin-bottom: 40px;">
       <h4>Configurações dos Cards</h4>
       <div class="form-check form-switch mb-3">
-      <% Rails.logger.info "Valor de show_card_priority: #{resource.show_card_priority}" %>
-<%= f.check_box :show_card_priority, class: "form-check-input", id: "show_card_priority" %>
+    <%= f.check_box :show_card_priority, class: "form-check-input", id: "show_card_priority" %>
 
         <%= f.label :show_card_priority, "Mostrar prioridade", class: "form-check-label", for: "show_card_priority" %>
       </div>
@@ -108,7 +107,7 @@
       <!-- Seletor Visual de Categoria de Humor -->
       <div class="mood-category-selection mb-4" id="mood-category-selection">
         <h5>Selecione uma categoria de humor:</h5>
-        <p>Para poder ter acesso as funcionalidades o board diário deve estar ativo</p>
+        <p>Para poder ter acesso as funcionalidades a criação do quadro de tarefas diarias deve estar ativo</p>
 
         <!-- Container das Categorias -->
         <div class="mood-categories-container" style="padding-top: 10px">

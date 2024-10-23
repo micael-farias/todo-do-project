@@ -13,6 +13,7 @@ class Card < ApplicationRecord
 
   # Callbacks
   before_save :set_completion_status
+  after_create :create_daily_board_if_first_card
 
   # Validations
   validates :title, presence: true
@@ -47,4 +48,12 @@ class Card < ApplicationRecord
       end
     end
   end
+
+  def create_daily_board_if_first_card
+    user = board_item.board.user
+    unless user.boards.daily.exists?
+      Boards::DailyBoardService.new(user).create_daily_board
+    end
+  end
+  
 end

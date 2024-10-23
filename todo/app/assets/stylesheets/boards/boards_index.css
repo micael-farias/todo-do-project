@@ -1,0 +1,72 @@
+/* app/assets/stylesheets/boards_index.css */
+
+/* Estilos para a listagem de boards */
+  .board-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    padding: 20px;
+  }
+  
+  .board-card {
+    background-color: #005a8c; /* Azul mais escuro */
+    color: #fff;
+    border-radius: 15px; /* Aumenta o arredondamento dos cantos */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    width: 220px;
+    height: 120px;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+    position: relative; /* Para posicionamento absoluto interno */
+  }
+  
+  .board-card:hover {
+    transform: scale(1.05);
+    box-shadow: 0 8px 12px rgba(0, 0, 0, 0.2);
+  }
+  
+  .board-link {
+    text-decoration: none;
+    color: white;
+    display: block;
+    height: 100%;
+  }
+  
+  .board-card .card-body {
+    padding: 15px;
+    height: 100%;
+  }
+  
+  .board-card .card-title {
+    font-size: 1.2em;
+    position: absolute;
+    bottom: 10px;
+    right: 15px;
+    padding: 0px 10px 0x 10px;
+  }
+  
+  /* Estilos para o card de novo board */
+  .new-board-card {
+    background-color: #dfe3e6; /* Cor diferente para o card de novo board */
+    color: #172b4d;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .new-board-card .card-body {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .new-board-card i {
+    font-size: 2.5em;
+  }
+  
+  .new-board-card:hover {
+    background-color: #cdd2d4;
+  }
+  
+  /* Outros estilos específicos do index podem ser adicionados aqui */
+  

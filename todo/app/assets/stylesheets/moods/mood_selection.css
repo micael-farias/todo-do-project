@@ -1,0 +1,149 @@
+/* app/assets/stylesheets/mood_mood_selection.css */
+
+/* Estilos para a seção de seleção de humores */
+.mood-selection {
+    display: flex; /* Ativa o Flexbox */
+    flex-direction: column; /* Coloca os filhos em coluna */
+    justify-content: center; /* Centraliza verticalmente */
+    align-items: center; /* Centraliza horizontalmente */
+    margin: 0 auto;
+    border-radius: 10px;
+    height: 100vh;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+  
+  .moods-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px;
+  }
+  
+  .mood-item.selected {
+    background-color: #005a8c;
+    color: white;
+    transform: scale(1.05);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  }
+  
+  .mood-image {
+    border-radius: 5px;
+    width: 100%; /* Garante que a imagem ocupe toda a largura do pai */
+    height: 200px; /* Define uma altura específica */
+    object-fit: fill; /* Ajusta a imagem para cobrir todo o espaço do contêiner sem distorcer */
+    object-position: center; /* Garante que o centro da imagem seja o foco */
+    background-color: #005a8c; /* Cor de fundo caso a imagem não carregue */
+  }
+
+  
+  .moods-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    position: relative;
+    margin: 20px 0;
+  }
+
+  .mood-item {
+    width: 250px; /* Aumenta o tamanho dos itens */
+    height: 250px; /* Ajustar altura para dar espaço para o texto */
+    background-color: #747474;
+    margin: 10px;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start; /* Começa a alinhar do topo */
+    cursor: pointer;
+    transition: transform 0.3s, border-color 0.3s;
+    padding: 10px;
+    border-radius: 10px;
+  }
+
+  .mood-item.selected {
+    border-color: #007bff;
+    transform: scale(1.1);
+  }
+
+  .mood-item:hover {
+    transform: scale(1.05);
+  }
+
+  .mood-name {
+    margin-top: 5px;
+    font-size: 14px;
+    color: white;
+    font-weight: 700;
+    text-align: center;
+  }
+
+  /* Linha central estilo varal */
+  .moods-container::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 10%;
+    width: 80%;
+    height: 2px;
+    background-color: #ccc;
+    z-index: -1;
+  }
+  
+  .btn-primary {
+    background-color: #005a8c;
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+  
+  .btn-primary:hover {
+    background-color: #138496;
+  }
+  
+  /* Estilos para o novo botão com ícone */
+  .generate-board-container {
+    text-align: center;
+    margin-top: 30px;
+  }
+  
+  .generate-board-button {
+    background: none; /* Remove fundo */
+    border: none;     /* Remove borda */
+    cursor: pointer;
+    font-size: 2em;   /* Aumenta o tamanho do ícone */
+    color: #dadada;   /* Cor do ícone */
+    transition: transform 0.3s, color 0.3s;
+    animation: float 2s infinite;
+  }
+  
+  .generate-board-button:hover {
+    color: #8aefff;
+  }
+  
+  .generate-board-button i {
+    display: inline-block;
+    /* Você pode adicionar mais estilos aqui, se necessário */
+  }
+  
+  .generate-board-legend {
+    text-align: center;
+    margin-top: 10px;
+    font-weight: bold;
+    color: #dadada;
+  }
+  
+  /* Animação de subida e descida */
+  @keyframes float {
+    0% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(-10px);
+    }
+    100% {
+      transform: translateY(0);
+    }
+  }
+  
+  /* Outros estilos específicos da seleção de humores podem ser adicionados aqui */
+  

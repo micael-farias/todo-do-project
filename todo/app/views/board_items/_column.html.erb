@@ -1,9 +1,9 @@
-<div class="column" data-board-item-id="<%= item.id %>" style="background-color: #101204; padding: 10px;<%= 'width: 600px;' if @board.title.include?('Board Diário')%>;">
+<div class="column" data-board-item-id="<%= item.id %>" style="<%= 'width: 600px;' if @board.daily_board?%>;">
   <div class="column-header">
     <h3>
       <span class="column-name" data-column-id="<%= item.id %>"><%= item.name %></span>
     </h3>
-    <% unless @board.title.include?('Board Diário') %>
+    <% unless @board.daily_board? %>
     <!-- Ícone de Lixeira para remover a coluna -->
     <button class="delete-column-button" data-column-id="<%= item.id %>" title="Excluir Coluna" data-board-item-id="<%= item.id %>">
       <i class="bi bi-trash" style="color: white"></i>
@@ -12,7 +12,7 @@
   </div>
   <div class="column-content">
     <div class="cards">
-      <% if @board.title.include?('Board Diário') %>
+      <% if @board.daily_board? %>
         <!-- Exibir os cards na primeira ou segunda coluna do Board Diário -->
         <!-- Primeira Coluna: Cards filtrados por humor -->
         <% if @board.board_items.first == item %>
@@ -48,7 +48,7 @@
       <% end %>
     </div>
 
-    <% unless @board.title.include?('Board Diário') %>
+    <% unless @board.daily_board? %>
     <!-- Formulário oculto para adicionar um novo card -->
     <div class="new-card-form" style="display: none;">
       <%= form_with(model: Card.new, url: board_board_item_cards_path(@board, item), html: { class: 'create-card-form' }) do |form| %>

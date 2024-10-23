@@ -7,7 +7,7 @@
     <% end %>
   <% end %>
   
-  <% unless @board.title.include?('Board Diário') %>
+  <% unless @board.daily_board? %>
     <%= render 'kanban/column/new' %>
   <% end %>
 </div>
