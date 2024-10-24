@@ -19,4 +19,10 @@ class Board < ApplicationRecord
   def daily_board?
     daily
   end
+
+  def self.verify_daily_board(user, user_uses_mobile)
+    daily_board = user.boards.daily.first
+    daily_board.update(active: !user_uses_mobile) if daily_board
+  end
+  
 end

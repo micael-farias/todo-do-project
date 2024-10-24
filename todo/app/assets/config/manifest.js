@@ -9,4 +9,5 @@
 //= link boards/boards_show.css
 //= link cards/cards_card.css
 //= link cards/cards_graph.css
-//= link moods/mood_message_section
+//= link moods/mood_message_section.css
+//= link moods/cards-mobile.css

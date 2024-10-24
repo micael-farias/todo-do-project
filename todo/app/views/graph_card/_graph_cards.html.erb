@@ -1,7 +1,7 @@
 <%= stylesheet_link_tag 'cards/cards_graph', media: 'all', 'data-turbolinks-track': 'reload' %>
 
 <% if current_user.cards.exists? %>
-  <h2 style="padding: 20px 0px 20px 0px;">Tarefas criadas - Intervalo 30 dias</h2>
+  <h2 style="padding: 20px 0px 20px 0px;">Tarefas criadas - Intervalo <%=@days_interval%> dias</h2>
   <div class="cards-graph-content" id="cards-graph-content">
     <div class="cards-graph-section mb-5">
       <div class="graph-dates">

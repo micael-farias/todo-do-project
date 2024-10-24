@@ -65,6 +65,33 @@ class CardsController < ApplicationController
     end
   end
 
+  def toggle_complete
+    @board = Board.find(params[:board_id])
+    @card = @board.cards.find(params[:id])
+    last_column = @board.board_items.last
+
+    if ActiveModel::Type::Boolean.new.cast(params[:completed])
+      # Marking as complete
+      @card.previous_board_item_id = @card.board_item_id unless @card.board_item_id == last_column.id
+      @card.board_item_id = last_column.id
+    else
+      # Marking as incomplete
+      if @card.previous_board_item_id.present?
+        @card.board_item_id = @card.previous_board_item_id
+        @card.previous_board_item_id = nil
+      else
+        # If no previous column, move to the first column or any default
+        @card.board_item_id = @board.board_items.first.id
+      end
+    end
+  
+    if @card.save
+      render json: { success: true }
+    else
+      render json: { success: false, message: @card.errors.full_messages.join(', ') }
+    end
+  end
+  
   private
 
   def set_board_and_board_item

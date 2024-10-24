@@ -1,22 +1,22 @@
-<!-- app/views/boards/index.html.erb -->
 <%= stylesheet_link_tag 'boards/boards_index', media: 'all', 'data-turbolinks-track': 'reload' %>
 
 <div>
-  
-  <% if current_user.show_daily_board && @daily_board.present? %>
-    <%= render 'mood/mood_selection' %>
-    <div style="height: 20px" id="mood-message-above-section"></div>
-    <%= render 'mood/mood_message_section' %>
+  <% if current_user.show_daily_board && @daily_board.present? && !@user_uses_mobile %>
+    <div id="mood-section">
+      <%= render 'mood/mood_selection' %>
+      <div style="height: 20px" id="mood-message-above-section"></div>
+      <%= render 'mood/mood_message_section' %>
+    </div>
   <% end %>
-  
+
   <!-- Seção do Gráfico de Cards (Board Diário) -->
   <%= render 'graph_card/graph_cards' %>
-  
+
   <!-- Seção de Boards Existentes -->
   <%= render 'boards/list' %>
-  
+
   <!-- Seção do Board Diário -->
-  <% if current_user.show_daily_board && @daily_board.present? %>
+  <% if current_user.show_daily_board && @daily_board.present? &&  !@user_uses_mobile%>
     <h2>Tarefas diárias - <%= Utils::DateService.today.strftime('%d/%m') %></h2>
     
     <!-- Mensagem Informativa com Link para Editar Humor -->
@@ -36,7 +36,7 @@
       </div>
     </div>
   <% end %>
-  
+
   <!-- Seção dos Últimos Acessados -->
   <% if current_user.show_recent_boards && @last_accessed_boards.exists? %>
     <h2>Últimos acessados</h2>
@@ -52,7 +52,7 @@
       <%= render partial: 'boards/card', collection: current_user.boards.active.order(access_count: :desc), as: :board %>
     </div>
   <% end %>
-  
+
 </div>
 
 <!-- Incluir o partial de scripts -->

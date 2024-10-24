@@ -91,6 +91,7 @@ GEM
       sassc-rails (>= 2.0.0)
     brakeman (6.2.1)
       racc
+    browser (6.0.0)
     builder (3.3.0)
     capybara (3.40.0)
       addressable
@@ -380,6 +381,7 @@ DEPENDENCIES
   bootsnap
   bootstrap
   brakeman
+  browser
   capybara
   chartkick
   debug

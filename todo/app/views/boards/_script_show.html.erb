@@ -47,9 +47,12 @@
             if (newBoardItemId == lastColumnId) {
               // Ocultar os botões de concluir e editar
               ui.item.find('.complete-card-button').hide();
+              ui.item.find('.complete-card-button-mobile').prop('checked', true);
             } else {
               // Mostrar os botões de concluir e editar
               ui.item.find('.complete-card-button').show();
+              ui.item.find('.complete-card-button-mobile').prop('checked', false);
+
             }
           },
           error: function() {
@@ -118,7 +121,7 @@
 
     // Enviar formulário de edição via AJAX
   
-    // Enviar formulário de edição via AJAX
+    /*// Enviar formulário de edição via AJAX
  $('#edit-card-form').on('submit', function(e) {
       e.preventDefault();
       var form = $(this);
@@ -197,7 +200,7 @@
           alert('Erro ao atualizar o card. Por favor, tente novamente.');
         }
       });
-    });
+    });*/
 
     // Handler para o botão de concluir// Handler para o botão de concluir
   $(document).on('click', '.complete-card-button', function(e) {

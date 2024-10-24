@@ -1,11 +1,12 @@
 class BoardsController < ApplicationController
   before_action :set_board, only: [:show, :destroy, :duplicate]
-
+  before_action :check_user_uses_mobile, only: [:index, :show]
   def index
     active_boards = current_user.boards.active
     @boards = active_boards.includes(:board_items).order(created_at: :desc)
     @last_accessed_boards = active_boards.order(last_access: :desc)
-    
+    @days_interval = (@user_uses_mobile ? 15 : 30)
+
     mood_service = Moods::MoodService.new(current_user)
     @active_mood = mood_service.active_mood
     @random_message = mood_service.random_message
@@ -15,13 +16,13 @@ class BoardsController < ApplicationController
 
     daily_board_service = Boards::DailyBoardService.new(current_user)
     @daily_board =  daily_board_service.fetch_daily_board
-
-    cards_graph_service = Cards::CardsGraphService.new(current_user)
+   
+    cards_graph_service = Cards::CardsGraphService.new(current_user, @days_interval)
     @cards_by_date = cards_graph_service.padded_cards_by_date
     @first_card_date = cards_graph_service.first_card_date
     @last_card_date = cards_graph_service.last_card_date
     @date_range = cards_graph_service.date_range
-    
+    Board.verify_daily_board(current_user, @user_uses_mobile)
   end
 
   def show
@@ -78,6 +79,10 @@ class BoardsController < ApplicationController
   def board_params
     params.require(:board).permit(:title, board_items_attributes: [:id, :name, :_destroy])
   end
+
+  def check_user_uses_mobile
+    @user_uses_mobile = browser.device.mobile?
+  end 
 
   def fetch_daily_board_cards
     moods = @board.user.moods

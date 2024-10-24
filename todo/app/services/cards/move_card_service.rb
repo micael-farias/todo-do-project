@@ -42,6 +42,12 @@ module Cards
       end
   
       def update_card(target_board_item, position, completed:, completed_at:)
+        # Update previous_board_item_id only if moving to a different column
+        if @card.board_item_id != target_board_item.id
+          @card.previous_board_item_id = @card.board_item_id
+          @card.board_item_id = target_board_item.id
+        end
+
         @card.assign_attributes(
           board_item_id: target_board_item.id,
           position: position,

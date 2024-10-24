@@ -11,6 +11,8 @@ Rails.application.routes.draw do
     end
   end
 
+  patch '/boards/:board_id/board_items/:board_item_id/cards/:id/toggle_complete', to: 'cards#toggle_complete', as: :toggle_complete_card
+
   # Rota para a dashboard após login
   authenticated :user do
     root 'boards#index'

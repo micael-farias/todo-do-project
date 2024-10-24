@@ -9,11 +9,482 @@
 <!-- Mensagem do Board Diário -->
 <%= render 'kanban/daily_board_message' %>
 
-<!-- Seção do Kanban Board -->
-<%= render 'kanban/board' %>
+<%if @user_uses_mobile %>
+    <div class="mobile-view" data-board-id="<%= @board.id %>">
+        <div class="add-card-mobile" data-board-item-id="<%= @board.board_items.first.id %>">
+            <div class="card-header-mobile">
+                <i class="bi bi-plus-lg" style="color: white"></i>
+            </div>
+        </div>
+        <% @board.cards.each do |card| %>
+        <div class="card-mobile" data-card-id="<%= card.id %>" data-board-item-id="<%= card.board_item_id %>">
+            <div class="card-header-mobile">
+                <!-- Círculo de prioridade -->
+                <div class="priority-circle" 
+                    style="background-color: 
+                    <% if card.priority == 1 %>
+                    rgb(4, 51, 77);
+                    <% elsif card.priority == 2 %>
+                    rgb(56, 122, 158);
+                    <% elsif card.priority == 3 %>
+                    rgb(131, 198, 235);
+                    <% else %>
+                    #6f6f6f;
+                    <% end %>;">
+                </div>
+                <!-- Título do cartão -->
+                <h4 class="card-title-mobile-container">
+                    <span class="card-title-mobile"><%= card.title %></span>
+                </h4>
+                <!-- Container para checkbox e lixeira -->
+                <div class="action-icons">
+                    <!-- Checkbox para marcar como completo -->
+                    <!-- Checkbox para marcar como completo -->
+                    <label class="checkbox-container">
+                    <input class="complete-card-button-mobile" type="checkbox" <%= card.completed? ? 'checked' : '' %> />
+                    <span class="checkmark"></span>
+                    </label>
+                    <!-- Ícone de lixeira -->
+                    <button class="delete-card-button-mobile" title="Excluir">
+                    <i class="bi bi-trash"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    <% end %>
+    </div>
+<%else%>
+  <div class="desktop-view">
+    <%= render 'kanban/board' %>
+  </div>
+<%end%>
+ 
+</div>
 
 <!-- Modal para Edição de Card -->
 <%= render 'cards/edit' %>
 
 <%= render 'script_show' %>
 
+
+<script>
+
+  // C$(document).ready(function() {
+$(document).ready(function() {
+  $.ajaxSetup({
+    headers: {
+      'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content')
+    }
+  });
+
+ function openForm(card) {
+
+    var cardId = card.data('card-id');
+    var boardId = $('.mobile-view').data('board-id');
+    var boardItemId = card.data('board-item-id');
+    var modal = new bootstrap.Modal(document.getElementById('editCardModal'));
+    var form = $('#edit-card-form');
+
+    // Atualizar a URL do formulário com o ID do card
+    form.attr('action', `/boards/${boardId}/board_items/${boardItemId}/cards/${cardId}`);
+
+    // Limpar tags e carregar dados via AJAX
+    $('#tag-container-edit').empty();
+    $('#card_tags_edit').val('');
+
+    $.ajax({
+      url: `/boards/${boardId}/board_items/${boardItemId}/cards/${cardId}/edit`,
+      method: 'GET',
+      dataType: 'json',
+      success: function(data) {
+        // Preenche os campos do modal com os dados do card
+        form.find('#card_title').val(data.title);
+        form.find('#card_description').val(data.description);
+        form.find('#card_mood_id').val(data.mood_id || '');
+        form.find('#card_due_date').val(data.due_date ? data.due_date.split('T')[0] : '');
+        form.find('#card_priority').val(data.priority || '');
+
+            console.log(data.tags)
+        // Preencher as tags existentes
+        if (data.tags && data.tags.length > 0) {
+          data.tags.forEach(function(tag) {
+            addTag(tag.name, 'tag-container-edit', 'card_tags_edit');
+          });
+        }
+
+        modal.show();
+      },
+      error: function(jqXHR, textStatus, errorThrown) {
+        alert('Erro ao carregar dados do card.');
+      }
+    });
+  }
+
+function becomeCardClickable() {
+  /*$(document).on('click', '.card-mobile', function(e) {
+    var target = $(e.target);
+
+    // Se o clique for no checkbox ou no botão de excluir, não faça nada aqui
+    if (target.closest('.checkbox-container, .delete-card-button-mobile').length) {
+      return;
+    }
+     
+     e.stopPropagation()
+    // Caso contrário, abrir o formulário de edição
+    var card = $(this); // O div .card-mobile
+    openForm(card);
+  });*/
+}
+
+
+function addTag(tag, containerId, hiddenFieldId) {
+      tag = tag.trim();
+      if (tag === '') return;
+
+      // Verificar se a tag já existe (case-insensitive)
+      var existingTags = $(`#${containerId} .tag-badge`).map(function() {
+        return $(this).data('tag').toLowerCase();
+      }).get();
+
+      if (existingTags.includes(tag.toLowerCase())) {
+        alert('Essa tag já foi adicionada.');
+        return;
+      }
+
+      // Criar o elemento da tag
+      var tagBadge = $(`
+        <span class="tag-badge" data-tag="${tag}">
+          ${tag}
+          <span class="remove-tag">&times;</span>
+        </span>
+      `);
+
+      // Adicionar a tag ao container
+      $(`#${containerId}`).append(tagBadge);
+
+      // Atualizar o campo hidden
+      var currentTags = $(`#${hiddenFieldId}`).val();
+      if (currentTags) {
+        $(`#${hiddenFieldId}`).val(currentTags + ',' + tag);
+      } else {
+        $(`#${hiddenFieldId}`).val(tag);
+      }
+    }
+  // Inicializa o comportamento do clique
+  becomeCardClickable();
+
+    // Enviar formulário de edição via AJAX
+  
+    // Enviar formulário de edição via AJAX
+ $('#edit-card-form').on('submit', function(e) {
+  e.preventDefault();
+  var form = $(this);
+  var formData = form.serialize();
+
+  $.ajax({
+    url: form.attr('action'),
+    method: 'PATCH',
+    data: formData,
+    dataType: 'json',
+    success: function(data) {
+      console.log(data);
+      if (data.success) {
+        // Atualizar o card na interface desktop
+        var card = $(`.card[data-card-id="${data.card.id}"]`);
+
+        // Atualizar o card na interface móvel
+        var mobileCard = $(`.card-mobile[data-card-id="${data.card.id}"]`);
+
+        const user = data.user;
+
+        // Atualizar o conteúdo do card desktop (seu código existente)
+        card.html(`
+                <!-- Círculo azul no canto superior com prioridade -->
+                <div class="priority_circle" style="background-color: 
+                  ${data.card.priority == 3 ? 'rgb(131, 198, 235);' : data.card.priority == 2 ? 'rgb(56, 122, 158)' : data.card.priority == 1 ? 'rgb(4, 51, 77)' : '#6f6f6f'};"
+                  title="${data.card.priority == 3 ? 'Prioridade Alta' : data.card.priority == 2 ? 'Prioridade Média' : data.card.priority == 1 ? 'Prioridade Baixa' : 'Sem Prioridade'}">
+                </div>
+
+                <!-- Conteúdo do Cartão -->
+                <div class="card-content">
+                  <h4 class="card-title">
+                    <span class="title-text">${data.card.title}</span>
+                  </h4>
+
+                  <div class="card-info">
+                    ${user.show_card_mood ? 
+                      `<p><strong>Humor pra realizar:</strong> 
+                        ${data.card.mood ? 
+                          `${data.card.mood.name} ${data.card.mood_source === 'ai_suggested' ? '(sugerido por IA)' : ''}` 
+                          : 'Não definido'}
+                      </p>` 
+                      : ''}
+                    ${data.card.due_date && user.show_card_due_date ? `<p><strong>Vencimento:</strong> ${new Date(data.card.due_date).toLocaleDateString()}</p>` : ''}
+                    ${data.card.priority != null && data.card.priority !== 0 && user.show_card_priority ? `<p><strong>Prioridade:</strong> ${['Baixa', 'Média', 'Alta'][data.card.priority - 1] || 'Não definida'}</p>` : ''}
+                  </div>
+
+                  <!-- Tags -->
+                  ${data.card.tags.length > 0 ? `
+                    <div class="tags mt-2">
+                      ${data.card.tags.map(tag => `<span class="custom-badge">${tag.name}</span>`).join('')}
+                    </div>` : ''}
+                </div>
+
+                <!-- Ações do Cartão -->
+                <div class="card-actions">
+                  ${data.is_last_column ? '' : `
+                    <button class="complete-card-button" title="Concluir">
+                      <i class="bi bi-check-circle" style="color: white;"></i>
+                    </button>
+                  `}
+                  <button class="edit-card-button" title="Editar">
+                    <i class="bi bi-pencil-square" style="color: white;"></i>
+                  </button>
+                  <button class="delete-card-button" title="Excluir">
+                    <i class="bi bi-trash" style="color: white;"></i>
+                  </button>
+                </div>
+                      `);
+
+        // Atualizar o título na versão móvel
+        mobileCard.find('.card-title-mobile').text(data.card.title);
+
+        // Atualizar a cor do círculo de prioridade na versão móvel
+        var priorityColor;
+        if (data.card.priority == 3) {
+          priorityColor = 'rgb(131, 198, 235)';
+        } else if (data.card.priority == 2) {
+          priorityColor = 'rgb(56, 122, 158)';
+        } else if (data.card.priority == 1) {
+          priorityColor = 'rgb(4, 51, 77)';
+        } else {
+          priorityColor = '#6f6f6f';
+        }
+        mobileCard.find('.priority-circle').css('background-color', priorityColor);
+
+        // Fechar a modal
+        var modalInstance = bootstrap.Modal.getInstance(document.getElementById('editCardModal'));
+        modalInstance.hide();
+      } else {
+        alert('Erro ao atualizar o card: ' + data.message);
+      }
+    },
+    error: function() {
+      alert('Erro ao atualizar o card. Por favor, tente novamente.');
+    }
+  });
+});
+
+    // Handler para o botão de concluir// Handler para o botão de concluir
+$(document).on('change', '.complete-card-button-mobile', function(e) {
+  e.stopPropagation();
+  var checkbox = $(this);
+  var isChecked = checkbox.is(':checked');
+  var card = checkbox.closest('.card, .card-mobile');
+  var cardId = card.data('card-id');
+  var boardId = $('.mobile-view').data('board-id');
+  var boardItemId = card.data('board-item-id');
+
+  // Send AJAX request to toggle completion
+  $.ajax({
+    url: `/boards/${boardId}/board_items/${boardItemId}/cards/${cardId}/toggle_complete`,
+    method: 'PATCH',
+    data: { completed: isChecked },
+    success: function(response) {
+      if (response.success) {
+        console.log('Card completion status updated.');
+        // Optionally, update the UI or reload the board
+      } else {
+        alert('Error updating card status: ' + response.message);
+      }
+    },
+    error: function() {
+      alert('Error updating card status. Please try again.');
+    }
+  });
+});
+
+ // Handler para o botão de adicionar card na versão móvel
+  $(document).on('click', '.add-card-mobile', function(e) {
+    e.stopPropagation();
+
+    var addCardElement = $(this);
+
+   // Substituir o conteúdo por um campo de input
+    var inputField = $('<input>', {
+      type: 'text',
+      class: 'form-control new-card-title-input',
+      placeholder: 'Digite o título do novo card'
+    });
+
+    // Remover o ícone de adição e adicionar o campo de input
+    addCardElement.html(inputField);
+
+    // Focar no campo de input
+    inputField.focus();
+
+    // Handler para pressionar Enter no campo de input
+    inputField.on('keypress', function(e) {
+      if (e.which == 13) { // Tecla Enter
+        e.preventDefault();
+        var title = $(this).val().trim();
+        if (title === '') {
+          alert('O título do card não pode estar vazio.');
+          return;
+        }
+
+        var boardId = $('.mobile-view').data('board-id');
+        var firstBoardItemId = addCardElement.data('board-item-id');
+
+        // Enviar requisição AJAX para criar o card
+        $.ajax({
+          url: `/boards/${boardId}/board_items/${firstBoardItemId}/cards`,
+          method: 'POST',
+          data: { card: { title: title } },
+          dataType: 'json',
+          success: function(response) {
+            if (response.success) {
+              // Criar o novo elemento do card
+              var newCard = $(`
+                <div class="card-mobile" data-card-id="${response.card.id}" data-board-item-id="${response.card.board_item_id}">
+                  <div class="card-header-mobile">
+                    <!-- Círculo de prioridade -->
+                    <div class="priority-circle" style="background-color: #6f6f6f;"></div>
+                    <!-- Título do cartão -->
+                    <h4 class="card-title-mobile-container">
+                      <span class="card-title-mobile">${response.card.title}</span>
+                    </h4>
+                    <!-- Container para checkbox e lixeira -->
+                    <div class="action-icons">
+                      <!-- Checkbox para marcar como completo -->
+                      <label class="checkbox-container">
+                        <input class="complete-card-button-mobile" type="checkbox" />
+                        <span class="checkmark"></span>
+                      </label>
+                      <!-- Ícone de lixeira -->
+                      <button class="delete-card-button-mobile" title="Excluir">
+                        <i class="bi bi-trash"></i>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              `).hide(); // Inicialmente ocultar o novo card
+
+            // Adicionar o novo card logo abaixo do botão de adicionar com animação
+            addCardElement.after(newCard);
+            newCard.slideDown(); // Animação para exibir o card
+
+            // Restaurar o botão de adicionar
+            addCardElement.html('<div class="card-header-mobile"><i class="bi bi-plus-lg" style="color: white"></i></div>');
+
+            // Reativar os handlers necessários
+            becomeCardClickable();
+            } else {
+              alert('Erro ao criar o card: ' + response.message);
+            }
+          },
+          error: function() {
+            alert('Erro ao criar o card. Por favor, tente novamente.');
+          }
+        });
+      }
+    });
+
+    // Handler para clicar fora do input e cancelar a adição
+    $(document).on('click.addCardInput', function(e) {
+      if (!$(e.target).closest('.add-card-mobile').length) {
+        // Restaurar o botão de adicionar
+        addCardElement.html('<div class="card-header-mobile"><i class="bi bi-plus-lg" style="color: white"></i></div>');
+        // Remover este handler
+        $(document).off('click.addCardInput');
+      }
+    });
+
+  });
+ 
+
+
+    // Mostrar o formulário de novo card ao clicar no botão
+    $('.show-new-card-form').on('click', function(e) {
+      e.preventDefault();
+      var column = $(this).closest('.column');
+      column.find('.add-card-button').hide();
+      column.find('.new-card-form').show();
+      column.find('.card-title-input').focus();
+    });
+
+// Submeter o formulário ao pressionar Enter
+  $(document).on('keypress', '.card-title-input', function(e) {
+    if (e.which == 13) { // Código da tecla Enter
+      e.preventDefault();
+      var form = $(this).closest('form');
+      var column = form.closest('.column');
+      var columnId = column.data('board-item-id');
+      var cardTitle = $(this).val();
+
+      // Enviar requisição AJAX para criar o card
+      $.ajax({
+        url: form.attr('action'),
+        method: 'POST',
+        data: form.serialize(),
+        dataType: 'json',
+        success: function(response) {
+          if (response.success) {
+            // Inserir o HTML do cartão renderizado
+            var newCard = $(response.rendered_card).hide(); // Esconder inicialmente para aplicar o fade in
+            
+            // Adicionar o novo card à última posição da coluna e aplicar fade in
+            column.find('.cards').append(newCard);
+            newCard.fadeIn(300);
+            // Limpar e esconder o formulário
+            form.find('.card-title-input').val('');
+            form.closest('.new-card-form').hide();
+            column.find('.add-card-button').show();
+
+            // Reativar o sortable (se estiver usando jQuery UI Sortable ou similar)
+            $(".cards").sortable("refresh");
+          } else {
+            alert('Erro ao criar o card: ' + response.message);
+          }
+        },
+        error: function() {
+          alert('Erro ao criar o card. Por favor, tente novamente.');
+        }
+      });
+    }
+  });
+
+    
+
+
+
+
+    // Handler para o botão de excluir
+   // Handler para o botão de excluir
+$(document).on('click', '.delete-card-button-mobile', function(e) {
+  e.stopPropagation();
+  var card = $(this).closest('.card, .card-mobile');
+  var cardId = card.data('card-id');
+  var boardItemId = card.data('board-item-id');
+  var boardId = $('.mobile-view').data('board-id');
+
+  if (confirm('Tem certeza que deseja excluir este card?')) {
+    $.ajax({
+      url: `/boards/${boardId}/board_items/${boardItemId}/cards/${cardId}`,
+      method: 'DELETE',
+      success: function() {
+        card.fadeOut(300, function() {
+          card.remove();
+          console.log('Card excluído com sucesso.');
+        });
+      },
+      error: function() {
+        alert('Erro ao excluir o card.');
+      }
+    });
+  }
+});
+
+  });
+
+</script>

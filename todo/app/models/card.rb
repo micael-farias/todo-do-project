@@ -3,6 +3,7 @@ class Card < ApplicationRecord
   belongs_to :board_item
   belongs_to :mood, optional: true
   belongs_to :user, optional: true
+  belongs_to :previous_board_item, class_name: 'BoardItem', optional: true
   has_many :tags, dependent: :destroy
 
   # Nested Attributes

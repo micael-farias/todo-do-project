@@ -2,9 +2,9 @@ module Cards
   class CardsGraphService
     attr_reader :first_card_date, :last_card_date, :date_range
   
-    def initialize(user)
+    def initialize(user, days_interval)
       @user = user
-      @first_card_date = 30.days.ago.to_date
+      @first_card_date = days_interval.days.ago.to_date
       @last_card_date = Utils::DateService.today
       @date_range = (@first_card_date..@last_card_date).to_a
       @cards = @user.cards
