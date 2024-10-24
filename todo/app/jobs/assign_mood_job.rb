@@ -7,6 +7,7 @@ class AssignMoodJob < ApplicationJob
   
     def perform(card_id)
       card = Card.find(card_id)
+      user = card.board_item.board.user
       title = card.title
   
       # Construir o prompt para o ChatGPT
@@ -27,9 +28,11 @@ class AssignMoodJob < ApplicationJob
       if response && response['choices'] && response['choices'].first['message']
         mood_response = response['choices'].first['message']['content'].strip.capitalize
         mood = Mood.find_by(name: mood_response)
-  
-        if mood
+        user.increment!(:credits_openai_used, 1) # Incrementa o valor em 1
+
+        if mood         
           card.update(mood: mood, mood_source: 'ai_suggested')
+          user.save
         else
           Rails.logger.error "Humor '#{mood_response}' não encontrado para o card ID #{card_id}."
         end
