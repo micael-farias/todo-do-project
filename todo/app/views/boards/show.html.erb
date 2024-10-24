@@ -33,7 +33,7 @@
                     <% end %>;">
                 </div>
                 
-                <span class="card-title-mobile"><%= card.title %></span>
+                <span class="card-title-mobile" data-card-id="<%= card.id %>"  data-board-item-id="<%= card.board_item_id %>" > <%= card.title %>   </span>
              
                 <!-- Container para checkbox e lixeira -->
                 <div class="action-icons">
@@ -120,16 +120,10 @@ $(document).ready(function() {
   }
 
 function becomeCardClickable() {
-  $(document).on('click', '.card-mobile', function(e) {
+  $(document).on('click', '.card-title-mobile', function(e) {
+    e.stopPropagation();
     var target = $(e.target);
 
-    // Se o clique for no checkbox ou no botão de excluir, não faça nada aqui
-    if (target.closest('.checkbox-container, .delete-card-button-mobile').length) {
-      return;
-    }
-     
-     e.stopPropagation()
-    // Caso contrário, abrir o formulário de edição
     var card = $(this); // O div .card-mobile
     openForm(card);
   });
