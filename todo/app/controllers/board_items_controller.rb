@@ -5,9 +5,9 @@ class BoardItemsController < ApplicationController
   def create
     @board_item = @board.board_items.new(board_item_params)
     @board_item.position = (@board.board_items.maximum(:position) || 1) + 1
-
+    last_board_item = BoardItem.where(board_id: @board.id).order(id: :desc).first
+    
     if @board_item.save
-      last_board_item = @board.board_items.where.not(id: @board_item.id).order(position: :desc).first
 
       if last_board_item
         last_board_item.cards.update_all(completed: false, completed_at: nil)
@@ -29,7 +29,7 @@ class BoardItemsController < ApplicationController
 
   def destroy
     if @board_item.destroy
-      last_board_item = @board.board_items.order(position: :desc).first
+      last_board_item = BoardItem.where(board_id: @board.id).order(id: :desc).first
 
       if last_board_item
         last_board_item.cards.update_all(completed: true, completed_at: Utils::DateService.today)

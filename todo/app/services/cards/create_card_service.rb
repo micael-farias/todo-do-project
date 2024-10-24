@@ -12,7 +12,9 @@ module Cards
       @card.priority ||= 0
 
       if @card.save
-         AssignMoodJob.perform_later(@card.id)
+        Thread.new do
+          Cards::AssignMoodService.new(@card).call
+        end
         { success: true, card: @card }
       else
         { success: false, message: @card.errors.full_messages.join(', ') }

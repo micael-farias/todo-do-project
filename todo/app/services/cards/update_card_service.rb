@@ -7,14 +7,12 @@ module Cards
     end
 
     def call
-
       ActiveRecord::Base.transaction do
-        if @card.update(@card_params.merge(mood_source: 'user_assigned'))
-          update_tags if @card_params[:tags].present?
+        update_tags if @card_params[:tags].present?
+
+        if update_card
           { success: true, card: @card.as_json(include: [:tags, :mood]), user: @user_preferences }
         else
-          Rails.logger.info "senhor #{@card.errors.full_messages.join(', ')} #{@card_params} #{@user_preferences}"#result[:success]
-
           { success: false, message: @card.errors.full_messages.join(', ') }
         end
       end
@@ -25,13 +23,24 @@ module Cards
 
     private
 
-    def update_tags
-      Rails.logger.info "senhor #{@card.to_json} #{@card_params} #{@user_preferences}"#result[:success]
+    def update_card
+      @card.update(@card_params.except(:tags).merge(mood_source: 'user_assigned'))
+    end
 
-      tag_names = @card_params[:tags].split(',').map(&:strip).reject(&:blank?).uniq
+    def update_tags
+      tag_names = parse_tags(@card_params[:tags])
+      return if tag_names.empty?
+
       @card.tags.where.not(name: tag_names).destroy_all
-      tag_names.each { |name| @card.tags.find_or_create_by(name: name) }
+
+      tag_names.each do |name|
+        @card.tags.find_or_create_by(name: name)
+      end
+    end
+
+    def parse_tags(tags_param)
+      return [] unless tags_param.is_a?(String)
+      tags_param.split(',').map(&:strip).reject(&:blank?).uniq
     end
   end
 end
-  

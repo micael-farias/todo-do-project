@@ -60,61 +60,66 @@
     }
   }).disableSelection();
 
-    // Delegação de eventos para abrir a modal ao clicar no botão de editar
-    $('#kanban-board').on('click', '.edit-card-button', function(e) {
-      e.stopPropagation(); // Evita que o evento de clique seja propagado para o card
-      var button = $(this);
-      var card = button.closest('.card');
-      var cardId = card.data('card-id');
-      var boardId = $('#kanban-board').data('board-id');
-      var boardItemId = card.closest('.column').data('board-item-id');
-      openEditCardModal(cardId, boardId, boardItemId);
-    });
 
-    // Função para abrir a modal e carregar os dados do card
-    function openEditCardModal(cardId, boardId, boardItemId) {
-      var modal = new bootstrap.Modal(document.getElementById('editCardModal'));
-      var form = $('#edit-card-form');
+  function openForm(card) {
+    var cardId = card.data('card-id');
+    var boardId = $('#kanban-board').data('board-id');
+    var boardItemId = card.closest('.column').data('board-item-id');
+    var modal = new bootstrap.Modal(document.getElementById('editCardModal'));
+    var form = $('#edit-card-form');
 
-      // Atualizar a URL do formulário
-      form.attr('action', `/boards/${boardId}/board_items/${boardItemId}/cards/${cardId}`);
-      // Limpar as tags existentes no container
-      $('#tag-container-edit').empty();
-      $('#card_tags_edit').val('');
+    // Atualizar a URL do formulário com o ID do card
+    form.attr('action', `/boards/${boardId}/board_items/${boardItemId}/cards/${cardId}`);
 
-      // Carregar os dados do card via AJAX
-      $.ajax({
-        url: `/boards/${boardId}/board_items/${boardItemId}/cards/${cardId}/edit`,
-        method: 'GET',
-        dataType: 'json',
-        success: function(data) {
-          console.log('Dados recebidos para edição:', data);
-          form.find('#card_title').val(data.title);
-          form.find('#card_description').val(data.description);
-          form.find('#card_mood_id').val(data.mood_id || '');
-          form.find('#card_due_date').val(data.due_date ? data.due_date.split('T')[0] : '');
-          form.find('#card_priority').val(data.priority || '');
-              
-          // Preencher o campo de tags com as tags existentes
-             // Preencher as tags existentes
-          if (data.tags && data.tags.length > 0) {
-            data.tags.forEach(function(tag) {
-              addTag(tag.name, 'tag-container-edit', 'card_tags_edit');
-            });
-          }
+    // Limpar tags e carregar dados via AJAX
+    $('#tag-container-edit').empty();
+    $('#card_tags_edit').val('');
 
-          modal.show();
-        },
-        error: function(jqXHR, textStatus, errorThrown) {
-          console.error('Erro ao carregar dados do card:', textStatus, errorThrown);
-          alert('Erro ao carregar dados do card: ' + textStatus);
+    $.ajax({
+      url: `/boards/${boardId}/board_items/${boardItemId}/cards/${cardId}/edit`,
+      method: 'GET',
+      dataType: 'json',
+      success: function(data) {
+        // Preenche os campos do modal com os dados do card
+        form.find('#card_title').val(data.title);
+        form.find('#card_description').val(data.description);
+        form.find('#card_mood_id').val(data.mood_id || '');
+        form.find('#card_due_date').val(data.due_date ? data.due_date.split('T')[0] : '');
+        form.find('#card_priority').val(data.priority || '');
+
+        // Preencher as tags existentes
+        if (data.tags && data.tags.length > 0) {
+          data.tags.forEach(function(tag) {
+            addTag(tag.name, 'tag-container-edit', 'card_tags_edit');
+          });
         }
-      });
-    }
+
+        modal.show();
+      },
+      error: function(jqXHR, textStatus, errorThrown) {
+        alert('Erro ao carregar dados do card.');
+      }
+    });
+  }
+
+  function becomeCardClickable() {
+    $(".card").on("click", function(e) {
+      // Verifica se o clique não foi nos botões de ação (concluir ou excluir)
+      if (!$(e.target).closest('.complete-card-button, .delete-card-button').length) {
+        var card = $(this); // Referência ao card clicado
+        openForm(card); // Chama a função openForm com o card como parâmetro
+      }
+    });
+  }
+
+  // Inicializa o comportamento do clique
+  becomeCardClickable();
 
 
     // Enviar formulário de edição via AJAX
-    $('#edit-card-form').on('submit', function(e) {
+  
+    // Enviar formulário de edição via AJAX
+ $('#edit-card-form').on('submit', function(e) {
       e.preventDefault();
       var form = $(this);
       var formData = form.serialize();
@@ -127,11 +132,11 @@
         success: function(data) {
           console.log(data)
           if (data.success) {
-  // Atualizar o card na interface
-  var card = $(`.card[data-card-id="${data.card.id}"]`);
-      const user = data.user;
-    console.log(data.card )
-  // Atualizar o conteúdo do card, refletindo a nova estrutura
+          // Atualizar o card na interface
+          var card = $(`.card[data-card-id="${data.card.id}"]`);
+              const user = data.user;
+            console.log(data.card )
+          // Atualizar o conteúdo do card, refletindo a nova estrutura
               card.html(`
                 <!-- Círculo azul no canto superior com prioridade -->
                 <div class="priority_circle" style="background-color: 
@@ -253,6 +258,7 @@
           card.removeClass('processing-card');
           // Remover os botões de concluir e editar, já que está na última coluna
           card.find('.complete-card-button').hide();
+          becomeCardClickable()
         });
         console.log('Card concluído e movido com sucesso.');
 
@@ -299,7 +305,6 @@
             // Adicionar o novo card à última posição da coluna e aplicar fade in
             column.find('.cards').append(newCard);
             newCard.fadeIn(300);
-
             // Limpar e esconder o formulário
             form.find('.card-title-input').val('');
             form.closest('.new-card-form').hide();
@@ -307,9 +312,6 @@
 
             // Reativar o sortable (se estiver usando jQuery UI Sortable ou similar)
             $(".cards").sortable("refresh");
-              setTimeout(() => {
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        }, 100);
           } else {
             alert('Erro ao criar o card: ' + response.message);
           }
