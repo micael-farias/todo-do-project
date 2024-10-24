@@ -350,9 +350,8 @@ $(document).on('change', '.complete-card-button-mobile', function(e) {
                     <!-- Círculo de prioridade -->
                     <div class="priority-circle" style="background-color: #6f6f6f;"></div>
                     <!-- Título do cartão -->
-                    <h4 class="card-title-mobile-container">
-                      <span class="card-title-mobile">${response.card.title}</span>
-                    </h4>
+                    <span class="card-title-mobile">${response.card.title}</span>
+                   
                     <!-- Container para checkbox e lixeira -->
                     <div class="action-icons">
                       <!-- Checkbox para marcar como completo -->
@@ -361,9 +360,9 @@ $(document).on('change', '.complete-card-button-mobile', function(e) {
                         <span class="checkmark"></span>
                       </label>
                       <!-- Ícone de lixeira -->
-                      <button class="delete-card-button-mobile" title="Excluir">
-                        <i class="bi bi-trash"></i>
-                      </button>
+                      <button class="delete-card-button-mobile button-delete-card" title="Excluir" style="">
+                        <i class="bi bi-trash" style="color: white"></i>
+                    </button>
                     </div>
                   </div>
                 </div>
