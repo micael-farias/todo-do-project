@@ -111,7 +111,7 @@
   }
 
   .card-placeholder {
-    background-color: #f0f0f0;
+    background-color: #616161;
     border: 2px dashed #ccc;
     height: 80px; /* Ajuste conforme necessário */
     margin-bottom: 10px;
@@ -227,6 +227,9 @@
 
   .card-title-mobile{
     font-size: 15px;
+    font-weight: 700;
+    flex-grow: 1;
+    text-align: left;
     color: #ADB9C5;
   }
   
@@ -280,5 +283,13 @@
     display: flex;
     align-items: center;
     gap: 10px;
+  }
+
+  .button-delete-card {
+    border: none;
+    background: none;
+    cursor: pointer;
+    margin: 0;
+    padding: 0;
   }
   
