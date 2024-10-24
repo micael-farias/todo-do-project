@@ -406,51 +406,6 @@ $(document).on('change', '.complete-card-button-mobile', function(e) {
       column.find('.card-title-input').focus();
     });
 
-// Submeter o formulário ao pressionar Enter
-  $(document).on('keypress', '.card-title-input', function(e) {
-    if (e.which == 13) { // Código da tecla Enter
-      e.preventDefault();
-      var form = $(this).closest('form');
-      var column = form.closest('.column');
-      var columnId = column.data('board-item-id');
-      var cardTitle = $(this).val();
-
-      // Enviar requisição AJAX para criar o card
-      $.ajax({
-        url: form.attr('action'),
-        method: 'POST',
-        data: form.serialize(),
-        dataType: 'json',
-        success: function(response) {
-          if (response.success) {
-            // Inserir o HTML do cartão renderizado
-            var newCard = $(response.rendered_card).hide(); // Esconder inicialmente para aplicar o fade in
-            
-            // Adicionar o novo card à última posição da coluna e aplicar fade in
-            column.find('.cards').append(newCard);
-            newCard.fadeIn(300);
-            // Limpar e esconder o formulário
-            form.find('.card-title-input').val('');
-            form.closest('.new-card-form').hide();
-            column.find('.add-card-button').show();
-
-            // Reativar o sortable (se estiver usando jQuery UI Sortable ou similar)
-            $(".cards").sortable("refresh");
-          } else {
-            alert('Erro ao criar o card: ' + response.message);
-          }
-        },
-        error: function() {
-          alert('Erro ao criar o card. Por favor, tente novamente.');
-        }
-      });
-    }
-  });
-
-    
-
-
-
 
     // Handler para o botão de excluir
    // Handler para o botão de excluir
