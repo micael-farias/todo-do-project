@@ -344,8 +344,8 @@ $(document).on('change', '.complete-card-button-mobile', function(e) {
                     <!-- Círculo de prioridade -->
                     <div class="priority-circle" style="background-color: #6f6f6f;"></div>
                     <!-- Título do cartão -->
-                    <span class="card-title-mobile">${response.card.title}</span>
-                   
+                    <span class="card-title-mobile" data-card-id="${response.card.id}"  data-board-item-id="${response.card.board_item_id}" > ${response.card.title}   </span>
+
                     <!-- Container para checkbox e lixeira -->
                     <div class="action-icons">
  
