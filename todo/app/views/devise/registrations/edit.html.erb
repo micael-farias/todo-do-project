@@ -1,5 +1,5 @@
 <!-- app/views/devise/registrations/edit.html.erb -->
-<div style="background-color: #22272B; color: #eee; min-height: 100vh; padding: 40px;">
+<div class="edit-registration-container">
   
   <%= link_to :back, class: "btn btn-link", style: "color: white; margin-right: 10px;" do %>
     <i class="bi bi-arrow-left"></i> 
@@ -9,38 +9,24 @@
     <%= devise_error_messages! %>
 
     <!-- Seção Superior: Foto do Usuário e Nome -->
-<div style="display: flex; align-items: center; justify-content: flex-start; margin-bottom: 40px;">
-      <div style="position: relative; margin-right: 30px;">
+  <div class="user-section">
+      <div class="user-section-content">
         <!-- Avatar do Usuário -->
         <% if resource.avatar.attached? %>
           <%= image_tag resource.avatar, alt: "Avatar", class: "avatar-image", style: "width: 150px; height: 150px; border-radius: 50%; object-fit: cover;" %>
         <% else %>
-          <img src="<%= asset_path('default_avatar.png') %>" alt="Avatar" class="avatar-image" style="width: 150px; height: 150px; border-radius: 50%; object-fit: cover;">
+          <img src="<%= asset_path('default_avatar.png') %>" alt="Avatar" class="avatar-image">
         <% end %>
 
         <!-- Ícone de Editar Foto -->
-        <label for="avatar-upload" class="edit-avatar-overlay" style="
-          position: absolute;
-          top: 0;
-          left: 0;
-          width: 150px;
-          height: 150px;
-          border-radius: 50%;
-          background: rgba(0, 0, 0, 0.5);
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          opacity: 0;
-          transition: opacity 0.3s ease;
-          cursor: pointer;
-        ">
-          <i class="bi bi-pencil-square" style="color: #eee; font-size: 24px;"></i>
+        <label for="avatar-upload" class="edit-avatar-overlay">
+          <i class="bi bi-pencil-square"></i>
         </label>
         <%= f.file_field :avatar, id: "avatar-upload", style: "display: none;", accept: "image/*" %>
       </div>
-      <div>
-        <h3 style="margin: 0;"><%= resource.name %></h3>
-        <p style="margin: 5px 0; color: #eee"><%= resource.email %></p>
+      <div class="user-details">
+        <h3><%= resource.name %></h3>
+        <p><%= resource.email %></p>
       </div>
     </div>
 
@@ -48,7 +34,7 @@
     <hr>
 
     <!-- Configurações dos Boards -->
-    <div style="margin-bottom: 40px;">
+    <div class="user-board-config">
       <h4>Configurações dos Boards</h4>
       <div class="form-check form-switch mb-3">
         <%= f.check_box :show_recent_boards, class: "form-check-input", id: "show_recent_boards" %>
@@ -68,7 +54,7 @@
     <hr>
 
     <!-- Configurações dos Cards -->
-    <div style="margin-bottom: 40px;">
+    <div class="user-card-config">
       <h4>Configurações dos Cards</h4>
       <div class="form-check form-switch mb-3">
     <%= f.check_box :show_card_priority, class: "form-check-input", id: "show_card_priority" %>
@@ -93,11 +79,11 @@
     <hr>
 
     <!-- Campos de Nome, Email e Seletor de Categoria de Humor -->
-    <div style="display: flex; flex-direction: column; gap: 20px; margin-bottom: 40px;">
+    <div class="user-details-config">
       <!-- Nome e Email -->
-      <div style="width: 100%;">
+      <div class="user-details-config-main-content">
         <!-- Nome -->
-        <div style="margin-bottom: 20px;">
+        <div class="user-datails-name-field">
           <%= f.label :name, "Nome", class: "form-label", style: "display: block; margin-bottom: 5px;" %>
           <%= f.text_field :name, class: "form-control custom-input", placeholder: "Digite seu nome" %>
         </div>
@@ -107,10 +93,7 @@
           <%= f.label :email, "Email", class: "form-label", style: "display: block; margin-bottom: 5px;" %>
           <%= f.email_field :email, class: "form-control custom-input", readonly: true %>
         </div>
-
-        
       </div>
-
 
       <!-- Seletor Visual de Categoria de Humor -->
       <div class="mood-category-selection mb-4" id="mood-category-selection">
@@ -118,7 +101,7 @@
         <p>Para poder ter acesso as funcionalidades a criação do quadro de tarefas diarias deve estar ativo</p>
 
         <!-- Container das Categorias -->
-        <div class="mood-categories-container" style="padding-top: 10px">
+        <div class="mood-categories-container">
           <% MoodCategory.all.each do |category| %>
             <div class="mood-category-item <%= 'selected' if resource.mood_category_id == category.id %>" data-category-id="<%= category.id %>">
               <img src="<%= category.image_url.present? ? category.image_url : 'https://via.placeholder.com/150' %>" alt="<%= category.name %>" class="category-image">
@@ -145,212 +128,11 @@
     </div>
 
     <!-- Botões de Ação -->
-    <div class="actions" style="display: flex; gap: 20px;">
+    <div class="actions">
       <%= f.submit "Atualizar", class: "btn btn-primary" %>
       <%= link_to "Cancelar minha conta", registration_path(resource_name), method: :delete, data: { confirm: "Tem certeza?" }, class: "btn btn-danger" %>
     </div>
   <% end %>
-
-  <!-- CSS Personalizado -->
-  <style>
-    /* Inputs com fundo consistente e branco ao focar */
-    .custom-input {
-      background-color: #333 !important; /* Fundo escuro */
-      color: #eee;
-      border: 1px solid #555;
-      padding: 10px;
-      width: 100%;
-      border-radius: 5px;
-      transition: border-color 0.3s;
-    }
-
-    .custom-input:focus {
-      background-color: #333 !important; /* Mantém fundo escuro ao focar */
-      color: #eee;
-      outline: none;
-      border-color: #00ff00;
-    }
-
-    .custom-input::placeholder {
-      color: #888;
-    }
-
-    /* Estilos para os switches */
-    .form-check-input {
-      width: 2em;
-      height: 1em;
-      background-color: #333;
-      border: 1px solid #555;
-      transition: background-color 0.3s, border-color 0.3s;
-    }
-
-    .form-check-input:checked {
-      background-color: #00ff00;
-      border-color: #00ff00;
-    }
-
-    /* Estilos para o avatar e overlay */
-    .edit-avatar-overlay {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 150px;
-      height: 150px;
-      border-radius: 50%;
-      background: rgba(0, 0, 0, 0.5);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      opacity: 0;
-      transition: opacity 0.3s ease;
-      cursor: pointer;
-      color: white;
-      font-size: 24px;
-    }
-
-    .category-phrase {
-      font-size: 1.1em;
-      color: white;
-      margin-top: 10px;
-      font-style: italic;
-      text-align: center;
-    }
-
-
-    .edit-avatar-overlay:hover {
-      opacity: 1;
-    }
-
-    /* Seletor de Humor */
-    .mood-item.selected {
-      border: 3px solid #00ff00;
-      border-radius: 50%;
-      transform: scale(1.1);
-    }
-
-    .mood-item:hover {
-      opacity: 0.8;
-    }
-
-    /* Seletor Visual de Categoria de Humor */
-    .mood-category-selection h5 {
-      color: #eee;
-      margin-bottom: 5px;
-      text-align: center;
-    }
-
-    .mood-category-selection p {
-      color: #7e7e7e;
-      margin-bottom: 15px;
-      font-size: 14px;
-      text-align: center;
-    }
-
-    .mood-categories-container {
-      display: flex;
-      justify-content: center;
-      flex-wrap: wrap;
-      gap: 30px;
-    }
-
-    .mood-category-item {
-      background-color: #444;
-      color: #eee;
-      transition: background-color 0.3s, border 0.3s, transform 0.3s;
-      border: 2px solid transparent;
-      border-radius: 15px;
-      padding: 20px;
-      width: 200px;
-      text-align: center;
-      position: relative;
-      cursor: pointer;
-    }
-
-    .mood-category-item:hover {
-      background-color: #555;
-      transform: scale(1.05);
-    }
-
-    .mood-category-item.selected {
-      border: 3px solid #00ff00;
-      background-color: #555;
-      transform: scale(1.1);
-    }
-
-    .category-image {
-      width: 150px;
-      height: 150px;
-      border-radius: 50%;
-      object-fit: cover;
-      transition: transform 0.3s;
-      margin-bottom: 15px;
-    }
-
-    .category-name {
-      font-size: 1.2em;
-      font-weight: bold;
-      margin-bottom: 10px;
-    }
-
-    .selected-icon {
-      position: absolute;
-      top: 10px;
-      right: 10px;
-      color: #00ff00;
-      font-size: 1.5em;
-    }
-
-    /* Estilos para os botões */
-    .btn {
-      padding: 10px 20px;
-      border-radius: 5px;
-      cursor: pointer;
-      font-size: 1em;
-      transition: background-color 0.3s, transform 0.2s;
-      text-decoration: none;
-      display: inline-block;
-      text-align: center;
-    }
-
-    .btn-primary {
-      background-color: #4CAF50;
-      color: #eee;
-      border: none;
-    }
-
-    .btn-primary:hover {
-      background-color: #45a049;
-      transform: scale(1.05);
-    }
-
-    .btn-danger {
-      background-color: #f44336;
-      color: #eee;
-      border: none;
-    }
-
-    .btn-danger:hover {
-      background-color: #da190b;
-      transform: scale(1.05);
-    }
-
-    /* Responsividade */
-    @media (max-width: 600px) {
-      .mood-category-item {
-        width: 150px;
-        padding: 15px;
-      }
-
-      .category-image {
-        width: 100px;
-        height: 100px;
-      }
-
-      .category-name {
-        font-size: 1em;
-      }
-    }
-  </style>
 
   <!-- JavaScript para Interatividade -->
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>

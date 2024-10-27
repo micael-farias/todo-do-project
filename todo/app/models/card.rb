@@ -32,12 +32,18 @@ class Card < ApplicationRecord
   scope :by_mood_ids, ->(mood_ids) { where(mood_id: mood_ids) }
   scope :by_priority, -> { order(priority: :desc) }
   scope :random_order, -> { order("RANDOM()") }
-
+  scope :search_by_title, ->(query, user) {
+    joins(board_item: { board: :user })
+    .where("LOWER(cards.title) LIKE ? AND boards.user_id = ?", "%#{query.downcase}%", user.id)
+    .limit(10)
+  }
+  
   # Instance Methods
   def in_last_column?
     board_item.board.board_items.order(:position).last.id == board_item_id
   end
 
+ 
   private
 
   # Set the completion status based on column position

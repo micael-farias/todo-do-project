@@ -1,4 +1,3 @@
-<%= stylesheet_link_tag 'moods/mood_selection', media: 'all', 'data-turbolinks-track': 'reload' %>
 <% if current_user.show_daily_board && @daily_board.present? %>
   <div class="mood-selection mb-4" id="mood-selection" style="<%= 'display: none;' if @has_mood_today %>">
     <h2>Como vai, <%= current_user.name %>?</h2>

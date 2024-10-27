@@ -1,0 +1,36 @@
+.board-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  padding: 20px;
+}
+
+.new-board-card {
+  background-color: #dfe3e6;
+  color: #172b4d;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.new-board-card .card-body {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.new-board-card i {
+  font-size: 2.5em;
+}
+
+.new-board-card:hover {
+  background-color: #cdd2d4;
+}
+
+.edit-mood-message {
+  margin: 0px 20px 0px 20px;
+}
+
+.new-board-form {
+  display: none;
+}

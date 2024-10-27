@@ -25,18 +25,10 @@ class CardsController < ApplicationController
   end
   
   def search
-    if params[:query].present?
-      @cards = Card.joins(board_item: { board: :user })
-      .where("LOWER(cards.title) LIKE ? AND boards.user_id = ?", "%#{params[:query].downcase}%", current_user.id)
-      .limit(10)
-    else
-      @cards = Card.none
-    end
-
-    Rails.logger.info @cards.to_json
-
+    @cards = params[:query].present? ? Card.search_by_title(params[:query], current_user) : Card.none
+  
     respond_to do |format|
-      format.json { render json: @cards.map { |card| { id: card.id, title: card.title, board_id: card.board_item.board_id } } }
+      format.json { render json: format_cards_json(@cards) }
     end
   end
 
@@ -79,31 +71,15 @@ class CardsController < ApplicationController
       render_error(result[:message])
     end
   end
-
+ 
   def toggle_complete
-    @board = Board.find(params[:board_id])
-    @card = @board.cards.find(params[:id])
-    last_column = @board.board_items.last
+    service = Cards::ToggleCompleteService.new(@card, params[:completed], @board)
+    result = service.call
 
-    if ActiveModel::Type::Boolean.new.cast(params[:completed])
-      # Marking as complete
-      @card.previous_board_item_id = @card.board_item_id unless @card.board_item_id == last_column.id
-      @card.board_item_id = last_column.id
-    else
-      # Marking as incomplete
-      if @card.previous_board_item_id.present?
-        @card.board_item_id = @card.previous_board_item_id
-        @card.previous_board_item_id = nil
-      else
-        # If no previous column, move to the first column or any default
-        @card.board_item_id = @board.board_items.first.id
-      end
-    end
-  
-    if @card.save
+    if result[:success]
       render json: { success: true }
     else
-      render json: { success: false, message: @card.errors.full_messages.join(', ') }
+      render json: { success: false, message: result[:message] }
     end
   end
   
@@ -120,5 +96,15 @@ class CardsController < ApplicationController
 
   def card_params
     params.require(:card).permit(:title, :description, :mood_id, :due_date, :priority, :tags)
+  end
+
+  def format_cards_json(cards)
+    cards.map do |card|
+      {
+        id: card.id,
+        title: card.title,
+        board_id: card.board_item.board_id
+      }
+    end
   end
 end

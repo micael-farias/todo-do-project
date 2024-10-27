@@ -1,0 +1,26 @@
+.new-card-form {
+  display: none;
+}
+
+.show-new-card-form {
+  text-decoration: none; 
+}
+
+.card-button {
+  border-radius: 5px;
+  margin-bottom: 10px;
+  position: relative;
+  background-color: var(--background-color); /* Usando variável para flexibilidade */
+  border-radius: 8px;
+  padding: 15px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  display: flex;
+  gap: 10px;
+  background-color: #181C1F;
+  justify-content: center; /* Alinha o conteúdo principal em cima e os ícones embaixo */ 
+}
+
+.card-button span {
+  color: #ADB9C5; 
+  font-weight: 700;
+}

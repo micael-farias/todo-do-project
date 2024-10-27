@@ -1,5 +1,5 @@
 <!-- app/views/boards/_new_card_form.html.erb -->
-<div class="new-card-form" style="display: none;">
+<div class="new-card-form">
   <%= form_with(model: Card.new, url: board_board_item_cards_path(board, item), html: { class: 'create-card-form' }) do |form| %>
     <div class="field mb-3">
       <%= form.text_field :title, placeholder: "Título do card", class: 'form-control card-title-input custom-input', required: true %>
@@ -8,10 +8,10 @@
 </div>
 <!-- Botão para adicionar um novo card -->
 <div class="add-card-button">
-  <a href="#" class="show-new-card-form" style="text-decoration: none;">
+  <a href="#" class="show-new-card-form">
     <div class="card-button new-card">
-      <i class="bi bi-plus-lg" style="color: white;"></i>
-      <span style="color: #ADB9C5; font-weight: 700;">Adicionar tarefa</span> 
+      <i class="bi bi-plus-lg" class="white-icon"></i>
+      <span>Adicionar tarefa</span> 
     </div>
   </a>
 </div>

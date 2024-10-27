@@ -1,0 +1,8 @@
+.new-sessions-container {
+  background-color: #1D2125;
+}
+
+.new-sessions-container>div {
+  width: 100%;
+  max-width: 400px;
+}

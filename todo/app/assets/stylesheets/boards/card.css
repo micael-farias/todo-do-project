@@ -1,0 +1,7 @@
+  .card-board-title {
+    display: grid;
+    margin: 0px 10px 0px 10px;
+    grid-template-columns: auto 1fr;
+    grid-gap: 5px;
+    align-items: start;
+  }

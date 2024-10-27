@@ -1,53 +1,20 @@
-<div class="column" data-board-item-id="<%= item.id %>" style="<%= 'width: 600px;' if @board.daily_board? %>">
-  <div class="column-header">
-    <h3 style="flex-grow: 1; display: flex;">
-      <span class="column-name" style="flex-grow: 1" data-column-id="<%= item.id %>"><%= item.name %></span>
-    </h3>
-    <% unless @board.daily_board? %>
-      <button class="delete-column-button" data-column-id="<%= item.id %>" title="Excluir Coluna" data-board-item-id="<%= item.id %>">
-        <i class="bi bi-trash" style="color: white;"></i>
-      </button>
-    <% end %>
-  </div>
+<div class="column" 
+     data-board-item-id="<%= item.id %>" 
+     style="<%= board_column_width(@board) %>">
+  
+  <%= render 'board_items/header', item: item, board: @board %>
+  
   <div class="column-content">
+    <%= render 'cards/new', board: @board, item: item unless @board.daily_board? %>
+    
     <div class="cards">
-      <% if @board.daily_board? %>
-        <!-- Exibir os cards na primeira ou segunda coluna do Board Diário -->
-        <!-- Primeira Coluna: Cards filtrados por humor -->
-        <% if @board.board_items.first == item %>
-          <% @daily_board_cards.each do |card| %>
-            <%= render 'cards/show', 
-                card: card, 
-                due_info: card.due_date.present? ? card.due_date.strftime('%d/%m/%Y') : nil, 
-                due_label: 'Vencimento',
-                is_last_column: item.id == last_column_id 
-                %>
-          <% end %>
-        <!-- Segunda Coluna: Todos os cards finalizados hoje -->
-        <% elsif @board.board_items.second == item %>
-          <% @completed_cards_today.each do |card| %>
-            <%= render 'cards/show', 
-                card: card, 
-                due_info: card.completed_at.strftime('%d/%m/%Y %H:%M'), 
-                due_label: 'Completado em',
-                is_last_column: item.id == last_column_id 
-                %>
-          <% end %>
-        <% end %>
-      <% else %>
-        <!-- Para boards normais, exibe os cards normalmente nas colunas -->
-        <% item.cards.order(:position).each do |card| %>
-          <%= render 'cards/show', 
-              card: card, 
-              due_info: card.due_date.present? ? card.due_date.strftime('%d/%m/%Y') : nil, 
-              due_label: 'Vencimento',
-              is_last_column: item.id == last_column_id 
-              %>
-        <% end %>
-      <% end %>
+      <%= render 'board_items/cards_content', 
+          board: @board,
+          item: item, 
+          daily_board_cards: @daily_board_cards,
+          completed_cards_today: @completed_cards_today,
+          last_column_id: last_column_id 
+      %>
     </div>
-    <% unless @board.daily_board? %>
-      <%= render 'cards/new', board: @board, item: item %>
-    <% end %>
   </div>
 </div>

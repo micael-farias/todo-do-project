@@ -1,11 +1,11 @@
-<h3 style="color: rgb(169, 169, 169); width:100%; line-height: 50px; padding-left: 10px; background-color: rgba(169, 169, 169, 0.2); display: flex; align-items: center; justify-content: space-between;">
+<h3 class="kanban-header-title">
 
   <%= link_to :back, class: "btn btn-link", style: "color: white; margin-right: 10px;" do %>
     <i class="bi bi-arrow-left"></i> 
   <% end %>
 
   <% unless @board.daily_board? %>
-    <span class="board-title" data-board-id="<%= @board.id %>" style="cursor: pointer;">
+    <span class="board-title" data-board-id="<%= @board.id %>">
       <%= @board.title %>
     </span>
   <% else %>
@@ -14,11 +14,11 @@
 
   <div>
     <% unless @board.daily_board? %>
-      <button id="delete-board-button" title="Excluir board" class="btn btn-link" style="float: right; color: white; margin-right: 10px;">
+      <button id="delete-board-button" title="Excluir board" class="btn btn-link">
         <i class="bi bi-trash"></i>
       </button>
       
-      <button id="duplicate-board-button" title="Duplicar board" class="btn btn-link" style="float: right; color: white;">
+      <button id="duplicate-board-button" title="Duplicar board" class="btn btn-link">
         <i class="bi bi-files"></i>
       </button>
       

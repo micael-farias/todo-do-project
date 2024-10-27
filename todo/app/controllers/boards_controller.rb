@@ -15,24 +15,21 @@ class BoardsController < ApplicationController
   end
 
   def create
-    @board = current_user.boards.new(board_params)
-    if @board.save
-      @board.board_items.create([
-        { name: 'To Do', position: 1 },
-        { name: 'Done', position: 2 }
-      ])
-      
-    rendered_board = render_to_string(
-      partial: 'boards/card', 
-      locals: { board: @board }
-    )
-
-    render_success(board: @board, rendered_board: rendered_board)
+    service = Boards::CreateBoardService.new(current_user, board_params)
+    result = service.call
+  
+    if result[:success]
+      rendered_board = render_to_string(
+        partial: 'boards/card', 
+        locals: { board: result[:board] }
+      )
+  
+      render_success(board: result[:board], rendered_board: rendered_board)
     else
-      render_error(@board.errors.full_messages.join(", "))
+      render_error(result[:message])
     end
   end
-
+  
   def update
     respond_to do |format|
       if @board.update(board_params)

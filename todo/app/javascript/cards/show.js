@@ -135,7 +135,7 @@ $(document).ready(function() {
         success: function(response) {
           if (response.success) {
             var newCard = $(response.rendered_card).hide(); 
-            column.find('.cards').append(newCard);
+            column.find('.cards').prepend(newCard);
             newCard.fadeIn(300);
             form.find('.card-title-input').val('');
             form.closest('.new-card-form').hide();

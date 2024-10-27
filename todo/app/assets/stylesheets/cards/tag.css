@@ -1,0 +1,33 @@
+  
+  .tag-badge {
+    background-color: #6c757d;
+    color: white;
+    padding: 5px 10px;
+    border-radius: 15px;
+    font-size: 0.85em;
+    display: inline-flex;
+    align-items: center;
+    margin-right: 5px;
+    margin-bottom: 5px;
+  }
+
+  .tag-badge .remove-tag {
+    margin-left: 8px;
+    cursor: pointer;
+    color: pink;
+    font-weight: bold;
+  }
+
+  .tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+  }
+
+  .custom-badge {
+    background-color: #101204;
+    color: #ADB9C5;
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-size: 0.85rem;
+  }

@@ -1,23 +1,21 @@
-<%= stylesheet_link_tag 'cards/cards_graph', media: 'all', 'data-turbolinks-track': 'reload' %>
 
 <% if current_user.cards.exists? %>
-  <h2 style="padding: 20px 0px 20px 0px;">
+  <h2 class="graph-title">
     Tarefas criadas - Intervalo <%= @days_interval %> dias
-    <!-- Ícone de ajuda -->
     <i class="bi bi-question-circle-fill" 
        title="Este gráfico exibe o número de tarefas criadas e suas prioridades ao longo do tempo. A cor indica a prioridade e o preenchimento indica se a tarefa foi concluída." 
-       style="cursor: pointer; font-size: 0.9em; margin-left: 10px;">
+    >
     </i>
   </h2>
   <div class="cards-graph-content" id="cards-graph-content">
     <div class="cards-graph-section mb-5">
       <div class="graph-dates">
-        <span class="start-date"><%= @first_card_date.strftime('%d/%m/%Y') %></span>
-        <span class="end-date"><%= @last_card_date.strftime('%d/%m/%Y') %></span>
+        <span class="start-date"><%= format_date(@first_card_date) %></span>
+        <span class="end-date"><%= format_date(@last_card_date) %></span>
       </div>
       <div class="cards-graph">
         <% @cards_by_date.each do |day| %>
-          <div class="graph-day" title="<%= day[:date].strftime('%d/%m/%Y') %>">
+          <div class="graph-day" title="<%= format_date(day[:date]) %>">
             <% day[:cards].each do |card| %>
               <% if card.present? %>
                 <div 
@@ -34,7 +32,6 @@
         <% end %>
       </div>
       
-      <!-- Legenda de Prioridades -->
       <div class="priority-legend mt-4">
         <div class="legend-items">
           <span class="label-priority">Menor Prioridade</span>

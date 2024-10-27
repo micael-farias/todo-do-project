@@ -1,0 +1,8 @@
+.new-registration-container {
+  background-color: #1D2125;
+}
+
+.new-registration-container>div {
+  width: 100%;
+  max-width: 400px;
+}

@@ -1,0 +1,33 @@
+<% if board.daily_board? %>
+  <% if board.board_items.first == item %>
+    <% daily_board_cards.each do |card| %>
+      <%= render partial: 'cards/show', 
+                 locals: { 
+                   card: card,
+                   due_info: format_due_info(card.due_date),
+                   due_label: 'Vencimento',
+                   is_last_column: item.id == last_column_id
+                 } %>
+    <% end %>
+  <% elsif board.board_items.second == item %>
+    <% completed_cards_today.each do |card| %>
+      <%= render partial: 'cards/show',
+                 locals: {
+                   card: card,
+                   due_info: format_due_info(card.completed_at),
+                   due_label: 'Completado em', 
+                   is_last_column: item.id == last_column_id
+                 } %>
+    <% end %>
+  <% end %>
+<% else %>
+  <% item.cards.order(:position).each do |card| %>
+    <%= render partial: 'cards/show',
+               locals: {
+                 card: card,
+                 due_info: format_due_info(card.due_date),
+                 due_label: 'Vencimento',
+                 is_last_column: item.id == last_column_id
+               } %>
+  <% end %>
+<% end %>

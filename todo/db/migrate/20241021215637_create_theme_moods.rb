@@ -4,7 +4,6 @@ class CreateThemeMoods < ActiveRecord::Migration[7.2]
       t.references :mood_category, null: false, foreign_key: true
       t.references :mood, null: false, foreign_key: true
       t.string :image_url
-      t.text :message
 
       t.timestamps
     end

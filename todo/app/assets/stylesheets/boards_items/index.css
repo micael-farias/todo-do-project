@@ -1,0 +1,13 @@
+  .column-content {
+    flex: 1; /* Ocupa todo o espaço disponível na coluna */
+    display: flex;
+    flex-direction: column;
+    padding: 10px; /* Padding interno */
+  }
+    
+  .cards {
+    flex: 1; /* Permite que a área de cards cresça e ocupe o espaço */
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto; /* Permite rolagem vertical se houver muitos cards */
+  }

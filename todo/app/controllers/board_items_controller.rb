@@ -1,24 +1,19 @@
 class BoardItemsController < ApplicationController
   before_action :set_board, only: [:create, :update, :destroy ]
   before_action :set_board_item, only: [:update, :destroy ]
-
+  
   def create
-    @board_item = @board.board_items.new(board_item_params)
-    @board_item.position = (@board.board_items.maximum(:position) || 1) + 1
-    last_board_item = BoardItem.where(board_id: @board.id).order(id: :desc).first
-    
-    if @board_item.save
-
-      if last_board_item
-        last_board_item.cards.update_all(completed: false, completed_at: nil)
-      end
-
-      render_success(rendered_column: render_to_string(partial: 'board_items/index', locals: { item: @board_item }, formats: [:html]))
+    service = BoardItems::CreateBoardItemService.new(@board, board_item_params)
+    result = service.call
+  
+    if result[:success]
+      rendered_column = render_to_string(partial: 'board_items/index', locals: { item: result[:board_item] }, formats: [:html])
+      render_success(rendered_column: rendered_column)
     else
-      render_error(@board_item.errors.full_messages.join(", "))
+      render_error(result[:message])
     end
   end
-
+  
   def update
     if @board_item.update(board_item_params)
       render_success(board_item: @board_item)

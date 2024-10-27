@@ -6,5 +6,4 @@ class ThemeMood < ApplicationRecord
 
   # Validations
   validates :image_url, presence: true
-  validates :message, presence: true
 end

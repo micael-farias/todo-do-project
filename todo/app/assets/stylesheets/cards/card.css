@@ -1,0 +1,10 @@
+/* app/assets/stylesheets/cards_card.css */
+  
+  /* Título do Cartão */
+  .card-title {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    grid-gap: 5px;
+    align-items: start;
+  }
+  

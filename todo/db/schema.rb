@@ -105,7 +105,23 @@ ActiveRecord::Schema[7.2].define(version: 2024_10_27_155029) do
     t.string "image_url"
     t.string "phrase"
   end
+  create_table "theme_mood_messages", force: :cascade do |t|
+    t.bigint "theme_mood_id", null: false
+    t.text "message", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["theme_mood_id"], name: "index_theme_mood_messages_on_theme_mood_id"
+  end
 
+  create_table "theme_moods", force: :cascade do |t|
+    t.bigint "mood_category_id", null: false
+    t.bigint "mood_id", null: false
+    t.string "image_url"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["mood_category_id"], name: "index_theme_moods_on_mood_category_id"
+    t.index ["mood_id"], name: "index_theme_moods_on_mood_id"
+  end
   create_table "moods", force: :cascade do |t|
     t.string "name"
     t.datetime "created_at", null: false
@@ -142,7 +158,6 @@ ActiveRecord::Schema[7.2].define(version: 2024_10_27_155029) do
     t.bigint "mood_category_id", null: false
     t.bigint "mood_id", null: false
     t.string "image_url"
-    t.text "message"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["mood_category_id"], name: "index_theme_moods_on_mood_category_id"
@@ -169,14 +184,16 @@ ActiveRecord::Schema[7.2].define(version: 2024_10_27_155029) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.bigint "mood_category_id"
+    t.integer "credits_openai_used"
+
     t.boolean "show_recent_boards", default: true
     t.boolean "show_popular_boards", default: true
     t.boolean "show_daily_board", default: true
     t.boolean "show_card_priority", default: true
     t.boolean "show_card_due_date", default: true
     t.boolean "show_card_mood", default: true
-    t.integer "credits_openai_used"
     t.boolean "show_form_after_create_card", default: true
+    
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end

@@ -1,18 +1,65 @@
-
 /* Estilos para a seção de mensagem */
-  .mood-message-section {
-    padding: 20px;
-    background-color: #00206a;
-    border-radius: 10px;
-    width: 60%;
-    margin: 20px;
-  }
-  
-  .mood-message-section h3 {
-    margin-bottom: 10px;
-  }
-  
-  .mood-message-section p {
-    font-size: 1.2em;
-    color: #333;
-  }
+.mood-message-section {
+  padding: 20px;
+  border-radius: 10px;
+  width: 60%;
+  margin: 20px;
+  position: relative;
+  background-color: #005a8c;
+}
+
+.selected-mood-text {
+  margin-bottom: 10px;
+  color: white;
+}
+
+.mood-message-section p {
+  font-size: 1.2em;
+  color: #333;
+}
+
+.mood-section-content {
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+}
+
+.image-container {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.image-container>div {
+  position: relative;
+  width: 250px;
+  height: 250px;
+  overflow: hidden;
+  border-radius: 20px;
+}
+
+#mood-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 20px;
+}
+
+
+.vertical-line-separator {
+  width: 2px;
+  height: 250px;
+  background-color: white;
+  margin: 0 20px;
+}
+
+#mood-message {
+  font-size: 18px;
+  color: white;
+}
+
+.text-explaining-mood {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}

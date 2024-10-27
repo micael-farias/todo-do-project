@@ -2,33 +2,28 @@
 <h2>Quadros de Tarefas</h2>
 
   <div class="board-container">
-    <!-- Card para Adicionar Novo Board -->
     <div class="board-card new-board-card" id="add-board-button">
       <div class="card-body">
         <i class="bi bi-plus-lg" aria-label="Adicionar Novo Board"></i>
       </div>
     </div>
     
-    <!-- Formulário oculto para adicionar um novo board -->
-    <div class="new-board-form" style="display: none;">
+    <div class="new-board-form">
       <%= render 'boards/new' %>
     </div>
     
-    <!-- Cards dos Boards Existentes -->
     <%= render partial: 'boards/card', collection: @boards, as: :board %>
   </div>
-  <!-- Seção do Board Diário -->
-  <% if current_user.show_daily_board && @daily_board.present? &&  !@user_uses_mobile%>
-    <h2>Tarefas diárias - <%= Utils::DateService.today.strftime('%d/%m') %></h2>
+
+  <% if @show_daily_board %>
+    <h2>Tarefas diárias - <%= format_date(Utils::DateService.today) %></h2>
     
-    <!-- Mensagem Informativa com Link para Editar Humor -->
-    <div class="edit-mood-message alert alert-info d-flex align-items-center" role="alert" style="margin: 0px 20px 0px 20px;">
+    <div class="edit-mood-message alert alert-info d-flex align-items-center" role="alert">
       <span>
         O board diário foi criado a partir do seu humor diário. Você pode <a href="#" id="edit-mood-button" class="alert-link">alterar seu humor diário e gerar um novo board</a>.
       </span>
     </div>
     <div class="board-container">
-      <!-- Card do Board Diário Existente -->
       <div class="board-card">
         <%= link_to board_path(@daily_board), class: 'board-link' do %>
           <div class="card-body">
@@ -39,21 +34,18 @@
     </div>
   <% end %>
 
-  <!-- Seção dos Últimos Acessados -->
-  <% if current_user.show_recent_boards && @last_accessed_boards.exists? %>
+  <% if @show_recent_boards %>
     <h2>Últimos acessados</h2>
     <div class="board-container">
       <%= render partial: 'boards/card', collection: @last_accessed_boards, as: :board %>
     </div>
   <% end %>
   
-  <!-- Seção dos Mais Acessados -->
-  <% if current_user.show_popular_boards && current_user.boards.active.exists? %>
+  <% if @show_most_accessed %>
     <h2>Mais acessados</h2>
     <div class="board-container">
       <%= render partial: 'boards/card', collection: current_user.boards.active.order(access_count: :desc), as: :board %>
     </div>
   <% end %>
-
 
 </div> 

@@ -44,7 +44,7 @@ class User < ApplicationRecord
     end
 
     if mood_category.nil?
-      update(mood_category: MoodCategory.first)
+      update(mood_category: MoodCategory.last)
     end
   end
 end

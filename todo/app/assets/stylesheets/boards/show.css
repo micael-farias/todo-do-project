@@ -1,0 +1,118 @@
+/* app/assets/stylesheets/boards_show.css */
+
+/* Estilos para o Kanban Board */
+  #kanban-board {
+    display: flex;
+    overflow-x: auto;
+    padding-top: 10px;
+    padding-left: 10px;
+    padding-right: 10px;
+    width: 100%;
+    gap: 20px;
+  }
+  
+  #kanban-board::-webkit-scrollbar {
+    display: none; 
+  }
+  
+  .column {
+    border-radius: 10px;
+    width: 300px;
+    margin-bottom: 10px;
+    flex-shrink: 0;
+    display: flex;
+    background-color: #101204; 
+    padding: 10px;
+    flex-direction: column;
+  }
+  
+  .column-name-input {
+    width: 100%;
+  }
+  
+  .delete-column-button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 1.25em;
+  }
+  
+  /* Estilos para o botão de adicionar coluna */
+  .add-column {
+    width: 300px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .add-column-text {
+    text-decoration: none;  /* Remove o sublinhado */
+    font-style: normal;     /* Remove o itálico */
+  }
+
+  .card-placeholder {
+    background-color: #616161;
+    border: 2px dashed #ccc;
+    height: 80px; /* Ajuste conforme necessário */
+    margin-bottom: 10px;
+    /* Utilizar transform para hardware acceleration */
+    transform: translate3d(0, 0, 0);
+    transition: all 0.3s ease; /* Aumento da duração da transição */
+  }
+
+
+  /* Classe para cards concluídos */
+  .completed-card {
+    opacity: 0.6;
+  }
+
+  /* Estilização das Tags */
+  .tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+  }
+
+/* Adicione esta classe no seu bloco <style> existente */
+  .processing-card {
+    opacity: 0.5; /* Ajuste o valor conforme necessário */
+    transition: opacity 0.3s ease; /* Transição suave */
+  }
+
+  /* Alterar o background do campo de texto */
+  .custom-input {
+    background-color: #181C1F;  /* Cor de fundo desejada */
+    color: #fdfdfd;              /* Cor do texto normal */
+  }
+  
+  /* Alterar a cor do placeholder */
+  .custom-input::placeholder {
+    color: #fdfdfd; /* Cor do placeholder desejada */
+    opacity: 1;     /* Garante que a opacidade do placeholder seja plena */
+  }
+
+  .cancel-new-column-button {
+    margin-left: 10px;
+  }
+
+  
+  .kanban{
+    background-color: #352D78;
+    height: 100vh;
+  }
+  
+  .card-title-mobile-container {
+    flex-grow: 1;
+    font-size: 5px;
+    color: #ADB9C5;
+    text-align: left; /* Para garantir que o título esteja alinhado à esquerda */
+  }
+
+  .card-title-mobile{
+    font-size: 15px;
+    font-weight: 700;
+    flex-grow: 1;
+    text-align: left;
+    color: #ADB9C5;
+  }
