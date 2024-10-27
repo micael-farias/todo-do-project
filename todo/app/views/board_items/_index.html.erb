@@ -1,7 +1,7 @@
 <div class="column" data-board-item-id="<%= item.id %>" style="<%= 'width: 600px;' if @board.daily_board? %>">
   <div class="column-header">
-    <h3>
-      <span class="column-name" data-column-id="<%= item.id %>"><%= item.name %></span>
+    <h3 style="flex-grow: 1; display: flex;">
+      <span class="column-name" style="flex-grow: 1" data-column-id="<%= item.id %>"><%= item.name %></span>
     </h3>
     <% unless @board.daily_board? %>
       <button class="delete-column-button" data-column-id="<%= item.id %>" title="Excluir Coluna" data-board-item-id="<%= item.id %>">

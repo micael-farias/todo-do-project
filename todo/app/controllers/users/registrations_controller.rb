@@ -13,6 +13,7 @@ class Users::RegistrationsController < Devise::RegistrationsController
         :show_card_priority,
         :show_card_due_date,
         :show_card_mood,
+        :show_form_after_create_card,
         :mood_category_id,
         :name
       ])

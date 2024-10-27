@@ -1,7 +1,6 @@
 import { addTag } from "../tags/add-tag";
 
-export function openForm(card) {
-    var cardId = card.data('card-id');
+export function openForm(card, cardId) {
     var boardId = $('#kanban-board').data('board-id');
     var boardItemId = card.closest('.column').data('board-item-id');
     var modal = new bootstrap.Modal(document.getElementById('editCardModal'));

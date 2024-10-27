@@ -18,7 +18,7 @@ class CardsController < ApplicationController
           due_label: 'Data de Vencimento'
         }
       )
-      render_success(card: result[:card], rendered_card: rendered_card)
+      render_success(card: result[:card], rendered_card: rendered_card, open_form: current_user.show_form_after_create_card)
     else
       render_error(result[:message])
     end

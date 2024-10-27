@@ -1,7 +1,14 @@
 <%= stylesheet_link_tag 'cards/cards_graph', media: 'all', 'data-turbolinks-track': 'reload' %>
 
 <% if current_user.cards.exists? %>
-  <h2 style="padding: 20px 0px 20px 0px;">Tarefas criadas - Intervalo <%=@days_interval%> dias</h2>
+  <h2 style="padding: 20px 0px 20px 0px;">
+    Tarefas criadas - Intervalo <%= @days_interval %> dias
+    <!-- Ícone de ajuda -->
+    <i class="bi bi-question-circle-fill" 
+       title="Este gráfico exibe o número de tarefas criadas e suas prioridades ao longo do tempo. A cor indica a prioridade e o preenchimento indica se a tarefa foi concluída." 
+       style="cursor: pointer; font-size: 0.9em; margin-left: 10px;">
+    </i>
+  </h2>
   <div class="cards-graph-content" id="cards-graph-content">
     <div class="cards-graph-section mb-5">
       <div class="graph-dates">

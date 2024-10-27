@@ -1,11 +1,12 @@
 <!-- app/views/boards/_new_column_form.html.erb -->
-<div class="new-column-form" style="display: none; width: 300px;">
+<div class="new-column-form" style="display: none; width: 300px; background-color: blue; height: 50px;">
   <%= form_with(model: BoardItem.new, url: board_board_items_path(@board), html: { class: 'create-column-form' }) do |form| %>
-    <div class="field mb-3" style="width: 300px;">
+    <div class="field mb-3" style="width: 300px; background-color: pink">
       <%= form.text_field :name, placeholder: "Nome da coluna", class: 'form-control column-name-input', required: true %>
     </div>
   <% end %>
 </div>
+
 <!-- Botão para adicionar uma nova coluna -->
 <div class="add-column-button">
   <a href="#" class="show-new-column-form" style="text-decoration: none; background-color: blue">

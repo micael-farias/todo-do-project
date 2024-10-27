@@ -1,7 +1,24 @@
 import { consolidateColumnEdit } from "./save";
 
 $(document).ready(function() {
+  $('#kanban-board').on('click', '.column-name', function() {
+    var span = $(this);
+    var currentName = span.text();
 
+    // Criar um campo de input com o nome atual
+    var input = $('<input>', {
+      type: 'text',
+      class: 'form-control column-name-input',
+      value: currentName
+    });
+
+    // Substituir o span pelo input
+    span.replaceWith(input);
+    input.focus();
+
+    // Selecionar o texto no input
+    input.select();
+    });
 
   $('#kanban-board').on('keydown', '.column-name-input', function(e) {
       var input = $(this);

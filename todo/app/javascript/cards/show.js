@@ -142,6 +142,11 @@ $(document).ready(function() {
             column.find('.add-card-button').show();
             becomeCardContentClickable()
             $(".cards").sortable("refresh");
+
+            if(response.open_form){
+              openForm(newCard, response.card.id)
+            }
+
           } else {
             alert('Erro ao criar o card: ' + response.message);
           }
@@ -188,14 +193,16 @@ $(document).ready(function() {
   $(document).on('click', '.edit-card-button', function(e) {
       e.stopPropagation()
       var card = $(this).closest('.card'); 
-      openForm(card);     
+      var cardId = card.data('card-id');        
+      openForm(card, cardId);     
   })
 
   function becomeCardContentClickable(){
     $(".card-content").on("click", function(e) {
       e.stopPropagation()
       var card = $(this); 
-      openForm(card);        
+      var cardId = card.data('card-id');        
+      openForm(card, cardId);        
     });
   }
 

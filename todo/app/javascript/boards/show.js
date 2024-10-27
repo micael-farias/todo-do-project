@@ -48,26 +48,6 @@ $(document).ready(function() {
           });
         }
     });
-   
-    $('#kanban-board').on('click', '.column-name', function() {
-    var span = $(this);
-    var currentName = span.text();
-    var columnId = span.data('column-id');
-
-    // Criar um campo de input com o nome atual
-    var input = $('<input>', {
-      type: 'text',
-      class: 'form-control column-name-input',
-      value: currentName
-    });
-
-    // Substituir o span pelo input
-    span.replaceWith(input);
-    input.focus();
-
-    // Selecionar o texto no input
-    input.select();
-    });
   
    $(document).on('click', function(e) {
     var target = $(e.target);
@@ -102,32 +82,45 @@ $(document).ready(function() {
     var currentName = span.text().trim();
     var boardId = span.data('board-id');
 
-    // Criar um campo de input com o nome atual e um botão de conclusão
-    var inputGroup = $('<div>', { class: 'input-group board-edit-container' });
+  
+        // Criar o input group
+        var editInputGroup = createEditInput(currentName, boardId);
 
-    var input = $('<input>', {
-      type: 'text',
-      class: 'form-control board-edit-title-input',
-      value: currentName,
-      'data-original-name': currentName,
-      'data-board-id': boardId
-    });
-
-    var button = $('<button>', {
-      class: 'btn btn-success board-save-title-button',
-      type: 'button',
-      text: 'Concluir'
-    });
-
-    inputGroup.append(input);
-    inputGroup.append(button);
+        // Substituir o título pelo input group
+        span.replaceWith(editInputGroup);
 
     // Substituir o span pelo input group
-    span.replaceWith(inputGroup);
     input.focus();
     input.select();
   });
 
+  function createEditInput(currentName, boardId) {
+    // Criar o input group
+    var inputGroup = $('<div>', { class: 'input-group board-edit-container', style: 'width: 80%; padding: 10px 0px 10px 0px' });
+
+    // Criar o campo de input
+    var input = $('<input>', {
+        type: 'text',
+        class: 'form-control board-edit-title-input',
+        value: currentName,
+        'data-original-name': currentName,
+        'data-board-id': boardId,
+        'aria-label': 'Título do Board'
+    });
+
+    // Criar o botão com o ícone de check
+    var button = $('<button>', {
+        class: 'btn btn-success board-save-title-button',
+        type: 'button',
+        'aria-label': 'Concluir Edição'
+    }).html('<i class="bi bi-check"></i>'); // Inserir o ícone de check
+
+    // Adicionar o input e o botão ao input group
+    inputGroup.append(input);
+    inputGroup.append(button);
+
+    return inputGroup;
+}
   // Evento de clique no botão de concluir
   $(document).on('click', '.board-save-title-button', function() {
     var button = $(this);

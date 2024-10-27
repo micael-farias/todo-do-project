@@ -27,9 +27,9 @@
 }
 
 p {
-  font-size: 16px;
+  font-size: 0.9em;
   line-height: 1.5;
-  color: #333;
+  color: rgb(240, 240, 240);
 }
 
 span {
@@ -38,6 +38,18 @@ span {
   color: #666;
 }
 
+/* Estilos do rodapé */
+.footer {
+  background-color: #222;
+  color: #fff;
+  text-align: center;
+  padding: 10px;
+  font-size: 14px;
+  margin-top: 20px; /* Adiciona um espaço acima do rodapé */
+}
+
+
+/* Garante que o body preencha pelo menos a altura total da página */
 
 h2 {
   /* Adicione aqui os estilos que deseja aplicar a todos os parágrafos */

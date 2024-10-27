@@ -83,6 +83,10 @@
         <%= f.check_box :show_card_mood, class: "form-check-input", id: "show_card_mood" %>
         <%= f.label :show_card_mood, "Mostrar humor", class: "form-check-label", for: "show_card_mood" %>
       </div>
+      <div class="form-check form-switch mb-3">
+        <%= f.check_box :show_form_after_create_card, class: "form-check-input", id: "show_form_after_create_card" %>
+        <%= f.label :show_form_after_create_card, "Abrir formulário após criar card", class: "form-check-label", for: "show_form_after_create_card" %>
+      </div>
     </div>
 
     <!-- Separador -->
@@ -119,6 +123,12 @@
             <div class="mood-category-item <%= 'selected' if resource.mood_category_id == category.id %>" data-category-id="<%= category.id %>">
               <img src="<%= category.image_url.present? ? category.image_url : 'https://via.placeholder.com/150' %>" alt="<%= category.name %>" class="category-image">
               <p class="category-name"><%= category.name %></p>
+              
+              <!-- Adicionar a frase do personagem -->
+              <% if true %>
+                <span class="category-phrase">"Incrivel como o tempo só te valoriza"</span>
+              <% end %>
+              
               <% if resource.mood_category_id == category.id %>
                 <span class="selected-icon">
                   <i class="bi bi-check-circle"></i>
@@ -127,6 +137,7 @@
             </div>
           <% end %>
         </div>
+
 
         <!-- Campo Oculto para armazenar a categoria selecionada -->
         <%= f.hidden_field :mood_category_id, value: resource.mood_category_id, id: 'selected_mood_category_id' %>
@@ -196,6 +207,15 @@
       color: white;
       font-size: 24px;
     }
+
+    .category-phrase {
+      font-size: 1.1em;
+      color: white;
+      margin-top: 10px;
+      font-style: italic;
+      text-align: center;
+    }
+
 
     .edit-avatar-overlay:hover {
       opacity: 1;
