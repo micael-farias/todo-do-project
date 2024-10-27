@@ -3,11 +3,11 @@
   <% if @board.board_items.any? %>
     <% last_column_id = @board.board_items.last.id %> <!-- Identifica o ID da última coluna -->
     <% @board.board_items.each do |item| %>
-      <%= render 'kanban/column/index', item: item, last_column_id: last_column_id %>
+      <%= render 'board_items/index', item: item, last_column_id: last_column_id %>
     <% end %>
   <% end %>
   
   <% unless @board.daily_board? %>
-    <%= render 'kanban/column/new' %>
+    <%= render 'board_items/new' %>
   <% end %>
 </div>

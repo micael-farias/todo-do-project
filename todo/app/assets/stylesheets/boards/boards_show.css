@@ -142,6 +142,7 @@
   .tag-badge .remove-tag {
     margin-left: 8px;
     cursor: pointer;
+    color: pink;
     font-weight: bold;
   }
   
@@ -292,4 +293,3 @@
     margin: 0;
     padding: 0;
   }
-  

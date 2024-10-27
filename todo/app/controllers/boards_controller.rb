@@ -1,33 +1,10 @@
 class BoardsController < ApplicationController
-  before_action :set_board, only: [:show, :destroy, :duplicate]
-  before_action :check_user_uses_mobile, only: [:index, :show]
-  def index
-    active_boards = current_user.boards.active
-    @boards = active_boards.includes(:board_items).order(created_at: :desc)
-    @last_accessed_boards = active_boards.order(last_access: :desc)
-    @days_interval = (@user_uses_mobile ? 15 : 30)
-
-    mood_service = Moods::MoodService.new(current_user)
-    @active_mood = mood_service.active_mood
-    @random_message = mood_service.random_message
-    @user_moods_today = mood_service.user_moods_today
-    @has_mood_today = mood_service.has_mood_today?
-    @selected_moods = mood_service.selected_moods
-
-    daily_board_service = Boards::DailyBoardService.new(current_user)
-    @daily_board =  daily_board_service.fetch_daily_board
-   
-    cards_graph_service = Cards::CardsGraphService.new(current_user, @days_interval)
-    @cards_by_date = cards_graph_service.padded_cards_by_date
-    @first_card_date = cards_graph_service.first_card_date
-    @last_card_date = cards_graph_service.last_card_date
-    @date_range = cards_graph_service.date_range
-    Board.verify_daily_board(current_user, @user_uses_mobile)
-  end
+  before_action :set_board, only: [:show, :destroy, :update, :duplicate]
 
   def show
     @board.increment!(:access_count)
     @board.update(last_access: Utils::DateService.today)
+    @highlight_card_id = params[:highlight_card]
 
     if @board.daily_board?
       fetch_daily_board_cards
@@ -45,9 +22,26 @@ class BoardsController < ApplicationController
         { name: 'Done', position: 2 }
       ])
       
-      render_success(board: @board)
+    rendered_board = render_to_string(
+      partial: 'boards/card', 
+      locals: { board: @board }
+    )
+
+    render_success(board: @board, rendered_board: rendered_board)
     else
       render_error(@board.errors.full_messages.join(", "))
+    end
+  end
+
+  def update
+    respond_to do |format|
+      if @board.update(board_params)
+        format.html { redirect_to @board, notice: 'Board was successfully updated.' }
+        format.json { render json: { success: true, board: @board }, status: :ok }
+      else
+        format.html { render :edit, status: :unprocessable_entity }
+        format.json { render json: { success: false, message: @board.errors.full_messages.to_sentence }, status: :unprocessable_entity }
+      end
     end
   end
 

@@ -1,0 +1,16 @@
+<%= stylesheet_link_tag 'boards/boards_index', media: 'all', 'data-turbolinks-track': 'reload' %>
+
+<div>
+  <% if current_user.show_daily_board && @daily_board.present? && !@user_uses_mobile %>
+    <div id="mood-section">
+      <%= render 'mood/mood_selection' %>
+      <div style="height: 20px" id="mood-message-above-section"></div>
+      <%= render 'mood/mood_message_section' %>
+    </div>
+  <% end %>
+
+  <%= render 'graph_card/graph_cards' %>
+
+  <%= render 'boards/list' %>
+  
+</div>

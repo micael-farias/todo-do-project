@@ -47,7 +47,8 @@ module Moods
       random_message = theme_mood.theme_mood_messages.order("RANDOM()").first
       @theme_mood_data = {
         image_url: theme_mood.image_url,
-        message: random_message&.message
+        message: random_message&.message,
+        name: theme_mood.mood.name
       }
     end
   end

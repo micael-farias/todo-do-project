@@ -36,6 +36,11 @@
     padding: 15px;
     height: 100%;
   }
+    
+  .board-card .card-body:hover {
+    background-color: whitesmoke;
+    border-radius: 15px; /* Aumenta o arredondamento dos cantos */
+  }
   
   .board-card .card-title {
     font-size: 1.2em;

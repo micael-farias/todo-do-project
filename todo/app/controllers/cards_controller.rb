@@ -1,5 +1,5 @@
 class CardsController < ApplicationController
-  before_action :set_board_and_board_item
+  before_action :set_board_and_board_item, except: [:search]
   before_action :set_card, only: [:edit, :update, :destroy, :move]
 
   def create
@@ -8,7 +8,7 @@ class CardsController < ApplicationController
   
     if result[:success]
       rendered_card = render_to_string(
-        partial: 'cards/card',
+        partial: 'cards/show',
         locals: {
           card: result[:card],
           current_user: current_user, 
@@ -24,6 +24,21 @@ class CardsController < ApplicationController
     end
   end
   
+  def search
+    if params[:query].present?
+      @cards = Card.joins(board_item: { board: :user })
+      .where("LOWER(cards.title) LIKE ? AND boards.user_id = ?", "%#{params[:query].downcase}%", current_user.id)
+      .limit(10)
+    else
+      @cards = Card.none
+    end
+
+    Rails.logger.info @cards.to_json
+
+    respond_to do |format|
+      format.json { render json: @cards.map { |card| { id: card.id, title: card.title, board_id: card.board_item.board_id } } }
+    end
+  end
 
   def edit
     render json: @card.to_json(include: :tags)

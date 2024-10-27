@@ -1,8 +1,9 @@
 <!-- Assegure-se de que o arquivo CSS externo esteja incluído no seu layout principal, por exemplo: -->
 <!-- <link rel="stylesheet" href="/path/to/styles.css"> -->
 <%= stylesheet_link_tag 'cards/cards_card', media: 'all', 'data-turbolinks-track': 'reload' %>
-
-<div class="card" data-card-id="<%= card.id %>" style="background-color: #22272B;">
+<div class="card" data-card-id="<%= card.id %>" data-title="<%= card.title.downcase %>"
+     style="background-color: <%= (@highlight_card_id.present? && card.id.to_s == @highlight_card_id) ? '#22272B' : '#ffffff' %>"
+     >
   
   <!-- Círculo azul no canto superior -->
 <div class="priority_circle" 
@@ -27,7 +28,7 @@
           <% end %>">
 </div>
 
-  <div class="card-content">
+  <div class="card-content" data-card-id="<%= card.id %>" data-board-item-id="<%= card.board_item_id %>">
     
     <h4 class="card-title">
 

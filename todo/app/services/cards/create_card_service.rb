@@ -13,7 +13,7 @@ module Cards
 
       if @card.save
         Thread.new do
-          Cards::AssignMoodService.new(@card).call
+          #Cards::AssignMoodService.new(@card).call
         end
         { success: true, card: @card }
       else

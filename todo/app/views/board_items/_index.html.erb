@@ -1,4 +1,3 @@
-<!-- app/views/boards/_column.html.erb -->
 <div class="column" data-board-item-id="<%= item.id %>" style="<%= 'width: 600px;' if @board.daily_board? %>">
   <div class="column-header">
     <h3>
@@ -17,7 +16,7 @@
         <!-- Primeira Coluna: Cards filtrados por humor -->
         <% if @board.board_items.first == item %>
           <% @daily_board_cards.each do |card| %>
-            <%= render 'cards/card', 
+            <%= render 'cards/show', 
                 card: card, 
                 due_info: card.due_date.present? ? card.due_date.strftime('%d/%m/%Y') : nil, 
                 due_label: 'Vencimento',
@@ -27,7 +26,7 @@
         <!-- Segunda Coluna: Todos os cards finalizados hoje -->
         <% elsif @board.board_items.second == item %>
           <% @completed_cards_today.each do |card| %>
-            <%= render 'cards/card', 
+            <%= render 'cards/show', 
                 card: card, 
                 due_info: card.completed_at.strftime('%d/%m/%Y %H:%M'), 
                 due_label: 'Completado em',
@@ -38,7 +37,7 @@
       <% else %>
         <!-- Para boards normais, exibe os cards normalmente nas colunas -->
         <% item.cards.order(:position).each do |card| %>
-          <%= render 'cards/card', 
+          <%= render 'cards/show', 
               card: card, 
               due_info: card.due_date.present? ? card.due_date.strftime('%d/%m/%Y') : nil, 
               due_label: 'Vencimento',

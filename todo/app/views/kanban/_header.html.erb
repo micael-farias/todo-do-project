@@ -1,10 +1,17 @@
 <h3 style="color: rgb(169, 169, 169); width:100%; line-height: 50px; padding-left: 10px; background-color: rgba(169, 169, 169, 0.2); display: flex; align-items: center; justify-content: space-between;">
-  
+
   <%= link_to :back, class: "btn btn-link", style: "color: white; margin-right: 10px;" do %>
     <i class="bi bi-arrow-left"></i> 
   <% end %>
 
-  <%= @board.title %>
+  <% unless @board.daily_board? %>
+    <span class="board-title" data-board-id="<%= @board.id %>" style="cursor: pointer;">
+      <%= @board.title %>
+    </span>
+  <% else %>
+    <%= @board.title %>
+  <% end %>
+
   <div>
     <% unless @board.daily_board? %>
       <button id="delete-board-button" title="Excluir board" class="btn btn-link" style="float: right; color: white; margin-right: 10px;">
@@ -14,17 +21,7 @@
       <button id="duplicate-board-button" title="Duplicar board" class="btn btn-link" style="float: right; color: white;">
         <i class="bi bi-files"></i>
       </button>
-
-    <% else %>  
-
-       <div style="margin-left: 20px; display: flex; align-items: center;">
-        <% if current_user.active_theme_mood %>
-          <span style="color: #FFA500; font-weight: bold; padding-right: 10px;">
-            Humor de hoje: <%= current_user.active_theme_mood.mood.name %>
-          </span>
-        <% end %>
-      </div>
-
+      
     <% end %>
   </div>
 </h3>

@@ -1,0 +1,42 @@
+<div class="mobile-view" data-board-id="<%= @board.id %>">
+    <div class="add-card-mobile" data-board-item-id="<%= @board.board_items.first.id %>">
+        <div class="card-header-mobile">
+            <i class="bi bi-plus-lg" style="color: white"></i>
+        </div>
+    </div>
+    <% @board.cards.each do |card| %>
+    <div class="card-mobile" data-card-id="<%= card.id %>" data-board-item-id="<%= card.board_item_id %>">
+        <div class="card-header-mobile">
+            <!-- Círculo de prioridade -->
+            <div class="priority-circle" 
+                style="background-color: 
+                <% if card.priority == 1 %>
+                rgb(4, 51, 77);
+                <% elsif card.priority == 2 %>
+                rgb(56, 122, 158);
+                <% elsif card.priority == 3 %>
+                rgb(131, 198, 235);
+                <% else %>
+                #6f6f6f;
+                <% end %>;">
+            </div>
+            
+            <span class="card-title" data-card-id="<%= card.id %>"  data-board-item-id="<%= card.board_item_id %>" > <%= card.title %>   </span>
+            
+            <!-- Container para checkbox e lixeira -->
+            <div class="action-icons">
+                <!-- Ícone de lixeira -->
+                <button class="delete-card-button-mobile button-delete-card" title="Excluir" style="border: none; background: transparent;">
+                    <i class="bi bi-trash" style="color: white"></i>
+                </button>
+                    <!-- Checkbox para marcar como completo -->
+                <!-- Checkbox para marcar como completo -->
+                <label class="checkbox-container">
+                    <input class="complete-card-button-mobile" type="checkbox" <%= card.completed? ? 'checked' : '' %> />
+                    <span class="checkmark"></span>
+                </label>
+            </div>
+        </div>
+    </div>
+    <% end %>
+</div>

@@ -1,6 +1,6 @@
 class BoardItemsController < ApplicationController
-  before_action :set_board, only: [:create, :update, :destroy]
-  before_action :set_board_item, only: [:update, :destroy]
+  before_action :set_board, only: [:create, :update, :destroy ]
+  before_action :set_board_item, only: [:update, :destroy ]
 
   def create
     @board_item = @board.board_items.new(board_item_params)
@@ -13,7 +13,7 @@ class BoardItemsController < ApplicationController
         last_board_item.cards.update_all(completed: false, completed_at: nil)
       end
 
-      render_success(rendered_column: render_to_string(partial: 'board_items/column', locals: { item: @board_item }, formats: [:html]))
+      render_success(rendered_column: render_to_string(partial: 'board_items/index', locals: { item: @board_item }, formats: [:html]))
     else
       render_error(@board_item.errors.full_messages.join(", "))
     end
