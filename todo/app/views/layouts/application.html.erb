@@ -91,6 +91,7 @@
 
     <div class="collapse navbar-collapse" id="navbarNav">
       <ul class="navbar-nav me-auto"></ul>
+      <% if current_user %>
 
       <!-- Campo de Pesquisa -->
       <form class="d-flex me-3 position-relative" id="searchForm">
@@ -109,7 +110,6 @@
       </form>
 
       <!-- Usuário Logado -->
-      <% if current_user %>
         <div class="d-flex align-items-center">
       <div style="margin-left: 20px; display: flex; align-items: center;">
         <% if current_user.active_theme_mood %>
