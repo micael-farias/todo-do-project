@@ -1,6 +1,6 @@
 //import { consolidateColumnEdit } from "../boards_items/save";
-import { createColumn } from "../boards_items/new";
-import { updateColumn } from "../boards_items/edit"
+//import { createColumn } from "../boards_items/new";
+//import { updateColumn } from "../boards_items/edit"
 
 $(document).ready(function () {
 
@@ -208,9 +208,9 @@ $(document).ready(function () {
       var boardId = $('#kanban-board').data('board-id');
     
       if (columnId === undefined) {
-        createColumn(input.closest('form'), newName);
+        //createColumn(input.closest('form'), newName);
       } else {
-        updateColumn(columnId, newName, boardId, input);
+        //updateColumn(columnId, newName, boardId, input);
       }
     }
   });
