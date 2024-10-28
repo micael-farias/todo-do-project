@@ -203,7 +203,7 @@ $(document).ready(function () {
     }
   });
 
- /* $(document).on('click', '.delete-column-button', function (e) {
+  $(document).on('click', '.delete-column-button', function (e) {
     e.stopPropagation();
     var button = $(this);
     var columnId = button.data('column-id');
@@ -243,5 +243,5 @@ $(document).ready(function () {
     column.find('.add-card-button').hide();
     column.find('.new-card-form').show();
     column.find('.card-title-input').focus();
-  });*/
+  });
 })
