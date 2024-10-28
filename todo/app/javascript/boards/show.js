@@ -1,13 +1,85 @@
 //import { consolidateColumnEdit } from "../boards_items/save";
 //import { createColumn } from "../boards_items/new";
 //import { updateColumn } from "../boards_items/edit"
-import { openForm } from "../utils/consts";
-import { becomeCardClickable } from "../utils/consts";
-import { timeBeforeOpeningFormAgain } from "../utils/consts";
-import { addTag } from "../tags/add-tag";
+//import { openForm } from "../utils/consts";
+//import { becomeCardClickable } from "../utils/consts";
+//import { timeBeforeOpeningFormAgain } from "../utils/consts";
+//import { addTag } from "../tags/add-tag";
 
 $(document).ready(function () {
+  const timeBeforeOpeningFormAgain = 3000
 
+  function becomeCardClickable(card) {
+    $(".card-content").on("click", function (e) {
+      e.stopPropagation()
+      var cardId = card.data('card-id');
+      var boardId = $('#kanban-board').data('board-id');
+      var boardItemId = card.closest('.column').data('board-item-id');
+      openForm(boardId, boardItemId, cardId);
+    });
+  }
+
+  function openForm(boardId, boardItemId, cardId) {
+    var modal = new bootstrap.Modal(document.getElementById('editCardModal'));
+    var form = $('#edit-card-form');
+
+    form.attr('action', `/boards/${boardId}/board_items/${boardItemId}/cards/${cardId}`);
+
+    $('#tag-container-edit').empty();
+    $('#card_tags_edit').val('');
+
+    $.ajax({
+      url: `/boards/${boardId}/board_items/${boardItemId}/cards/${cardId}/edit`,
+      method: 'GET',
+      dataType: 'json',
+      success: function (data) {
+        form.find('#card_title').val(data.title);
+        form.find('#card_description').val(data.description);
+        form.find('#card_mood_id').val(data.mood_id || '');
+        form.find('#card_due_date').val(data.due_date ? data.due_date.split('T')[0] : '');
+        form.find('#card_priority').val(data.priority || '');
+
+        if (data.tags && data.tags.length > 0) {
+          data.tags.forEach(function (tag) {
+            addTag(tag.name, 'tag-container-edit', 'card_tags_edit');
+          });
+        }
+
+        modal.show();
+      },
+      error: function (jqXHR, textStatus, errorThrown) {
+        alert('Erro ao carregar dados do card.');
+      }
+    });
+  }
+  function addTag(tag, containerId, hiddenFieldId) {
+    tag = tag.trim();
+    if (tag === '') return;
+
+    var existingTags = $(`#${containerId} .tag-badge`).map(function () {
+      return $(this).data('tag').toLowerCase();
+    }).get();
+
+    if (existingTags.includes(tag.toLowerCase())) {
+      return;
+    }
+
+    var tagBadge = $(`
+    <span class="tag-badge" data-tag="${tag}">
+        ${tag}
+        <span class="remove-tag text-light">&times;</span>
+    </span>
+    `);
+
+    $(`#${containerId}`).append(tagBadge);
+
+    var currentTags = $(`#${hiddenFieldId}`).val();
+    if (currentTags) {
+      $(`#${hiddenFieldId}`).val(currentTags + ',' + tag);
+    } else {
+      $(`#${hiddenFieldId}`).val(tag);
+    }
+  }
   $('#duplicate-board-button').on('click', function (e) {
     e.preventDefault();
 
@@ -207,10 +279,10 @@ $(document).ready(function () {
       e.preventDefault();
       var newName = input.val().trim();
       if (newName === "") return;
-    
+
       var columnId = input.closest('.column').data('board-item-id');
       var boardId = $('#kanban-board').data('board-id');
-    
+
       if (columnId === undefined) {
         createColumn(input.closest('form'), newName);
       } else {
@@ -261,24 +333,24 @@ $(document).ready(function () {
     column.find('.card-title-input').focus();
   });
 
-  
- function updateColumn(columnId, newName, boardId, input) {
-  $.ajax({
-    url: `/boards/${boardId}/board_items/${columnId}`,
-    method: 'PATCH',
-    data: { board_item: { name: newName } },
-    dataType: 'json',
-    success: function (response) {
-      if (response.success) {
-        replaceInputWithColumnName(input, columnId, response.board_item.name);
-      } else {
-        alert('Erro ao atualizar o nome da coluna: ' + response.message);
+
+  function updateColumn(columnId, newName, boardId, input) {
+    $.ajax({
+      url: `/boards/${boardId}/board_items/${columnId}`,
+      method: 'PATCH',
+      data: { board_item: { name: newName } },
+      dataType: 'json',
+      success: function (response) {
+        if (response.success) {
+          replaceInputWithColumnName(input, columnId, response.board_item.name);
+        } else {
+          alert('Erro ao atualizar o nome da coluna: ' + response.message);
+        }
+      },
+      error: function () {
+        alert('Erro ao atualizar o nome da coluna. Por favor, tente novamente.');
       }
-    },
-    error: function () {
-      alert('Erro ao atualizar o nome da coluna. Por favor, tente novamente.');
-    }
-  });
+    });
   }
 
   function replaceInputWithColumnName(input, columnId, updatedName) {
@@ -310,21 +382,21 @@ $(document).ready(function () {
       }
     });
   }
-  
+
   function addNewColumnToBoard(renderedColumn) {
     var board = $('#kanban-board');
     var newColumn = $(renderedColumn).hide();
     board.find('.add-column-button').before(newColumn);
     newColumn.fadeIn(300);
   }
-  
+
   function clearForm(form) {
     form.find('.column-name-input').val('');
     form.closest('.new-column-form').hide();
     $('#kanban-board').find('.add-column-button').show();
   }
-  
-  
+
+
   $(".cards").sortable({
     connectWith: ".cards",
     placeholder: "card-placeholder",
@@ -513,7 +585,7 @@ $(document).ready(function () {
 
     var currentTime = new Date().getTime();
     if (currentTime - lastFormOpenTime < timeBeforeOpeningFormAgain) {
-        return;
+      return;
     }
 
     lastFormOpenTime = currentTime;
@@ -531,9 +603,9 @@ $(document).ready(function () {
 
       var currentTime = new Date().getTime();
       if (currentTime - lastFormOpenTime < timeBeforeOpeningFormAgain) {
-          return;
+        return;
       }
-  
+
       lastFormOpenTime = currentTime;
 
       var card = $(this);
@@ -660,7 +732,7 @@ $(document).ready(function () {
 
     var currentTime = new Date().getTime();
     if (currentTime - lastFormOpenTime < timeBeforeOpeningFormAgain) {
-        return;
+      return;
     }
 
     lastFormOpenTime = currentTime;
