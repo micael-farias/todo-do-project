@@ -21,8 +21,10 @@ class Board < ApplicationRecord
   end
 
   def self.verify_daily_board(user, user_uses_mobile)
-    daily_board = user.boards.daily.first
-    daily_board.update(active: !user_uses_mobile) if daily_board
+    if user.user_preference.show_daily_board
+      daily_board = user.boards.daily.first
+      daily_board.update(active: !user_uses_mobile) if daily_board
+    end  
   end
   
 end

@@ -1,19 +1,21 @@
 <div class="d-flex align-items-center justify-content-center min-vh-100 new-registration-container">
-  <div class="card shadow p-4">
-    <div class="card-body">
-      <h2 class="text-center mb-4 text-black">Sign Up</h2>
-
+  <div class="shadow p-4 rounded card-devise-user-body">
+      <div class="d-flex">
+          <h2 class="text-center m-0 mb-4 text-black flex-grow-1">
+              Registrar-se
+          </h2>
+      </div>
       <%= form_with model: resource, as: resource_name, url: registration_path(resource_name), class: "form" do |f| %>
         <%= render "devise/shared/error_messages", resource: resource %>
 
         <div class="mb-3">
           <%= f.label :email, class: "form-label text-black" %>
-          <%= f.email_field :email, autofocus: true, autocomplete: "email", class: "form-control", required: true, placeholder: "Enter your email" %>
+          <%= f.email_field :email, autofocus: true, autocomplete: "email", class: "form-control", required: true, placeholder: "Digite seu email" %>
         </div>
 
         <div class="mb-3">
           <%= f.label :name, class: "form-label text-black" %>
-          <%= f.text_field :name, autofocus: true, autocomplete: "name", class: "form-control", required: true, placeholder: "Enter your name" %>
+          <%= f.text_field :name, autofocus: true, autocomplete: "name", class: "form-control", required: true, placeholder: "Digite seu nome" %>
         </div>
 
 
@@ -22,16 +24,16 @@
           <% if @minimum_password_length %>
             <em class="text-black">(<%= @minimum_password_length %> characters minimum)</em>
           <% end %>
-          <%= f.password_field :password, autocomplete: "new-password", class: "form-control", required: true, placeholder: "Enter your password" %>
+          <%= f.password_field :password, autocomplete: "new-password", class: "form-control", required: true, placeholder: "Digite sua senha" %>
         </div>
 
         <div class="mb-3">
           <%= f.label :password_confirmation, class: "form-label text-black" %>
-          <%= f.password_field :password_confirmation, autocomplete: "new-password", class: "form-control", required: true, placeholder: "Confirm your password" %>
+          <%= f.password_field :password_confirmation, autocomplete: "new-password", class: "form-control", required: true, placeholder: "Confirme sua senha" %>
         </div>
 
         <div class="d-grid">
-          <%= f.submit "Sign up", class: "btn btn-primary btn-block" %>
+          <%= f.submit "Cadastrar", class: "btn btn-primary btn-block" %>
         </div>
       <% end %>
 
@@ -39,5 +41,4 @@
         <%= render "devise/shared/links" %>
       </div>
     </div>
-  </div>
 </div>

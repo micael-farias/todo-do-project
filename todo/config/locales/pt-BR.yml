@@ -1,0 +1,22 @@
+pt-BR:
+  login: 
+    title: Entrar
+    email-title: Email
+    email-placeholder: Digite seu email
+    password-title: Senha
+    password-placeholder: Digite sua senha
+    submit-button: Entrar
+    sign-up: Registrar-se
+  registration:
+    title: Registrar-se
+    email-title: Email
+    email-placeholder: Digite seu email
+    name-title: Nome
+    name-placeholder: Digite seu nome
+    password-title: Senha
+    password-placeholder: Digite sua senha
+    password-confirmation-title: Confirmar Senha
+    password-confirmation-placeholder: Confirme sua senha
+    submit-button: Registrar
+    links:
+      already_registered: Já possui uma conta? Entrar

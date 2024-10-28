@@ -1,6 +1,6 @@
 class User < ApplicationRecord  
   # Devise Modules
-  devise :database_authenticatable, :registerable, :recoverable, :rememberable
+  devise :database_authenticatable, :registerable, :rememberable
 
   # Associations
   belongs_to :mood_category, optional: true

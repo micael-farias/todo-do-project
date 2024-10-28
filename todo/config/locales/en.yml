@@ -1,31 +1,22 @@
-# Files in the config/locales directory are used for internationalization and
-# are automatically loaded by Rails. If you want to use locales other than
-# English, add the necessary files in this directory.
-#
-# To use the locales, use `I18n.t`:
-#
-#     I18n.t "hello"
-#
-# In views, this is aliased to just `t`:
-#
-#     <%= t("hello") %>
-#
-# To use a different locale, set it with `I18n.locale`:
-#
-#     I18n.locale = :es
-#
-# This would use the information in config/locales/es.yml.
-#
-# To learn more about the API, please read the Rails Internationalization guide
-# at https://guides.rubyonrails.org/i18n.html.
-#
-# Be aware that YAML interprets the following case-insensitive strings as
-# booleans: `true`, `false`, `on`, `off`, `yes`, `no`. Therefore, these strings
-# must be quoted to be interpreted as strings. For example:
-#
-#     en:
-#       "yes": yup
-#       enabled: "ON"
-
 en:
-  hello: "Hello world"
+  login: 
+    title: Enter
+    email-title: Email
+    email-placeholder: Type your email
+    password-title: Password
+    password-placeholder: Type your password
+    submit-button: Login
+    sign-up: Sign-up
+  registration:
+    title: Register
+    email-title: Email
+    email-placeholder: Enter your email
+    name-title: Name
+    name-placeholder: Enter your name
+    password-title: Password
+    password-placeholder: Enter your password
+    password-confirmation-title: Confirm Password
+    password-confirmation-placeholder: Confirm your password
+    submit-button: Sign up
+    links:
+      already_registered: Already have an account? Log in
