@@ -1,4 +1,4 @@
-import { consolidateColumnEdit } from "../board_items/save";
+import { consolidateColumnEdit } from "../boards_items/save";
 
 $(document).ready(function () {
 
@@ -179,7 +179,7 @@ $(document).ready(function () {
     inputGroup.replaceWith(updatedSpan);
   }
 
-  $('#kanban-board').on('click', '.column-name', function () {
+  /*$('#kanban-board').on('click', '.column-name', function () {
     var span = $(this);
     var currentName = span.text();
 
@@ -201,7 +201,7 @@ $(document).ready(function () {
       e.preventDefault();
       consolidateColumnEdit(input);
     }
-  });
+  });*/
 
   $(document).on('click', '.delete-column-button', function (e) {
     e.stopPropagation();
@@ -237,11 +237,11 @@ $(document).ready(function () {
     }
   });
 
-  $('.show-new-card-form').on('click', function (e) {
+  /*$('.show-new-card-form').on('click', function (e) {
     e.preventDefault();
     var column = $(this).closest('.column');
     column.find('.add-card-button').hide();
     column.find('.new-card-form').show();
     column.find('.card-title-input').focus();
-  });
+  });*/
 })
