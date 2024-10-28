@@ -179,7 +179,7 @@ $(document).ready(function () {
     inputGroup.replaceWith(updatedSpan);
   }
 
-  /*$('#kanban-board').on('click', '.column-name', function () {
+  $('#kanban-board').on('click', '.column-name', function () {
     var span = $(this);
     var currentName = span.text();
 
@@ -199,11 +199,11 @@ $(document).ready(function () {
     var input = $(this);
     if (e.which == 13) {
       e.preventDefault();
-      consolidateColumnEdit(input);
+      //consolidateColumnEdit(input);
     }
   });
 
-  $(document).on('click', '.delete-column-button', function (e) {
+ /* $(document).on('click', '.delete-column-button', function (e) {
     e.stopPropagation();
     var button = $(this);
     var columnId = button.data('column-id');
