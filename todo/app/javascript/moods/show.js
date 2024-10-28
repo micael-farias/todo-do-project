@@ -51,7 +51,7 @@ $(document).ready(function () {
         messageAboveSection.get(0).scrollIntoView({ behavior: 'smooth' });
 
         $.ajax({
-            url: '/update_user_moods',
+            url: 'user_moods/update_user_moods',
             method: 'POST',
             contentType: 'application/json',
             headers: {

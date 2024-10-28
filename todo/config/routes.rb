@@ -20,7 +20,6 @@ Rails.application.routes.draw do
 
     collection do
       post :create_daily_board
-      post :update_user_moods
     end
 
     resources :board_items, only: [:create, :update, :destroy, :edit] do

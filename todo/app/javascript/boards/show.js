@@ -1,6 +1,10 @@
 //import { consolidateColumnEdit } from "../boards_items/save";
 //import { createColumn } from "../boards_items/new";
 //import { updateColumn } from "../boards_items/edit"
+import { openForm } from "../utils/consts";
+import { becomeCardClickable } from "../utils/consts";
+import { timeBeforeOpeningFormAgain } from "../utils/consts";
+import { addTag } from "../tags/add-tag";
 
 $(document).ready(function () {
 
@@ -321,4 +325,442 @@ $(document).ready(function () {
   }
   
   
+  $(".cards").sortable({
+    connectWith: ".cards",
+    placeholder: "card-placeholder",
+    cursor: "move",
+    revert: 300,
+    delay: 0,
+    tolerance: "pointer",
+    helper: "clone",
+    opacity: 0.8,
+    start: function (e, ui) {
+      ui.placeholder.height(ui.item.height());
+      ui.helper.css('z-index', 100);
+    },
+    stop: function (e, ui) {
+      ui.item.css('transform', '');
+    },
+    update: function (event, ui) {
+      if (this === ui.item.parent()[0]) {
+        var cardId = ui.item.data('card-id');
+        var newPosition = ui.item.index();
+        var newBoardItemId = ui.item.closest('.column').data('board-item-id');
+        var boardId = $('#kanban-board').data('board-id');
+        var moveUrl = '/boards/' + boardId + '/board_items/' + newBoardItemId + '/cards/' + cardId + '/move';
+
+        $.ajax({
+          url: moveUrl,
+          method: 'PATCH',
+          data: {
+            position: newPosition + 1,
+            board_item_id: newBoardItemId
+          },
+          success: function () {
+            console.log('Card movido com sucesso.');
+            var lastColumnId = $('.column').last().data('board-item-id');
+            if (newBoardItemId == lastColumnId) {
+              ui.item.find('.complete-card-button').hide();
+              ui.item.find('.complete-card-button-mobile').prop('checked', true);
+            } else {
+              ui.item.find('.complete-card-button').show();
+              ui.item.find('.complete-card-button-mobile').prop('checked', false);
+
+            }
+          },
+          error: function () {
+            alert('Erro ao mover o card.');
+          }
+        });
+      }
+    }
+  }).disableSelection();
+
+  $(document).on('click', '.complete-card-button', function (e) {
+    e.stopPropagation();
+    var button = $(this);
+    var card = button.closest('.card');
+    var lastColumn = $('.column').last();
+    var lastColumnId = lastColumn.data('board-item-id');
+    var boardId = $('#kanban-board').data('board-id');
+    var cardId = card.data('card-id');
+
+    card.addClass('processing-card');
+
+    var moveUrl = '/boards/' + boardId + '/board_items/' + lastColumnId + '/cards/' + cardId + '/move';
+    var newPosition = lastColumn.find('.card').not('.new-card').length + 1;
+
+    var cardClone = card.clone();
+    cardClone.css({
+      position: 'absolute',
+      top: card.offset().top,
+      left: card.offset().left,
+      width: card.width(),
+      zIndex: 1000
+    });
+    $('body').append(cardClone);
+
+    var targetPosition = lastColumn.find('.cards').offset();
+
+    cardClone.animate({
+      top: targetPosition.top,
+      left: targetPosition.left,
+      width: lastColumn.find('.cards').width()
+    }, 500, function () {
+      cardClone.remove();
+    });
+
+    $.ajax({
+      url: moveUrl,
+      method: 'PATCH',
+      data: {
+        board_item_id: lastColumnId,
+        position: newPosition
+      },
+      success: function () {
+        card.fadeOut(300, function () {
+          card.remove();
+          lastColumn.find('.cards').append(card);
+          card.fadeIn(300);
+          card.removeClass('processing-card');
+          card.find('.complete-card-button').hide();
+          becomeCardClickable(card)
+        });
+        console.log('Card concluído e movido com sucesso.');
+
+      },
+      error: function () {
+        card.removeClass('processing-card');
+        alert('Erro ao concluir o card.');
+      }
+    });
+  });
+
+  $(document).on('keypress', '.card-title-input', function (e) {
+    if (e.which == 13) {
+      e.preventDefault();
+      var form = $(this).closest('form');
+      var column = form.closest('.column');
+
+      $.ajax({
+        url: form.attr('action'),
+        method: 'POST',
+        data: form.serialize(),
+        dataType: 'json',
+        success: function (response) {
+          if (response.success) {
+            var newCard = $(response.rendered_card).hide();
+            column.find('.cards').prepend(newCard);
+            newCard.fadeIn(300);
+            form.find('.card-title-input').val('');
+            form.closest('.new-card-form').hide();
+            column.find('.add-card-button').show();
+            becomeCardContentClickable()
+            $(".cards").sortable("refresh");
+
+            if (response.open_form) {
+              var boardId = $('#kanban-board').data('board-id');
+              var boardItemId = newCard.closest('.column').data('board-item-id');
+              openForm(boardId, boardItemId, cardId);
+            }
+
+          } else {
+            alert('Erro ao criar o card: ' + response.message);
+          }
+        },
+        error: function () {
+          alert('Erro ao criar o card. Por favor, tente novamente.');
+        }
+      });
+    }
+  });
+
+  $(document).on('click', function (e) {
+    var target = $(e.target);
+    if (!target.closest('.new-card-form').length && !target.closest('.show-new-card-form').length) {
+      $('.new-card-form').hide();
+      $('.add-card-button').show();
+    }
+  });
+
+  $(document).on('click', '.delete-card-button', function (e) {
+    e.stopPropagation();
+    var card = $(this).closest('.card');
+    var cardId = card.data('card-id');
+    var boardItemId = card.closest('.column').data('board-item-id');
+    var boardId = $('#kanban-board').data('board-id');
+
+    if (confirm('Tem certeza que deseja excluir este card?')) {
+      $.ajax({
+        url: `/boards/${boardId}/board_items/${boardItemId}/cards/${cardId}`,
+        method: 'DELETE',
+        success: function () {
+          card.fadeOut(300, function () {
+            card.remove();
+            console.log('Card excluído com sucesso.');
+          });
+        },
+        error: function () {
+          alert('Erro ao excluir o card.');
+        }
+      });
+    }
+  });
+
+
+  $(document).on('click', '.edit-card-button', function (e) {
+    e.stopPropagation()
+
+    var currentTime = new Date().getTime();
+    if (currentTime - lastFormOpenTime < timeBeforeOpeningFormAgain) {
+        return;
+    }
+
+    lastFormOpenTime = currentTime;
+
+    var card = $(this).closest('.card');
+    var cardId = card.data('card-id');
+    var boardId = $('#kanban-board').data('board-id');
+    var boardItemId = card.closest('.column').data('board-item-id');
+    openForm(boardId, boardItemId, cardId);
+  })
+
+  function becomeCardContentClickable() {
+    $(".card-content").on("click", function (e) {
+      e.stopPropagation()
+
+      var currentTime = new Date().getTime();
+      if (currentTime - lastFormOpenTime < timeBeforeOpeningFormAgain) {
+          return;
+      }
+  
+      lastFormOpenTime = currentTime;
+
+      var card = $(this);
+      var cardId = card.data('card-id');
+      var boardId = $('#kanban-board').data('board-id');
+      var boardItemId = card.closest('.column').data('board-item-id');
+      openForm(boardId, boardItemId, cardId);
+    });
+  }
+
+  becomeCardContentClickable()
+
+
+
+
+
+
+
+
+
+
+
+  function removeTag(tag, containerId, hiddenFieldId) {
+    $(`#${containerId} .tag-badge[data-tag="${tag}"]`).remove();
+
+    var currentTags = $(`#${hiddenFieldId}`).val().split(',');
+    var updatedTags = currentTags.filter(function (t) {
+      return t.trim().toLowerCase() !== tag.trim().toLowerCase();
+    });
+    $(`#${hiddenFieldId}`).val(updatedTags.join(','));
+  }
+
+  $('#tag-input-new').on('keypress', function (e) {
+    if (e.which == 13) {
+      e.preventDefault();
+      var tag = $(this).val();
+      addTag(tag, 'tag-container-new', 'card_tags_new');
+      $(this).val('');
+    }
+  });
+
+  $('#tag-container-new').on('click', '.remove-tag', function () {
+    var tag = $(this).parent().data('tag');
+    removeTag(tag, 'tag-container-new', 'card_tags_new');
+  });
+
+  $('#tag-input-edit').on('keypress', function (e) {
+    if (e.which == 13) {
+      e.preventDefault();
+      var tag = $(this).val();
+      addTag(tag, 'tag-container-edit', 'card_tags_edit');
+      $(this).val('');
+    }
+  });
+
+  $('#tag-container-edit').on('click', '.remove-tag', function () {
+    var tag = $(this).parent().data('tag');
+    removeTag(tag, 'tag-container-edit', 'card_tags_edit');
+  });
+
+  $('#edit-card-form').on('submit', function (e) {
+    e.preventDefault();
+    var form = $(this);
+    var formData = form.serialize();
+
+    $.ajax({
+      url: form.attr('action'),
+      method: 'PATCH',
+      data: formData,
+      dataType: 'json',
+      success: function (data) {
+        console.log(data.card.mood);
+        if (data.success) {
+          sessionStorage.setItem('scrollPosition', $(window).scrollTop());
+
+          var url = new URL(window.location.href);
+          url.searchParams.delete('highlight_card');
+
+          window.history.replaceState({}, document.title, url.pathname + url.search);
+
+          location.reload();
+        } else {
+          alert('Erro ao atualizar o card: ' + data.message);
+        }
+
+      },
+      error: function () {
+        alert('Erro ao atualizar o card. Por favor, tente novamente.');
+      }
+    });
+  });
+
+
+  $(document).on('change', '.complete-card-button-mobile', function (e) {
+    e.stopPropagation();
+    var checkbox = $(this);
+    var isChecked = checkbox.is(':checked');
+    var card = checkbox.closest('.card, .card-mobile');
+    var cardId = card.data('card-id');
+    var boardId = $('.mobile-view').data('board-id');
+    var boardItemId = card.data('board-item-id');
+
+    $.ajax({
+      url: `/boards/${boardId}/board_items/${boardItemId}/cards/${cardId}/toggle_complete`,
+      method: 'PATCH',
+      data: { completed: isChecked },
+      success: function (response) {
+        if (response.success) {
+          console.log('Card completion status updated.');
+        } else {
+          alert('Error updating card status: ' + response.message);
+        }
+      },
+      error: function () {
+        alert('Error updating card status. Please try again.');
+      }
+    });
+  });
+
+  let lastFormOpenTime = 0;
+
+  $(document).on('click', '.card-title-mobile', function (e) {
+    e.stopPropagation()
+
+    var currentTime = new Date().getTime();
+    if (currentTime - lastFormOpenTime < timeBeforeOpeningFormAgain) {
+        return;
+    }
+
+    lastFormOpenTime = currentTime;
+
+    var card = $(this);
+    var cardId = card.data('card-id');
+    var boardId = card.data('board-id');
+    var boardItemId = card.data('board-item-id');
+
+    openForm(boardId, boardItemId, cardId);
+  })
+
+  $(document).on('click', '.add-card-mobile', function (e) {
+    e.stopPropagation();
+
+    var addCardElement = $(this);
+
+    var inputField = $('<input>', {
+      type: 'text',
+      class: 'form-control new-card-title-input',
+      placeholder: 'Digite o título do novo card e pressione enter'
+    });
+
+    addCardElement.html(inputField);
+
+    inputField.focus();
+
+    inputField.on('keypress', function (e) {
+      if (e.which == 13) {
+        e.preventDefault();
+        var title = $(this).val().trim();
+        if (title === '') {
+          alert('O título do card não pode estar vazio.');
+          return;
+        }
+
+        var boardId = $('.mobile-view').data('board-id');
+        var firstBoardItemId = addCardElement.data('board-item-id');
+
+        $.ajax({
+          url: `/boards/${boardId}/board_items/${firstBoardItemId}/cards`,
+          method: 'POST',
+          data: { card: { title: title } },
+          dataType: 'json',
+          success: function (response) {
+            if (response.success) {
+              location.reload()
+            } else {
+              alert('Erro ao criar o card: ' + response.message);
+            }
+          },
+          error: function () {
+            alert('Erro ao criar o card. Por favor, tente novamente.');
+          }
+        });
+      }
+    });
+
+    $(document).on('click.addCardInput', function (e) {
+      if (!$(e.target).closest('.add-card-mobile').length) {
+        addCardElement.html('<div class="card-header-mobile"><i class="bi bi-plus-lg" style="color: white"></i></div>');
+        $(document).off('click.addCardInput');
+      }
+    });
+
+  });
+
+  $('.show-new-card-form').on('click', function (e) {
+    e.preventDefault();
+    var column = $(this).closest('.column');
+    column.find('.add-card-button').hide();
+    column.find('.new-card-form').show();
+    column.find('.card-title-input').focus();
+  });
+
+
+  $(document).on('click', '.delete-card-button-mobile', function (e) {
+    e.stopPropagation();
+    var card = $(this).closest('.card, .card-mobile');
+    var cardId = card.data('card-id');
+    var boardItemId = card.data('board-item-id');
+    var boardId = $('.mobile-view').data('board-id');
+
+    if (confirm('Tem certeza que deseja excluir este card?')) {
+      $.ajax({
+        url: `/boards/${boardId}/board_items/${boardItemId}/cards/${cardId}`,
+        method: 'DELETE',
+        success: function () {
+          card.fadeOut(300, function () {
+            card.remove();
+            console.log('Card excluído com sucesso.');
+          });
+        },
+        error: function () {
+          alert('Erro ao excluir o card.');
+        }
+      });
+    }
+  });
+
+
+
 })
