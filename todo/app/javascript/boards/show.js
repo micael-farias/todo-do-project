@@ -533,7 +533,7 @@ $(document).ready(function () {
             if (response.open_form) {
               var boardId = $('#kanban-board').data('board-id');
               var boardItemId = newCard.closest('.column').data('board-item-id');
-              openForm(boardId, boardItemId, cardId);
+              openForm(boardId, boardItemId, response.card.id);
             }
 
           } else {
