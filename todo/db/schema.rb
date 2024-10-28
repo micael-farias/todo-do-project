@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2024_10_27_155029) do
+ActiveRecord::Schema[7.2].define(version: 2024_10_28_042200) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -105,23 +105,7 @@ ActiveRecord::Schema[7.2].define(version: 2024_10_27_155029) do
     t.string "image_url"
     t.string "phrase"
   end
-  create_table "theme_mood_messages", force: :cascade do |t|
-    t.bigint "theme_mood_id", null: false
-    t.text "message", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["theme_mood_id"], name: "index_theme_mood_messages_on_theme_mood_id"
-  end
 
-  create_table "theme_moods", force: :cascade do |t|
-    t.bigint "mood_category_id", null: false
-    t.bigint "mood_id", null: false
-    t.string "image_url"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["mood_category_id"], name: "index_theme_moods_on_mood_category_id"
-    t.index ["mood_id"], name: "index_theme_moods_on_mood_id"
-  end
   create_table "moods", force: :cascade do |t|
     t.string "name"
     t.datetime "created_at", null: false
@@ -158,6 +142,7 @@ ActiveRecord::Schema[7.2].define(version: 2024_10_27_155029) do
     t.bigint "mood_category_id", null: false
     t.bigint "mood_id", null: false
     t.string "image_url"
+    t.text "message"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["mood_category_id"], name: "index_theme_moods_on_mood_category_id"
@@ -174,6 +159,20 @@ ActiveRecord::Schema[7.2].define(version: 2024_10_27_155029) do
     t.index ["user_id"], name: "index_user_moods_on_user_id"
   end
 
+  create_table "user_preferences", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.boolean "show_recent_boards", default: true, null: false
+    t.boolean "show_popular_boards", default: true, null: false
+    t.boolean "show_daily_board", default: true, null: false
+    t.boolean "show_card_priority", default: true, null: false
+    t.boolean "show_card_due_date", default: true, null: false
+    t.boolean "show_card_mood", default: true, null: false
+    t.boolean "show_form_after_create_card", default: true, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_user_preferences_on_user_id"
+  end
+
   create_table "users", force: :cascade do |t|
     t.string "email", default: "", null: false
     t.string "name", default: "", null: false
@@ -185,15 +184,6 @@ ActiveRecord::Schema[7.2].define(version: 2024_10_27_155029) do
     t.datetime "updated_at", null: false
     t.bigint "mood_category_id"
     t.integer "credits_openai_used"
-
-    t.boolean "show_recent_boards", default: true
-    t.boolean "show_popular_boards", default: true
-    t.boolean "show_daily_board", default: true
-    t.boolean "show_card_priority", default: true
-    t.boolean "show_card_due_date", default: true
-    t.boolean "show_card_mood", default: true
-    t.boolean "show_form_after_create_card", default: true
-    
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
@@ -211,4 +201,5 @@ ActiveRecord::Schema[7.2].define(version: 2024_10_27_155029) do
   add_foreign_key "theme_moods", "moods"
   add_foreign_key "user_moods", "moods"
   add_foreign_key "user_moods", "users"
+  add_foreign_key "user_preferences", "users"
 end

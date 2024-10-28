@@ -15,20 +15,20 @@
     </h4>
     
     <div class="card-info">
-      <% if current_user.show_card_mood %>
+      <% if current_user.user_preference.show_card_mood %>
         <p>
           <strong>Humor pra realizar:</strong>
           <%= mood_display_text(card) %>
         </p>
       <% end %>
 
-      <% if due_info.present? && current_user.show_card_due_date  %>
+      <% if due_info.present? && current_user.user_preference.show_card_due_date  %>
         <p>
           <strong><%= due_label %></strong> <%= due_info %>
         </p>
       <% end %>     
 
-      <%if card.priority? && current_user.show_card_priority %>
+      <%if card.priority? && current_user.user_preference.show_card_priority %>
         <p>
           <strong>Prioridade:</strong>
           <%= priority_text(card.priority) %>

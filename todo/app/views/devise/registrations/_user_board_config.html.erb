@@ -1,7 +1,7 @@
 <!-- app/views/users/registrations/_user_board_config.html.erb -->
 <div class="user-board-config">
   <h4>Configurações dos Boards</h4>
-  <%= render 'shared/form_switch', f: f, field: :show_recent_boards, label: "Mostrar últimos acessados" %>
-  <%= render 'shared/form_switch', f: f, field: :show_popular_boards, label: "Mostrar mais acessados" %>
-  <%= render 'shared/form_switch', f: f, field: :show_daily_board, label: "Permitir criar quadro de tarefas diarias" %>
+  <%= render 'shared/form_switch', f: pref_f, field: :show_recent_boards, label: "Mostrar últimos acessados" %>
+  <%= render 'shared/form_switch', f: pref_f, field: :show_popular_boards, label: "Mostrar mais acessados" %>
+  <%= render 'shared/form_switch', f: pref_f, field: :show_daily_board, label: "Permitir criar quadro de tarefas diarias" %>
 </div>

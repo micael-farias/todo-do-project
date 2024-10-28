@@ -11,9 +11,12 @@ class User < ApplicationRecord
   has_many :cards, through: :board_items
   has_one_attached :avatar
   has_many :parameters, dependent: :destroy
+  has_one :user_preference, dependent: :destroy, inverse_of: :user
+  accepts_nested_attributes_for :user_preference
 
   # Callbacks
   after_create :initialize_user_moods
+  after_create :create_user_preference
 
   # Instance Methods
 
@@ -46,5 +49,17 @@ class User < ApplicationRecord
     if mood_category.nil?
       update(mood_category: MoodCategory.last)
     end
+  end
+
+  def create_user_preference
+    create_user_preference!(
+      show_recent_boards: true,
+      show_popular_boards: true,
+      show_daily_board: true,
+      show_card_priority: true,
+      show_card_due_date: true,
+      show_card_mood: true,
+      show_form_after_create_card: true
+    )
   end
 end

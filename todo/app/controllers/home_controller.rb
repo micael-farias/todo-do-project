@@ -23,11 +23,11 @@ class HomeController < ApplicationController
       @last_card_date = cards_graph_service.last_card_date
       @date_range = cards_graph_service.date_range
       
-      @show_daily_board = current_user.show_daily_board && @daily_board.present? &&  !@user_uses_mobile
-      @show_recent_boards = current_user.show_recent_boards && @last_accessed_boards.exists?
-      @show_most_accessed  = current_user.show_popular_boards && current_user.boards.active.exists?
-      @show_mood_section = current_user.show_daily_board && @daily_board.present? && !@user_uses_mobile
-      
+      @show_daily_board = current_user.user_preference.show_daily_board && @daily_board.present? &&  !@user_uses_mobile
+      @show_recent_boards = current_user.user_preference.show_recent_boards && @last_accessed_boards.exists?
+      @show_most_accessed  = current_user.user_preference.show_popular_boards && current_user.boards.active.exists?
+      @show_mood_section = current_user.user_preference.show_daily_board && @daily_board.present? && !@user_uses_mobile
+
       Board.verify_daily_board(current_user, @user_uses_mobile)
     end
   

@@ -1,4 +1,4 @@
-<% if current_user.show_daily_board && @daily_board.present? %>
+<% if current_user.user_preference.show_daily_board && @daily_board.present? %>
   <div class="mood-selection mb-4" id="mood-selection" style="<%= 'display: none;' if @has_mood_today %>">
     <h2>Como vai, <%= current_user.name %>?</h2>
     <% mood_category = current_user.mood_category %>

@@ -18,7 +18,7 @@ class CardsController < ApplicationController
           due_label: 'Data de Vencimento'
         }
       )
-      render_success(card: result[:card], rendered_card: rendered_card, open_form: current_user.show_form_after_create_card)
+      render_success(card: result[:card], rendered_card: rendered_card, open_form: current_user.user_preference.show_form_after_create_card)
     else
       render_error(result[:message])
     end
@@ -38,9 +38,9 @@ class CardsController < ApplicationController
 
   def update
     user_preferences = {
-      show_card_due_date: current_user.show_card_due_date,
-      show_card_mood: current_user.show_card_mood,
-      show_card_priority: current_user.show_card_priority
+      show_card_due_date: current_user.user_preference.show_card_due_date,
+      show_card_mood: current_user.user_preference.show_card_mood,
+      show_card_priority: current_user.user_preference.show_card_priority
     }
 
     service = Cards::UpdateCardService.new(@card, card_params, user_preferences)
