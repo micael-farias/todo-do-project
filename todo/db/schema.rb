@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2024_10_28_042200) do
+ActiveRecord::Schema[7.2].define(version: 2024_10_28_063250) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -40,14 +40,6 @@ ActiveRecord::Schema[7.2].define(version: 2024_10_28_042200) do
     t.bigint "blob_id", null: false
     t.string "variation_digest", null: false
     t.index ["blob_id", "variation_digest"], name: "index_active_storage_variant_records_uniqueness", unique: true
-  end
-
-  create_table "board_item_tags", force: :cascade do |t|
-    t.bigint "board_item_id", null: false
-    t.string "name"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["board_item_id"], name: "index_board_item_tags_on_board_item_id"
   end
 
   create_table "board_items", force: :cascade do |t|
@@ -88,7 +80,6 @@ ActiveRecord::Schema[7.2].define(version: 2024_10_28_042200) do
     t.datetime "completed_at"
     t.datetime "due_date"
     t.integer "priority"
-    t.integer "reminders_sent", default: [], array: true
     t.string "mood_source"
     t.integer "previous_board_item_id"
     t.index ["board_item_id"], name: "index_cards_on_board_item_id"
@@ -112,16 +103,6 @@ ActiveRecord::Schema[7.2].define(version: 2024_10_28_042200) do
     t.datetime "updated_at", null: false
   end
 
-  create_table "parameters", force: :cascade do |t|
-    t.string "name"
-    t.bigint "user_id", null: false
-    t.text "content"
-    t.string "salt_key"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["user_id"], name: "index_parameters_on_user_id"
-  end
-
   create_table "tags", force: :cascade do |t|
     t.string "name"
     t.bigint "card_id", null: false
@@ -142,7 +123,6 @@ ActiveRecord::Schema[7.2].define(version: 2024_10_28_042200) do
     t.bigint "mood_category_id", null: false
     t.bigint "mood_id", null: false
     t.string "image_url"
-    t.text "message"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["mood_category_id"], name: "index_theme_moods_on_mood_category_id"
@@ -190,11 +170,9 @@ ActiveRecord::Schema[7.2].define(version: 2024_10_28_042200) do
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
-  add_foreign_key "board_item_tags", "board_items"
   add_foreign_key "boards", "users", name: "fk_user"
   add_foreign_key "cards", "board_items"
   add_foreign_key "cards", "moods"
-  add_foreign_key "parameters", "users"
   add_foreign_key "tags", "cards"
   add_foreign_key "theme_mood_messages", "theme_moods"
   add_foreign_key "theme_moods", "mood_categories"
