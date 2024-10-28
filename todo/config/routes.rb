@@ -9,6 +9,8 @@ Rails.application.routes.draw do
     end
   end
 
+  get 'cards/search', to: 'cards#search', as: 'cards/search'
+
   authenticated :user do
     root to: 'home#index'
   end
@@ -27,10 +29,6 @@ Rails.application.routes.draw do
         member do
           patch :move
           patch :toggle_complete
-        end
-
-        collection do
-          get :search
         end
       end
     end

@@ -3,7 +3,7 @@
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="editCardModalLabel">Editar Card</h5>
+        <h5 class="modal-title" id="editCardModalLabel">Editar Tarefa</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
@@ -39,7 +39,7 @@
             <%= form.hidden_field :tags, id: 'card_tags_edit', class: 'form-control', value: '' %>
           </div>
           <div class="text-end">
-            <%= form.submit 'Atualizar Card', class: 'btn btn-primary custom-submit-button' %>
+            <%= form.submit 'Atualizar tarefa', class: 'btn btn-primary custom-submit-button' %>
           </div>
         <% end %>
       </div>
