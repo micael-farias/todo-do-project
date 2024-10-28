@@ -1,6 +1,6 @@
 
 <div>
-  <% if current_user.show_daily_board && @daily_board.present? && !@user_uses_mobile %>
+  <% if @show_mood_section %>
     <div id="mood-section">
       <%= render 'mood/mood_selection' %>
       <div id="mood-message-above-section"></div>

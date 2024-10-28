@@ -1,206 +1,29 @@
-<!-- app/views/devise/registrations/edit.html.erb -->
 <div class="edit-registration-container">
   
-  <%= link_to :back, class: "btn btn-link", style: "color: white; margin-right: 10px;" do %>
+  <%= link_to root_path, class: "btn btn-link back-button icon" do %>
     <i class="bi bi-arrow-left"></i> 
   <% end %>
   
   <%= form_for(resource, as: resource_name, url: registration_path(resource_name), html: { method: :put, multipart: true, id: 'edit-profile-form' }) do |f| %>
     <%= devise_error_messages! %>
 
-    <!-- Seção Superior: Foto do Usuário e Nome -->
-  <div class="user-section">
-      <div class="user-section-content">
-        <!-- Avatar do Usuário -->
-        <% if resource.avatar.attached? %>
-          <%= image_tag resource.avatar, alt: "Avatar", class: "avatar-image", style: "width: 150px; height: 150px; border-radius: 50%; object-fit: cover;" %>
-        <% else %>
-          <img src="<%= asset_path('default_avatar.png') %>" alt="Avatar" class="avatar-image">
-        <% end %>
-
-        <!-- Ícone de Editar Foto -->
-        <label for="avatar-upload" class="edit-avatar-overlay">
-          <i class="bi bi-pencil-square"></i>
-        </label>
-        <%= f.file_field :avatar, id: "avatar-upload", style: "display: none;", accept: "image/*" %>
-      </div>
-      <div class="user-details">
-        <h3><%= resource.name %></h3>
-        <p><%= resource.email %></p>
-      </div>
-    </div>
-
-    <!-- Separador -->
+    <%= render 'user_section', f: f %>
     <hr>
 
-    <!-- Configurações dos Boards -->
-    <div class="user-board-config">
-      <h4>Configurações dos Boards</h4>
-      <div class="form-check form-switch mb-3">
-        <%= f.check_box :show_recent_boards, class: "form-check-input", id: "show_recent_boards" %>
-        <%= f.label :show_recent_boards, "Mostrar últimos acessados", class: "form-check-label", for: "show_recent_boards" %>
-    </div>
-      <div class="form-check form-switch mb-3">
-        <%= f.check_box :show_popular_boards, class: "form-check-input", id: "show_popular_boards" %>
-        <%= f.label :show_popular_boards, "Mostrar mais acessados", class: "form-check-label", for: "show_popular_boards" %>
-      </div>
-      <div class="form-check form-switch mb-3">
-        <%= f.check_box :show_daily_board, class: "form-check-input", id: "show_daily_board" %>
-        <%= f.label :show_daily_board, "Permitir criar quadro de tarefas diarias", class: "form-check-label", for: "show_daily_board" %>
-      </div>
-    </div>
-
-    <!-- Separador -->
+    <%= render 'user_board_config', f: f %>
     <hr>
 
-    <!-- Configurações dos Cards -->
-    <div class="user-card-config">
-      <h4>Configurações dos Cards</h4>
-      <div class="form-check form-switch mb-3">
-    <%= f.check_box :show_card_priority, class: "form-check-input", id: "show_card_priority" %>
-
-        <%= f.label :show_card_priority, "Mostrar prioridade", class: "form-check-label", for: "show_card_priority" %>
-      </div>
-      <div class="form-check form-switch mb-3">
-        <%= f.check_box :show_card_due_date, class: "form-check-input", id: "show_card_due_date" %>
-        <%= f.label :show_card_due_date, "Mostrar data de vencimento", class: "form-check-label", for: "show_card_due_date" %>
-      </div>
-      <div class="form-check form-switch mb-3">
-        <%= f.check_box :show_card_mood, class: "form-check-input", id: "show_card_mood" %>
-        <%= f.label :show_card_mood, "Mostrar humor", class: "form-check-label", for: "show_card_mood" %>
-      </div>
-      <div class="form-check form-switch mb-3">
-        <%= f.check_box :show_form_after_create_card, class: "form-check-input", id: "show_form_after_create_card" %>
-        <%= f.label :show_form_after_create_card, "Abrir formulário após criar card", class: "form-check-label", for: "show_form_after_create_card" %>
-      </div>
-    </div>
-
-    <!-- Separador -->
+    <%= render 'user_card_config', f: f %>
     <hr>
 
-    <!-- Campos de Nome, Email e Seletor de Categoria de Humor -->
-    <div class="user-details-config">
-      <!-- Nome e Email -->
-      <div class="user-details-config-main-content">
-        <!-- Nome -->
-        <div class="user-datails-name-field">
-          <%= f.label :name, "Nome", class: "form-label", style: "display: block; margin-bottom: 5px;" %>
-          <%= f.text_field :name, class: "form-control custom-input", placeholder: "Digite seu nome" %>
-        </div>
+    <%= render 'user_details_config', f: f %>
+    <hr>
 
-        <!-- Email (não editável) -->
-        <div>
-          <%= f.label :email, "Email", class: "form-label", style: "display: block; margin-bottom: 5px;" %>
-          <%= f.email_field :email, class: "form-control custom-input", readonly: true %>
-        </div>
-      </div>
+    <%= render 'mood_category_selection', f: f %>
 
-      <!-- Seletor Visual de Categoria de Humor -->
-      <div class="mood-category-selection mb-4" id="mood-category-selection">
-        <h5>Selecione uma categoria de humor:</h5>
-        <p>Para poder ter acesso as funcionalidades a criação do quadro de tarefas diarias deve estar ativo</p>
-
-        <!-- Container das Categorias -->
-        <div class="mood-categories-container">
-          <% MoodCategory.all.each do |category| %>
-            <div class="mood-category-item <%= 'selected' if resource.mood_category_id == category.id %>" data-category-id="<%= category.id %>">
-              <img src="<%= category.image_url.present? ? category.image_url : 'https://via.placeholder.com/150' %>" alt="<%= category.name %>" class="category-image">
-              <p class="category-name"><%= category.name %></p>
-              
-              <!-- Adicionar a frase do personagem -->
-              <% if true %>
-                <span class="category-phrase">"Incrivel como o tempo só te valoriza"</span>
-              <% end %>
-              
-              <% if resource.mood_category_id == category.id %>
-                <span class="selected-icon">
-                  <i class="bi bi-check-circle"></i>
-                </span>
-              <% end %>
-            </div>
-          <% end %>
-        </div>
-
-
-        <!-- Campo Oculto para armazenar a categoria selecionada -->
-        <%= f.hidden_field :mood_category_id, value: resource.mood_category_id, id: 'selected_mood_category_id' %>
-      </div>
-    </div>
-
-    <!-- Botões de Ação -->
     <div class="actions">
       <%= f.submit "Atualizar", class: "btn btn-primary" %>
       <%= link_to "Cancelar minha conta", registration_path(resource_name), method: :delete, data: { confirm: "Tem certeza?" }, class: "btn btn-danger" %>
     </div>
   <% end %>
-
-  <!-- JavaScript para Interatividade -->
-  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-  <!-- Bootstrap Icons -->
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
-  <script>
-    $(document).ready(function() {
-      // Interação para editar a foto de perfil
-      $('#avatar-upload').on('change', function() {
-        var file = this.files[0];
-        if (file) {
-          var reader = new FileReader();
-          reader.onload = function(e) {
-            $('.avatar-image').attr('src', e.target.result);
-            // A imagem será enviada ao clicar em "Atualizar"
-          }
-          reader.readAsDataURL(file);
-        }
-      });
-
-      // Interação para seleção de categoria de humor
-      $('.mood-category-item').on('click', function() {
-        // Remove a classe 'selected' de todas as categorias
-        $('.mood-category-item').removeClass('selected');
-        // Adiciona a classe 'selected' à categoria clicada
-        $(this).addClass('selected');
-        // Atualiza o valor do campo hidden com o ID da categoria selecionada
-        var selectedCategoryId = $(this).data('category-id');
-        $('#selected_mood_category_id').val(selectedCategoryId);
-      });
-
-      // Opcional: Interação para seleção de mood (se aplicável)
-      $('.mood-item').on('click', function() {
-        // Remove a classe 'selected' de todos os humores
-        $('.mood-item').removeClass('selected');
-        // Adiciona a classe 'selected' ao humor clicado
-        $(this).addClass('selected');
-        // Atualiza o valor do campo hidden com o ID do humor selecionado
-        var selectedMoodId = $(this).data('theme-mood-id');
-        $('#selected_mood_id').val(selectedMoodId);
-      });
-
-      // Submissão do formulário via AJAX (Opcional)
-      // Se desejar usar AJAX para submissão, descomente o bloco abaixo
-      /*
-      $('#edit-profile-form').on('submit', function(e) {
-        e.preventDefault();
-
-        var form = $(this);
-        var formData = new FormData(this);
-
-        $.ajax({
-          url: form.attr('action'),
-          type: form.attr('method'),
-          data: formData,
-          processData: false,
-          contentType: false,
-          success: function(response) {
-            alert('Perfil atualizado com sucesso!');
-            // Opcional: Atualizar elementos da página conforme necessário
-          },
-          error: function(xhr) {
-            alert('Erro ao atualizar o perfil.');
-            // Opcional: Mostrar mensagens de erro detalhadas
-          }
-        });
-      });
-      */
-    });
-  </script>
 </div>

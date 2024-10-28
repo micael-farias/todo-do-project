@@ -26,6 +26,7 @@ class HomeController < ApplicationController
       @show_daily_board = current_user.show_daily_board && @daily_board.present? &&  !@user_uses_mobile
       @show_recent_boards = current_user.show_recent_boards && @last_accessed_boards.exists?
       @show_most_accessed  = current_user.show_popular_boards && current_user.boards.active.exists?
+      @show_mood_section = current_user.show_daily_board && @daily_board.present? && !@user_uses_mobile
       
       Board.verify_daily_board(current_user, @user_uses_mobile)
     end

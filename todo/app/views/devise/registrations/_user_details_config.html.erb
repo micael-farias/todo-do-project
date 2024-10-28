@@ -1,0 +1,13 @@
+<div class="user-details-config">
+  <div class="user-details-config-main-content">
+    <div class="user-details-name-field">
+      <%= f.label :name, "Nome", class: "form-label label-block" %>
+      <%= f.text_field :name, class: "form-control custom-input", placeholder: "Digite seu nome" %>
+    </div>
+
+    <div class="user-email-field">
+      <%= f.label :email, "Email", class: "form-label label-block" %>
+      <%= f.email_field :email, class: "form-control custom-input", readonly: true %>
+    </div>
+  </div>
+</div>

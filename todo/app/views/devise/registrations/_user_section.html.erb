@@ -1,0 +1,18 @@
+<div class="user-section">
+      <div class="user-section-content">
+        <% if resource.avatar.attached? %>
+          <%= image_tag resource.avatar, alt: "Avatar", class: "avatar-image", style: "width: 150px; height: 150px; border-radius: 50%; object-fit: cover;" %>
+        <% else %>
+          <img src="<%= asset_path('default_avatar.png') %>" alt="Avatar" class="avatar-image">
+        <% end %>
+
+        <label for="avatar-upload" class="edit-avatar-overlay">
+          <i class="bi bi-pencil-square"></i>
+        </label>
+        <%= f.file_field :avatar, id: "avatar-upload", style: "display: none;", accept: "image/*" %>
+      </div>
+      <div class="user-details">
+        <h3><%= resource.name %></h3>
+        <p><%= resource.email %></p>
+      </div>
+</div>

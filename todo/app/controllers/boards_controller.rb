@@ -1,10 +1,12 @@
 class BoardsController < ApplicationController
   before_action :set_board, only: [:show, :destroy, :update, :duplicate]
+  before_action :check_user_uses_mobile
 
   def show
     @board.increment!(:access_count)
     @board.update(last_access: Utils::DateService.today)
     @highlight_card_id = params[:highlight_card]
+    @cards = @board.cards.order(created_at: :desc) 
 
     if @board.daily_board?
       fetch_daily_board_cards

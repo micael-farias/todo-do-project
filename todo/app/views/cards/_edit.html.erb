@@ -31,13 +31,13 @@
           <div class="mb-3">
             <%= form.label :tags, 'Tags', class: 'form-label' %>
             <input type="text" id="tag-input-edit" class="form-control" placeholder="Digite uma tag e pressione Enter">
-            <small class="form-text text-muted">Pressione Enter para adicionar uma tag.</small>
-            <div id="tag-container-edit" class="mb-2">
-              <!-- Tags existentes serão adicionadas aqui via JavaScript -->
+            <small class="form-label">Pressione Enter para adicionar uma tag.</small>
+            <div class="parent-container pt-3">
+              <div id="tag-container-edit" class="mb-2">
+              </div>
             </div>
             <%= form.hidden_field :tags, id: 'card_tags_edit', class: 'form-control', value: '' %>
           </div>
-          <!-- Botão de Submissão -->
           <div class="text-end">
             <%= form.submit 'Atualizar Card', class: 'btn btn-primary custom-submit-button' %>
           </div>

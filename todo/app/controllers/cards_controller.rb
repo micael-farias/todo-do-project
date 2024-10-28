@@ -1,6 +1,6 @@
 class CardsController < ApplicationController
   before_action :set_board_and_board_item, except: [:search]
-  before_action :set_card, only: [:edit, :update, :destroy, :move]
+  before_action :set_card, only: [:edit, :update, :destroy, :move, :toggle_complete]
 
   def create
     service = Cards::CreateCardService.new(@board_item, card_params)

@@ -1,35 +1,23 @@
 <div class="mobile-view" data-board-id="<%= @board.id %>">
     <div class="add-card-mobile" data-board-item-id="<%= @board.board_items.first.id %>">
         <div class="card-header-mobile">
-            <i class="bi bi-plus-lg" class="white-icon"></i>
+            <i class="bi bi-plus-lg icon"></i>
         </div>
     </div>
-    <% @board.cards.each do |card| %>
+    <% @cards.each do |card| %>
     <div class="card-mobile" data-card-id="<%= card.id %>" data-board-item-id="<%= card.board_item_id %>">
         <div class="card-header-mobile">
-            <!-- Círculo de prioridade -->
-            <div class="priority-circle" 
-                style="background-color: 
-                    <% if card.priority == 1 %>
-                        rgb(4, 51, 77);
-                    <% elsif card.priority == 2 %>
-                        rgb(56, 122, 158);
-                    <% elsif card.priority == 3 %>
-                        rgb(131, 198, 235);
-                    <% else %>
-                        #6f6f6f;
-                <% end %>;">
-            </div>
+
+            <%= render 'cards/priority_indicator', card: card %>
+
+            <span class="card-title-mobile" data-board-id="<%= @board.id %>" data-card-id="<%= card.id %>" data-board-item-id="<%= card.board_item_id %>" > <%= card.title %>   </span>
             
-            <span class="card-title" data-card-id="<%= card.id %>"  data-board-item-id="<%= card.board_item_id %>" > <%= card.title %>   </span>
-            
-            <!-- Container para checkbox e lixeira -->
             <div class="action-icons">
-                <!-- Ícone de lixeira -->
+
                 <button class="delete-card-button-mobile button-delete-card" title="Excluir">
-                    <i class="bi bi-trash" class="white-icon"></i>
+                    <i class="bi bi-trash icon"></i>
                 </button>
-                <!-- Checkbox para marcar como completo -->
+
                 <label class="checkbox-container">
                     <input class="complete-card-button-mobile" type="checkbox" <%= card.completed? ? 'checked' : '' %> />
                     <span class="checkmark"></span>

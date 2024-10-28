@@ -1,118 +1,47 @@
 /*
- * This is a manifest file that'll be compiled into application.css, which will include all the files
- * listed below.
- *
- * Any CSS (and SCSS, if configured) file within this directory, lib/assets/stylesheets, or any plugin's
- * vendor/assets/stylesheets directory can be referenced here using a relative path.
- *
- * You're free to add application-wide styles to this file and they'll appear at the bottom of the
- * compiled file so the styles you add here take precedence over styles defined in any other CSS
- * files in this directory. Styles in this file should be added after the last require_* statement.
- * It is generally better to create a new file per style scope.
- *
  *= require_tree .
  *= require_self
  */
 
 @import "bootstrap";
 
-
-.line_horizontal {
-  border-bottom: 2px solid white;
-  /* Linha branca de 2px abaixo da navbar */
-}
-
-.custom-dropdown-menu {
-  background-color: #181C1F !important;
-  color: #22272B;
-  /* Cor do texto, se necessário */
+body {
+  background-color: var(--background-main) !important;
 }
 
 p {
   font-size: 0.9em;
   line-height: 1.5;
-  color: rgb(240, 240, 240);
+  color: var(--text-color-white);
 }
 
 span {
-  /* Adicione aqui os estilos que deseja aplicar a todos os spans */
   font-size: 14px;
-  color: #666;
+  color: var(--text-color-gray);
 }
 
-/* Estilos do rodapé */
 .footer {
-  background-color: #222;
-  color: #fff;
+  background-color: var(--background-footer);
+  color: var(--footer-text);
   text-align: center;
-  padding: 10px;
-  font-size: 14px;
-  margin-top: 20px;
-  /* Adiciona um espaço acima do rodapé */
+  padding: 20px;
+  margin-top: 50px;
+  font-size: 20px;
 }
-
-
-/* Garante que o body preencha pelo menos a altura total da página */
 
 h2 {
-  /* Adicione aqui os estilos que deseja aplicar a todos os parágrafos */
   font-size: 25px;
   width: 50%;
   font-weight: 300;
-  /* Deixa o texto mais fino */
   line-height: 1.5;
   margin-left: 20px;
-  color: #ffffff;
+  color: var(--text-color-white);
 }
 
-/* Estilo para o dropdown de resultados */
-
-
-/* Estilo para o dropdown de resultados */
-#searchResults {
-  max-height: 300px;
-  /* Limita a altura do dropdown */
-  overflow-y: auto;
-  /* Adiciona rolagem vertical se necessário */
-  background-color: #343a40;
-  /* Fundo mais escuro (cor escura do Bootstrap) */
-  border: 1px solid #495057;
-  /* Borda um pouco mais escura */
-  border-top: none;
-  /* Remove a borda superior para integrar com o input */
-  border-radius: 0 0 4px 4px;
-  /* Arredonda apenas os cantos inferiores */
+.icon {
+  color: var(--text-color-white);
 }
 
-#searchResults .list-group-item {
-  background-color: #343a40;
-  /* Fundo dos itens igual ao do dropdown */
-  color: #ffffff;
-  /* Texto branco para contraste */
-  cursor: pointer;
-  position: relative;
-}
-
-#searchResults .list-group-item:hover {
-  background-color: #495057;
-  /* Fundo mais claro ao passar o mouse */
-  color: #ffffff;
-}
-
-.full-link {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  text-decoration: none;
-  color: inherit;
-  /* Mantém a cor do texto conforme o pai */
-  display: block;
-  z-index: 1;
-}
-
-
-.white-icon {
-  color: white;
+.back-button{
+  margin-right: 10px;
 }

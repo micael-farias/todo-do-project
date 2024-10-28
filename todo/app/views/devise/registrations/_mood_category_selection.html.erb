@@ -1,0 +1,24 @@
+<!-- app/views/users/registrations/_mood_category_selection.html.erb -->
+<div class="mood-category-selection mb-4" id="mood-category-selection">
+  <h5>Selecione uma categoria de humor:</h5>
+  <p>Para poder ter acesso às funcionalidades a criação do quadro de tarefas diarias deve estar ativo</p>
+
+  <div class="mood-categories-container">
+    <% MoodCategory.all.each do |category| %>
+      <div class="mood-category-item <%= 'selected' if resource.mood_category_id == category.id %>" data-category-id="<%= category.id %>">
+        <img src="<%= category.image_url.present? ? category.image_url : 'https://via.placeholder.com/150' %>" alt="<%= category.name %>" class="category-image">
+        <p class="category-name"><%= category.name %></p>
+        
+        <span class="category-phrase">"<%= category.phrase %>"</span>
+        
+        <% if resource.mood_category_id == category.id %>
+          <span class="selected-icon">
+            <i class="bi bi-check-circle"></i>
+          </span>
+        <% end %>
+      </div>
+    <% end %>
+  </div>
+
+  <%= f.hidden_field :mood_category_id, value: resource.mood_category_id, id: 'selected_mood_category_id' %>
+</div>

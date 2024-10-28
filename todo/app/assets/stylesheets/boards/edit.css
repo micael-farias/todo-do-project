@@ -1,68 +1,54 @@
-/* app/assets/stylesheets/boards_edit.css */
-
-/* Estilos personalizados para o modal de edição de card */
-
 .custom-card-form .form-control,
 .custom-card-form .form-select {
-  background-color: #22272B;        /* Cor de fundo */
-  border-color: #ADB9C5;            /* Cor das bordas */
-  color: #eee;                      /* Cor do texto dentro dos inputs */
+  background-color: var(--background-main-gray);
+  border-color: var(--border-color-gray-100);
+  color: var(--text-color-white);
 }
 
-/* Alvo os placeholders nos inputs */
 .custom-card-form .form-control::placeholder,
 .custom-card-form .form-select::placeholder {
-  color: #ADB9C5;                    /* Cor do placeholder */
-  opacity: 1;                        /* Garantir opacidade plena */
+  color: var(--border-color-gray-100);
+  opacity: 1;
 }
 
-/* Estilizar as labels */
 .custom-card-form .form-label {
-  color: #eee;                       /* Cor das labels */
+  color: var(--text-color-white);
 }
 
-/* Estilizar o botão de submissão */
 .custom-card-form .custom-submit-button {
-  background-color: #362E78;         /* Cor de fundo */
-  border-color: #362E78;             /* Cor da borda */
-  color: #ffffff;                    /* Cor do texto */
+  background-color: var(--board-card);
+  border-color: var(--board-card);
+  color: var(--text-color-white);
 }
 
-/* Opcional: Alterar a cor do texto no botão ao passar o mouse */
 .custom-card-form .custom-submit-button:hover {
-  background-color: #504f95;         /* Cor de fundo ao passar o mouse */
-  border-color: #504f95;             /* Cor da borda ao passar o mouse */
-  color: #ffffff;                    /* Manter a cor do texto */
+  background-color: var(--board-card);
+  border-color: var(--board-card);
+  color: var(--text-color-white);
 }
 
-/* Ajustar o placeholder para seleções (se necessário) */
 .custom-card-form .form-select option {
-  background-color: #22272B;         /* Cor de fundo das opções */
-  color: #eee;                       /* Cor do texto das opções */
+  background-color: var(--background-main-gray);
+  color: var(--text-color-white);
 }
 
-/* Garantir que os selects tenham a cor correta */
 .custom-card-form .form-select {
-  background-color: #22272B;
-  color: #eee;
+  background-color: var(--background-main-gray);
+  color: var(--text-color-white);
 }
 
-/* Ajustar o fundo do modal se necessário */
 #editCardModal .modal-content {
-  background-color: #22272B;         /* Cor de fundo do modal */
+  background-color: var(--background-main);
 }
 
-/* Ajustar o título da modal */
 #editCardModal .modal-title {
-  color: #ADB9C5;                     /* Cor do texto do título */
+  color: var(--text-color-white);
 }
 
-/* Ajustar o botão de fechar da modal */
 #editCardModal .btn-close {
-  filter: invert(1);                  /* Torna o ícone de fechar visível em fundo escuro */
+  filter: invert(1);
 }
 
-/* Transições e animações para o modal */
 .fade-enter {
   opacity: 0;
   transform: translateY(-20px);
@@ -85,19 +71,19 @@
   transform: translateY(-20px);
 }
 
-/* Classe para ocultar elementos */
 .hidden {
   display: none;
 }
 
-/* Animação de subida e descida */
 @keyframes float {
   0% {
     transform: translateY(0);
   }
+
   50% {
     transform: translateY(-10px);
   }
+
   100% {
     transform: translateY(0);
   }

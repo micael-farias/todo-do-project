@@ -19,7 +19,7 @@
     <h2>Tarefas diárias - <%= format_date(Utils::DateService.today) %></h2>
     
     <div class="edit-mood-message alert alert-info d-flex align-items-center" role="alert">
-      <span>
+      <span class="edit-mood-message-text">
         O board diário foi criado a partir do seu humor diário. Você pode <a href="#" id="edit-mood-button" class="alert-link">alterar seu humor diário e gerar um novo board</a>.
       </span>
     </div>
@@ -27,7 +27,7 @@
       <div class="board-card">
         <%= link_to board_path(@daily_board), class: 'board-link' do %>
           <div class="card-body">
-            <h5 class="card-title"><%= @daily_board.title %></h5>
+            <h5 class="card-board-title"><%= @daily_board.title %></h5>
           </div>
         <% end %>
       </div>

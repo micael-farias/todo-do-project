@@ -1,4 +1,4 @@
-<div class="priority_circle"
+<div class="<%= @user_uses_mobile ? 'priority-circle-mobile' : 'priority-circle' %>"
      style="background-color: <%= priority_circle_color(card.priority) %>;"
      title="<%= priority_text(card.priority, prefix: 'Prioridade') %>">
 </div>

@@ -1,0 +1,57 @@
+<nav class="navbar navbar-expand-lg line_horizontal">
+  <div class="container-fluid">
+    <a class="navbar-brand text-white" href="<%= root_path %>">TO DO</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Alternar navegação">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav me-auto"></ul>
+      <% if current_user %>
+
+        <form class="d-flex me-3 position-relative" id="searchForm" role="search">
+          <div class="search-group">
+            <div class="input-group">
+                <span class="input-group-text bg-transparent border-0">
+                <i class="bi bi-search text-white"></i>
+                </span>
+                <input class="form-control bg-transparent text-white border-white" type="search" placeholder="Pesquisar card" aria-label="Pesquisar" id="searchInput" autocomplete="off">
+            </div>
+            <ul class="list-group position-absolute w-100 list-group-results" id="searchResults"></ul>
+          </div>          
+        </form>
+
+        <div class="d-flex align-items-center">
+          <% if current_user.active_theme_mood %>
+            <span id="navbar-mood" class="text-warning fw-bold me-3">
+              Humor de hoje: <%= current_user.active_theme_mood.mood.name %>
+            </span>
+          <% end %>
+          
+          <div class="dropdown">
+            <a href="#" class="d-flex align-items-center text-white" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+              <% if current_user.avatar.attached? %>
+                <%= image_tag current_user.avatar, class: 'rounded-circle', alt: 'Usuário', width: '40', height: '40' %>
+              <% else %>
+                <%= image_tag 'default_avatar.png', class: 'rounded-circle', alt: 'Usuário', width: '40', height: '40' %>
+              <% end %>
+            </a>
+            <ul class="dropdown-menu dropdown-menu-end custom-dropdown-menu" aria-labelledby="userDropdown">
+              <li>
+                <a class="dropdown-item custom-dropdown-item"  href="<%= edit_user_registration_path %>">
+                  <i class="bi bi-gear me-2"></i> Configurações
+                </a>
+              </li>
+              <li><hr class="dropdown-divider"></li>
+              <li>
+                <%= link_to destroy_user_session_path, method: :delete, class: 'dropdown-item custom-dropdown-item' do %>
+                  <i class="bi bi-box-arrow-right me-2"></i> Sair
+                <% end %>
+              </li>
+            </ul>
+          </div>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</nav>

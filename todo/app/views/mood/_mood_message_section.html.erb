@@ -1,8 +1,7 @@
 <div class="mood-message-section" style="<%= 'display: none;' if @has_mood_today %>" id="mood-message-section">
-  <h3 id="selected-mood-text">Sua Análise de Humor: <%= @active_mood.present? ? @active_mood.mood.name : "Nenhum humor selecionado ainda" %></h3>
+  <h3 class="selected-mood-text" id="selected-mood-text">Sua Análise de Humor: <%= @active_mood.present? ? @active_mood.mood.name : "Nenhum humor selecionado ainda" %></h3>
   
   <div class="mood-section-content">
-    <!-- Primeira coluna: Análise de Humor e Imagem -->
     <div class="image-container">
       <div>
         <img id="mood-image" 
@@ -12,10 +11,8 @@
       </div>
     </div>
     
-    <!-- Linha vertical branca separando -->
     <div class="vertical-line-separator"></div>
 
-    <!-- Segunda coluna: Texto explicando o humor -->
     <div class="text-explaining-mood">
       <p id="mood-message">
         <%= @random_message.present? ? @random_message.message : "Texto falando algo sobre o humor atual. Aqui você pode descrever o que o humor selecionado significa ou fornecer detalhes adicionais." %>

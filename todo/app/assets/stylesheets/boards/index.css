@@ -1,46 +1,41 @@
-/* app/assets/stylesheets/boards_index.css */
-  
-  .board-card {
-    background-color: #005a8c; /* Azul mais escuro */
-    color: #fff;
-    border-radius: 15px; /* Aumenta o arredondamento dos cantos */
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    width: 220px;
-    height: 120px;
-    cursor: pointer;
-    transition: transform 0.2s, box-shadow 0.2s;
-    position: relative; /* Para posicionamento absoluto interno */
-  }
-  
-  .board-card:hover {
-    transform: scale(1.05);
-    box-shadow: 0 8px 12px rgba(0, 0, 0, 0.2);
-  }
-  
-  .board-link {
-    text-decoration: none;
-    color: white;
-    display: block;
-    height: 100%;
-  }
-  
-  .board-card .card-body {
-    padding: 15px;
-    height: 100%;
-  }
-    
-  .board-card .card-body:hover {
-    background-color: whitesmoke;
-    border-radius: 15px; /* Aumenta o arredondamento dos cantos */
-  }
-  
-  .board-card .card-title {
-    font-size: 1.2em;
-    position: absolute;
-    bottom: 10px;
-    right: 15px;
-    padding: 0px 10px 0x 10px;
-  }
-  
-  /* Outros estilos específicos do index podem ser adicionados aqui */
-  
+.board-card {
+  background-color: var(--board-card);
+  color: var(--text-color-white);
+  border-radius: 15px;
+  box-shadow: 0 4px 6px var(--box-shadow);
+  width: 220px;
+  height: 120px;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+  position: relative;
+}
+
+.board-card:hover {
+  transform: scale(1.05);
+  box-shadow: 0 8px 12px var(--box-shadow);
+}
+
+.board-link {
+  text-decoration: none;
+  color: var(--text-color-white);
+  display: block;
+  height: 100%;
+}
+
+.board-card .card-body {
+  padding: 15px;
+  height: 100%;
+}
+
+.board-card .card-body:hover {
+  background-color: white;
+  border-radius: 15px;
+}
+
+.board-card .card-title {
+  font-size: 1.2em;
+  position: absolute;
+  bottom: 10px;
+  right: 15px;
+  padding: 0px 10px 0x 10px;
+}

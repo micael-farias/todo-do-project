@@ -2,13 +2,12 @@ export function addTag(tag, containerId, hiddenFieldId) {
     tag = tag.trim();
     if (tag === '') return;
 
-    var existingTags = $(`#${containerId} .tag-badge`).map(function() {
-    return $(this).data('tag').toLowerCase();
+    var existingTags = $(`#${containerId} .tag-badge`).map(function () {
+        return $(this).data('tag').toLowerCase();
     }).get();
 
     if (existingTags.includes(tag.toLowerCase())) {
-    alert('Essa tag já foi adicionada.');
-    return;
+        return;
     }
 
     var tagBadge = $(`
@@ -22,8 +21,8 @@ export function addTag(tag, containerId, hiddenFieldId) {
 
     var currentTags = $(`#${hiddenFieldId}`).val();
     if (currentTags) {
-    $(`#${hiddenFieldId}`).val(currentTags + ',' + tag);
+        $(`#${hiddenFieldId}`).val(currentTags + ',' + tag);
     } else {
-    $(`#${hiddenFieldId}`).val(tag);
+        $(`#${hiddenFieldId}`).val(tag);
     }
 }

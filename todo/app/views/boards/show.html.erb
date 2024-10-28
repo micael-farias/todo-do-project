@@ -4,9 +4,6 @@
 <!-- Header do Board -->
 <%= render 'kanban/header' %>
 
-<!-- Mensagem do Board Diário -->
-<%= render 'kanban/daily_board_message' %>
-
 <%if @user_uses_mobile %>
   <%= render 'cards/card_mobile' %>
 <%else%>

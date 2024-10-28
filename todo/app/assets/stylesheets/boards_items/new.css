@@ -1,43 +1,42 @@
 .new-column-form {
-    margin-top: 10px;
-    height: 50px;
-    width: 300px;
-    display: none; 
-    background-color: blue; 
-  }
+  margin-top: 10px;
+  height: 50px;
+  width: 300px;
+  display: none;
+}
 
-  .new-input-colum {
-    width: 300px; 
-    background-color: pink;
-  }
+.new-input-colum {
+  width: 300px;
+  background-color: var(--background-button-new-board);
+}
 
-  .add-column-button .new-column {
-    background-color: #22272B; /* Verde para diferenciar do botão de adicionar card */
-    color: white;
-    padding: 10px;
-    width: 300px;
-    border-radius: 5px;
-    text-align: center;
-    cursor: pointer;
-    display: flex;
-    align-items: center;  /* Alinha o ícone e o texto verticalmente */
-    justify-content: center; /* Centraliza o conteúdo horizontalmente */
-  }
+.add-column-button .new-column {
+  background-color: var(--background-main-gray);
+  color: var(--text-color-white);
+  padding: 10px;
+  width: 300px;
+  border-radius: 5px;
+  text-align: center;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
 
-  .add-column-button .new-column:hover {
-    background-color: #181C1F;
-  }
-  
-  .add-column-button a {
-    text-decoration: none; 
-    background-color: blue
-  }
+.add-column-button .new-column:hover {
+  background-color: var(--background-main-gray);
+}
 
-  .new-column i {
-    margin-right: 8px; /* Espaçamento entre o ícone e o texto */
-  }
-  
-  .new-column span {
-    color: #ADB9C5; 
-    font-weight: 700;
-  }
+.add-column-button a {
+  text-decoration: none;
+  background-color: var(--background-new-column)
+}
+
+.new-column i {
+  margin-right: 8px;
+}
+
+.new-column span {
+  color: var(--text-color-gray-100);
+  font-weight: 700;
+}

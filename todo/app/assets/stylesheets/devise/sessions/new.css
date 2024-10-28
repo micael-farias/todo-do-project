@@ -1,5 +1,5 @@
 .new-sessions-container {
-  background-color: #1D2125;
+  background-color: var(--background-main-gray);
 }
 
 .new-sessions-container>div {

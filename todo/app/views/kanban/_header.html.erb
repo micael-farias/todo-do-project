@@ -1,27 +1,29 @@
-<h3 class="kanban-header-title">
+<div class="kanban-header-title">
 
-  <%= link_to :back, class: "btn btn-link", style: "color: white; margin-right: 10px;" do %>
+  <%= link_to root_path, class: "btn btn-link back-button icon" do %>
     <i class="bi bi-arrow-left"></i> 
   <% end %>
 
-  <% unless @board.daily_board? %>
-    <span class="board-title" data-board-id="<%= @board.id %>">
-      <%= @board.title %>
-    </span>
-  <% else %>
-    <%= @board.title %>
-  <% end %>
+  <div class="board-title" data-board-id="<%= @board.id %>">
+    <%= @board.title  %>
+    <% if @board.daily_board? %>
+    <i class="bi bi-question-circle-fill text-white fs-6" 
+        title="Este gráfico exibe o número de tarefas criadas e suas prioridades ao longo do tempo. A cor indica a prioridade e o preenchimento indica se a tarefa foi concluída." 
+      >
+      </i>
+    <%end%>
+  </div>
 
   <div>
     <% unless @board.daily_board? %>
       <button id="delete-board-button" title="Excluir board" class="btn btn-link">
-        <i class="bi bi-trash"></i>
+        <i class="bi bi-trash icon"></i>
       </button>
       
       <button id="duplicate-board-button" title="Duplicar board" class="btn btn-link">
-        <i class="bi bi-files"></i>
+        <i class="bi bi-files icon"></i>
       </button>
       
     <% end %>
   </div>
-</h3>
+</div>

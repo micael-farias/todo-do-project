@@ -1,68 +1,80 @@
- 
-.card {
-    border-radius: 5px;
-    margin-bottom: 10px;
-    cursor: grab;
-    background-color: #22272B;
-    position: relative;
-    background-color: var(--background-color); /* Usando variável para flexibilidade */
-    border-radius: 8px;
-    padding: 15px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between; /* Alinha o conteúdo principal em cima e os ícones embaixo */ 
-  }
+ .card {
+   border-radius: 5px;
+   margin-bottom: 10px;
+   cursor: grab;
+   background-color: var(--card);
+   position: relative;
+   border-radius: 8px;
+   padding: 15px;
+   box-shadow: 0 2px 5px var(--box-shadow);
+   display: flex;
+   flex-direction: column;
+   justify-content: space-between;
+ }
 
-  .card:hover {
-    background-color: #f0f0f0;
-  }
-  
-  .card-content {
-    display: flex;
-    flex-direction: column;
-    width: 95%;
-  }
+ .card:hover {
+   background-color: var(--background-card-hover);
+ }
 
-  .title-text {
-    color: #ADB9C5;
-    word-wrap: break-word; /* Permite a quebra de linha no texto */
-    font-size: 20px;
-  }
+ .card-content {
+   display: flex;
+   flex-direction: column;
+   width: 95%;
+ }
 
-  .card-info {
-    display: flex;
-    flex-direction: column;
-    gap: 5px; /* Espaçamento entre os elementos */
-  }
-  
-  .card-info p {
-    font-size: 0.9em;
-    color: #ADB9C5;
-    margin: 0; /* Remove margens padrão */
-    padding-bottom: 5px; /* Apenas no último parágrafo, se necessário */
-  }
+ .title-text {
+   color: var(--text-color-gray-100);
+   word-wrap: break-word;
+   font-size: 20px;
+ }
 
-  .card-actions {
-    display: flex;
-    gap: 5px;
-    width: 100%;
-    justify-content: flex-end;
-    margin-top: auto;
-  }
-  
-  .card-actions button {
-    background: none;
-    border: none;
-    cursor: pointer;
-  }
-  
-  .card-actions button i {
-    font-size: 16px; /* Tamanho normal dos ícones */
-    transition: transform 0.2s ease; /* Transição suave */
-  }
-  
-  .card-actions button i:hover {
-    transform: scale(1.3); /* Aumenta o ícone em 30% ao passar o mouse */
-  }
-  
+ .card-info {
+   display: flex;
+   flex-direction: column;
+   gap: 5px;
+ }
+
+ .card-info p {
+   font-size: 0.9em;
+   color: var(--text-color-gray-100);
+   margin: 0;
+   padding-bottom: 5px;
+ }
+
+ .tags {
+   display: flex;
+   flex-wrap: wrap;
+   gap: 5px;
+ }
+
+ .custom-badge {
+   background-color: var(--background-tag-card);
+   color: var(--text-color-gray-100);
+   padding: 5px 10px;
+   border-radius: 5px;
+   font-size: 0.85rem;
+ }
+
+ .card-actions {
+   display: flex;
+   gap: 5px;
+   width: 100%;
+   margin-top: 5px;
+   justify-content: flex-end;
+   margin-top: auto;
+ }
+
+ .card-actions button {
+   background: none;
+   border: none;
+   cursor: pointer;
+ }
+
+ .card-actions button i {
+   font-size: 16px;
+   transition: transform 0.2s ease;
+ }
+
+ .card-actions button i:hover {
+   transform: scale(1.3);
+ }

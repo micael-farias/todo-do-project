@@ -1,58 +1,71 @@
+import { openForm } from "../utils/open-form";
+import { timeBeforeOpeningFormAgain } from "../utils/consts";
 
-  // C$(document).ready(function() {
-$(document).ready(function() {
-    // Enviar formulário de edição via AJAX
+$(document).ready(function () {
 
-$(document).on('change', '.complete-card-button-mobile', function(e) {
-  e.stopPropagation();
-  var checkbox = $(this);
-  var isChecked = checkbox.is(':checked');
-  var card = checkbox.closest('.card, .card-mobile');
-  var cardId = card.data('card-id');
-  var boardId = $('.mobile-view').data('board-id');
-  var boardItemId = card.data('board-item-id');
+  $(document).on('change', '.complete-card-button-mobile', function (e) {
+    e.stopPropagation();
+    var checkbox = $(this);
+    var isChecked = checkbox.is(':checked');
+    var card = checkbox.closest('.card, .card-mobile');
+    var cardId = card.data('card-id');
+    var boardId = $('.mobile-view').data('board-id');
+    var boardItemId = card.data('board-item-id');
 
-  // Send AJAX request to toggle completion
-  $.ajax({
-    url: `/boards/${boardId}/board_items/${boardItemId}/cards/${cardId}/toggle_complete`,
-    method: 'PATCH',
-    data: { completed: isChecked },
-    success: function(response) {
-      if (response.success) {
-        console.log('Card completion status updated.');
-        // Optionally, update the UI or reload the board
-      } else {
-        alert('Error updating card status: ' + response.message);
+    $.ajax({
+      url: `/boards/${boardId}/board_items/${boardItemId}/cards/${cardId}/toggle_complete`,
+      method: 'PATCH',
+      data: { completed: isChecked },
+      success: function (response) {
+        if (response.success) {
+          console.log('Card completion status updated.');
+        } else {
+          alert('Error updating card status: ' + response.message);
+        }
+      },
+      error: function () {
+        alert('Error updating card status. Please try again.');
       }
-    },
-    error: function() {
-      alert('Error updating card status. Please try again.');
-    }
+    });
   });
-});
 
- // Handler para o botão de adicionar card na versão móvel
-  $(document).on('click', '.add-card-mobile', function(e) {
+  let lastFormOpenTime = 0;
+
+  $(document).on('click', '.card-title-mobile', function (e) {
+    e.stopPropagation()
+
+    var currentTime = new Date().getTime();
+    if (currentTime - lastFormOpenTime < timeBeforeOpeningFormAgain) {
+        return;
+    }
+
+    lastFormOpenTime = currentTime;
+
+    var card = $(this);
+    var cardId = card.data('card-id');
+    var boardId = card.data('board-id');
+    var boardItemId = card.data('board-item-id');
+
+    openForm(boardId, boardItemId, cardId);
+  })
+
+  $(document).on('click', '.add-card-mobile', function (e) {
     e.stopPropagation();
 
     var addCardElement = $(this);
 
-   // Substituir o conteúdo por um campo de input
     var inputField = $('<input>', {
       type: 'text',
       class: 'form-control new-card-title-input',
-      placeholder: 'Digite o título do novo card'
+      placeholder: 'Digite o título do novo card e pressione enter'
     });
 
-    // Remover o ícone de adição e adicionar o campo de input
     addCardElement.html(inputField);
 
-    // Focar no campo de input
     inputField.focus();
 
-    // Handler para pressionar Enter no campo de input
-    inputField.on('keypress', function(e) {
-      if (e.which == 13) { // Tecla Enter
+    inputField.on('keypress', function (e) {
+      if (e.which == 13) {
         e.preventDefault();
         var title = $(this).val().trim();
         if (title === '') {
@@ -63,74 +76,65 @@ $(document).on('change', '.complete-card-button-mobile', function(e) {
         var boardId = $('.mobile-view').data('board-id');
         var firstBoardItemId = addCardElement.data('board-item-id');
 
-        // Enviar requisição AJAX para criar o card
         $.ajax({
           url: `/boards/${boardId}/board_items/${firstBoardItemId}/cards`,
           method: 'POST',
           data: { card: { title: title } },
           dataType: 'json',
-          success: function(response) {
+          success: function (response) {
             if (response.success) {
-                location.reload()
+              location.reload()
             } else {
               alert('Erro ao criar o card: ' + response.message);
             }
           },
-          error: function() {
+          error: function () {
             alert('Erro ao criar o card. Por favor, tente novamente.');
           }
         });
       }
     });
 
-    // Handler para clicar fora do input e cancelar a adição
-    $(document).on('click.addCardInput', function(e) {
+    $(document).on('click.addCardInput', function (e) {
       if (!$(e.target).closest('.add-card-mobile').length) {
-        // Restaurar o botão de adicionar
         addCardElement.html('<div class="card-header-mobile"><i class="bi bi-plus-lg" style="color: white"></i></div>');
-        // Remover este handler
         $(document).off('click.addCardInput');
       }
     });
 
   });
- 
 
-
-    // Mostrar o formulário de novo card ao clicar no botão
-    $('.show-new-card-form').on('click', function(e) {
-      e.preventDefault();
-      var column = $(this).closest('.column');
-      column.find('.add-card-button').hide();
-      column.find('.new-card-form').show();
-      column.find('.card-title-input').focus();
-    });
-
-
-    // Handler para o botão de excluir
-   // Handler para o botão de excluir
-$(document).on('click', '.delete-card-button-mobile', function(e) {
-  e.stopPropagation();
-  var card = $(this).closest('.card, .card-mobile');
-  var cardId = card.data('card-id');
-  var boardItemId = card.data('board-item-id');
-  var boardId = $('.mobile-view').data('board-id');
-
-  if (confirm('Tem certeza que deseja excluir este card?')) {
-    $.ajax({
-      url: `/boards/${boardId}/board_items/${boardItemId}/cards/${cardId}`,
-      method: 'DELETE',
-      success: function() {
-        card.fadeOut(300, function() {
-          card.remove();
-          console.log('Card excluído com sucesso.');
-        });
-      },
-      error: function() {
-        alert('Erro ao excluir o card.');
-      }
-    });
-  }
-});
-
+  $('.show-new-card-form').on('click', function (e) {
+    e.preventDefault();
+    var column = $(this).closest('.column');
+    column.find('.add-card-button').hide();
+    column.find('.new-card-form').show();
+    column.find('.card-title-input').focus();
   });
+
+
+  $(document).on('click', '.delete-card-button-mobile', function (e) {
+    e.stopPropagation();
+    var card = $(this).closest('.card, .card-mobile');
+    var cardId = card.data('card-id');
+    var boardItemId = card.data('board-item-id');
+    var boardId = $('.mobile-view').data('board-id');
+
+    if (confirm('Tem certeza que deseja excluir este card?')) {
+      $.ajax({
+        url: `/boards/${boardId}/board_items/${boardItemId}/cards/${cardId}`,
+        method: 'DELETE',
+        success: function () {
+          card.fadeOut(300, function () {
+            card.remove();
+            console.log('Card excluído com sucesso.');
+          });
+        },
+        error: function () {
+          alert('Erro ao excluir o card.');
+        }
+      });
+    }
+  });
+
+});

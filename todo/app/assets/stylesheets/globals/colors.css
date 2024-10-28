@@ -1,0 +1,75 @@
+:root {
+  --background-main: #1D2125;
+  --background-main-gray: #343a40;
+  --background-main-white: #e9ecef;
+  --background-footer: #5e5e5e;
+  --background-header-kanban: rgba(169, 169, 169, 0.2);
+  --background-main-gray-transparent: #353b414d;
+  --background-kanban: #387A9e;
+  --background-tag: #13518f;
+  --background-column: #101204;
+  --background-tag-card: #101204;
+  --background-new-column: #2b2bf7;
+  --background-checkmark: #5e5e5e;
+  --background-checkmark-checked: #FFA500;
+  --background-new-board: #cdd2d4;
+
+  --color-secondary-theme: #F0F0F0;
+
+  --text-color-white: #F0F0F0;
+  --text-color-gray: #acacac;
+  --text-color-gray-100: #ADB9C5;
+  --text-new-board-card: #172b4d;
+  --text-edit-mood-messsage: #172b4d;
+
+  --border-color-white: #F0F0F0;
+  --border-color-gray: #495057;
+  --border-color-gray-100: #ADB9C5;
+  --border-color-card-graph: #ababab;
+
+  --icons-color: #F0F0F0;
+
+  --mood-high: #FFA500;
+  --mood-low: #FFA500;
+
+  --card-mood-selector: #747474;
+  --card-mood-selected: #00548C;
+  --card-mood-selected-config: #008c67;
+
+  --message-mood: #00548C;
+
+  --priority-pending: #dcf3c9;
+  --priority-0: #6F6F6F;
+  --priority-1: #04334D;
+  --priority-2: #387A9e;
+  --priority-3: #83C6EB;
+  --priority-nk: #38393a;
+
+  --board-card: #00548C;
+  --board-card-hover: #00548C;
+  --new-board-card: #dfe3e6;
+  --new-board-card-hover: #dfe3e6;
+
+  --card: #22272B;
+  --background-card-hover: #f0f0f0;
+  --card-highlighted: #00548C;
+
+  --toggle: #e100ff;
+
+  --custom-input-focus: #1be700;
+  --custom-input-checked: #1be700;
+
+  --tag-remove-color: #ffc0cb;
+
+  --background-button-primary: #4CAF50;
+  --background-button-primary-hover: #45a049;
+  --background-button-danger: #f44336;
+  --background-button-danger-hover: #da190b;
+  --background-button-generate-board: #8aefff;
+  --background-button-new-board: #ffc0cb;
+  --background-button-new-card: #181C1F;
+
+
+  --footer-text: #ffffff;
+  --box-shadow: #0000001A;
+}

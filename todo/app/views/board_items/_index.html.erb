@@ -6,7 +6,8 @@
   
   <div class="column-content">
     <%= render 'cards/new', board: @board, item: item unless @board.daily_board? %>
-    
+    <% last_column_id = @board.board_items.last.id %> 
+
     <div class="cards">
       <%= render 'board_items/cards_content', 
           board: @board,

@@ -1,6 +1,6 @@
 module CardHelper
     def highlight_background_color(card, highlight_id)
-      (highlight_id.present? && card.id.to_s == highlight_id) ? '#ffffff' : '#22272B'
+      (highlight_id.present? && card.id.to_s == highlight_id) ? 'var(--card-highlighted)' : 'var(--card)'
     end
   
     def priority_circle_color(priority)

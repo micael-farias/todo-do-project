@@ -1,9 +1,7 @@
 .kanban-header-title {
-  color: rgb(169, 169, 169);
+  color: var(--text-color-gray);
   width: 100%;
-  line-height: 50px;
-  padding-left: 10px;
-  background-color: rgba(169, 169, 169, 0.2);
+  background-color: var(--background-header-kanban);
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -11,15 +9,19 @@
 
 .board-title {
   cursor: pointer;
+  font-size: 20px;
+  flex-grow: 1;
+  color: var(--text-color-white);
+  font-weight: 500
 }
 
 #delete-board-button {
   float: right;
-  color: white;
   margin-right: 10px;
+  padding: 10px;
 }
 
 #duplicate-board-button {
   float: right;
-  color: white;
+  padding: 10px;
 }

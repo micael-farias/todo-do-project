@@ -1,6 +1,6 @@
 .edit-registration-container {
-  background-color: #22272B;
-  color: #eee;
+  background-color: var(--background-main);
+  color: var(--text-color-white);
   min-height: 100vh;
   padding: 40px;
 }
@@ -23,7 +23,7 @@
 
 .user-details p {
   margin: 5px 0;
-  color: #eee;
+  color: var(--text-color-white);
 }
 
 .user-details-config {
@@ -50,10 +50,9 @@
 }
 
 .custom-input {
-  background-color: #333 !important;
-  /* Fundo escuro */
-  color: #eee;
-  border: 1px solid #555;
+  background-color: var(--background-main-gray) !important;
+  color: var(--text-color-white);
+  border: 1px solid var(--border-color-gray);
   padding: 10px;
   width: 100%;
   border-radius: 5px;
@@ -61,32 +60,29 @@
 }
 
 .custom-input:focus {
-  background-color: #333 !important;
-  /* Mantém fundo escuro ao focar */
-  color: #eee;
+  background-color: var(--background-main-gray) !important;
+  color: var(--text-color-white);
   outline: none;
-  border-color: #00ff00;
+  border-color: var(--custom-input-focus);
 }
 
 .custom-input::placeholder {
-  color: #888;
+  color: var(--text-color-gray);
 }
 
-/* Estilos para os switches */
 .form-check-input {
   width: 2em;
   height: 1em;
-  background-color: #333;
-  border: 1px solid #555;
+  background-color: var(--background-main-gray);
+  border: 1px solid var(--border-color-gray);
   transition: background-color 0.3s, border-color 0.3s;
 }
 
 .form-check-input:checked {
-  background-color: #00ff00;
-  border-color: #00ff00;
+  background-color: var(--custom-input-checked);
+  border-color: var(--custom-input-checked);
 }
 
-/* Estilos para o avatar e overlay */
 .edit-avatar-overlay {
   position: absolute;
   top: 0;
@@ -94,25 +90,25 @@
   width: 150px;
   height: 150px;
   border-radius: 50%;
-  background: rgba(0, 0, 0, 0.5);
+  background: var(--background-main-gray);
   display: flex;
   align-items: center;
   justify-content: center;
   opacity: 0;
   transition: opacity 0.3s ease;
   cursor: pointer;
-  color: white;
+  color: var(--text-color-white);
   font-size: 24px;
 }
 
 .edit-avatar-overlay i {
-  color: #eee;
+  color: var(--text-color-white);
   font-size: 24px;
 }
 
 .category-phrase {
   font-size: 1.1em;
-  color: white;
+  color: var(--text-color-white);
   margin-top: 10px;
   font-style: italic;
   text-align: center;
@@ -130,10 +126,9 @@
   object-fit: cover;
 }
 
-/* Seletor de Humor */
 .mood-item.selected {
-  border: 3px solid #00ff00;
-  border-radius: 50%;
+  border: 3px solid var(--card-mood-selected-config);
+  border-radius: 5px;
   transform: scale(1.1);
 }
 
@@ -141,15 +136,14 @@
   opacity: 0.8;
 }
 
-/* Seletor Visual de Categoria de Humor */
 .mood-category-selection h5 {
-  color: #eee;
+  color: var(--text-color-white);
   margin-bottom: 5px;
   text-align: center;
 }
 
 .mood-category-selection p {
-  color: #7e7e7e;
+  color: var(--text-color-gray);
   margin-bottom: 15px;
   font-size: 14px;
   text-align: center;
@@ -164,8 +158,8 @@
 }
 
 .mood-category-item {
-  background-color: #444;
-  color: #eee;
+  background-color: var(--background-main-gray);
+  color: var(--text-color-white);
   transition: background-color 0.3s, border 0.3s, transform 0.3s;
   border: 2px solid transparent;
   border-radius: 15px;
@@ -177,13 +171,13 @@
 }
 
 .mood-category-item:hover {
-  background-color: #555;
+  background-color: var(--background-main-gray);
   transform: scale(1.05);
 }
 
 .mood-category-item.selected {
-  border: 3px solid #00ff00;
-  background-color: #555;
+  border: 3px solid var(--card-mood-selected-config);
+  background-color: var(--background-main-gray);
   transform: scale(1.1);
 }
 
@@ -206,11 +200,10 @@
   position: absolute;
   top: 10px;
   right: 10px;
-  color: #00ff00;
+  color: var(--card-mood-selected-config);
   font-size: 1.5em;
 }
 
-/* Estilos para os botões */
 .btn {
   padding: 10px 20px;
   border-radius: 5px;
@@ -223,24 +216,24 @@
 }
 
 .btn-primary {
-  background-color: #4CAF50;
-  color: #eee;
+  background-color: var(--background-button-primary);
+  color: var(--text-color-white);
   border: none;
 }
 
 .btn-primary:hover {
-  background-color: #45a049;
+  background-color: var(--background-button-primary-hover);
   transform: scale(1.05);
 }
 
 .btn-danger {
-  background-color: #f44336;
-  color: #eee;
+  background-color: var(--background-button-danger);
+  color: var(--text-color-white);
   border: none;
 }
 
 .btn-danger:hover {
-  background-color: #da190b;
+  background-color: var(--background-button-danger-hover);
   transform: scale(1.05);
 }
 
@@ -249,7 +242,6 @@
   gap: 20px;
 }
 
-/* Responsividade */
 @media (max-width: 600px) {
   .mood-category-item {
     width: 150px;

@@ -1,0 +1,1 @@
+export const timeBeforeOpeningFormAgain = 3000

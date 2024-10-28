@@ -18,6 +18,7 @@
 //= link cards/card
 //= link cards/mobile
 //= link cards/new
+//= link cards/priority_indicator.css
 //= link cards/show
 //= link cards/tag
 
@@ -28,10 +29,12 @@
 
 //= link graph-card/graph
 
+//= link globals/colors
+
 //= link home/index
+//= link home/navbar
 
 //= link kanban/board
-//= link kanban/daily_board_message
 //= link kanban/header
 
 //= link moods/mood_message_section

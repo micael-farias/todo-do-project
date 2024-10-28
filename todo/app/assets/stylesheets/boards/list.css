@@ -6,8 +6,8 @@
 }
 
 .new-board-card {
-  background-color: #dfe3e6;
-  color: #172b4d;
+  background-color: var(new-board-card);
+  color: var(--text-new-board-card);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -16,6 +16,8 @@
 .new-board-card .card-body {
   display: flex;
   align-items: center;
+  border-radius: 15px;
+  background-color: var(--background-new-board);
   justify-content: center;
 }
 
@@ -24,11 +26,16 @@
 }
 
 .new-board-card:hover {
-  background-color: #cdd2d4;
+  background-color: var(--new-board-card-hover);
 }
 
 .edit-mood-message {
   margin: 0px 20px 0px 20px;
+}
+
+.edit-mood-message-text{
+  color: var(--text-edit-mood-messsage);
+  font-weight: 700;
 }
 
 .new-board-form {

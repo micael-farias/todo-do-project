@@ -1,5 +1,5 @@
-$(document).ready(function() {
-    $('.graph-square').on('click', function() {
+$(document).ready(function () {
+    $('.graph-square').on('click', function () {
         var boardId = $(this).data('board-id');
         var cardId = $(this).data('card-id');
 

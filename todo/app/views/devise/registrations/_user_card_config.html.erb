@@ -1,0 +1,7 @@
+<div class="user-card-config">
+  <h4>Configurações dos Cards</h4>
+  <%= render 'shared/form_switch', f: f, field: :show_card_priority, label: "Mostrar prioridade" %>
+  <%= render 'shared/form_switch', f: f, field: :show_card_due_date, label: "Mostrar data de vencimento" %>
+  <%= render 'shared/form_switch', f: f, field: :show_card_mood, label: "Mostrar humor" %>
+  <%= render 'shared/form_switch', f: f, field: :show_form_after_create_card, label: "Abrir formulário após criar card" %>
+</div>
