@@ -208,9 +208,9 @@ $(document).ready(function () {
       var boardId = $('#kanban-board').data('board-id');
     
       if (columnId === undefined) {
-        //createColumn(input.closest('form'), newName);
+        createColumn(input.closest('form'), newName);
       } else {
-        //updateColumn(columnId, newName, boardId, input);
+        updateColumn(columnId, newName, boardId, input);
       }
     }
   });
@@ -256,4 +256,69 @@ $(document).ready(function () {
     column.find('.new-card-form').show();
     column.find('.card-title-input').focus();
   });
+
+  
+ function updateColumn(columnId, newName, boardId, input) {
+  $.ajax({
+    url: `/boards/${boardId}/board_items/${columnId}`,
+    method: 'PATCH',
+    data: { board_item: { name: newName } },
+    dataType: 'json',
+    success: function (response) {
+      if (response.success) {
+        replaceInputWithColumnName(input, columnId, response.board_item.name);
+      } else {
+        alert('Erro ao atualizar o nome da coluna: ' + response.message);
+      }
+    },
+    error: function () {
+      alert('Erro ao atualizar o nome da coluna. Por favor, tente novamente.');
+    }
+  });
+  }
+
+  function replaceInputWithColumnName(input, columnId, updatedName) {
+    var updatedSpan = $('<span>', {
+      class: 'column-name',
+      'data-column-id': columnId,
+      text: updatedName
+    });
+    input.replaceWith(updatedSpan);
+  }
+
+  function createColumn(form) {
+    $.ajax({
+      url: form.attr('action'),
+      method: 'POST',
+      data: form.serialize(),
+      dataType: 'json',
+      success: function (response) {
+        if (response.success) {
+          addNewColumnToBoard(response.rendered_column);
+          clearForm(form);
+          location.reload()
+        } else {
+          alert('Erro ao criar a coluna: ' + response.message);
+        }
+      },
+      error: function () {
+        alert('Erro ao criar a coluna. Por favor, tente novamente.');
+      }
+    });
+  }
+  
+  function addNewColumnToBoard(renderedColumn) {
+    var board = $('#kanban-board');
+    var newColumn = $(renderedColumn).hide();
+    board.find('.add-column-button').before(newColumn);
+    newColumn.fadeIn(300);
+  }
+  
+  function clearForm(form) {
+    form.find('.column-name-input').val('');
+    form.closest('.new-column-form').hide();
+    $('#kanban-board').find('.add-column-button').show();
+  }
+  
+  
 })
