@@ -1,4 +1,4 @@
-import { consolidateColumnEdit } from "../boards_items/save";
+//import { consolidateColumnEdit } from "../boards_items/save";
 
 $(document).ready(function () {
 
@@ -201,7 +201,7 @@ $(document).ready(function () {
       e.preventDefault();
       consolidateColumnEdit(input);
     }
-  });*/
+  });
 
   $(document).on('click', '.delete-column-button', function (e) {
     e.stopPropagation();
@@ -237,7 +237,7 @@ $(document).ready(function () {
     }
   });
 
-  /*$('.show-new-card-form').on('click', function (e) {
+  $('.show-new-card-form').on('click', function (e) {
     e.preventDefault();
     var column = $(this).closest('.column');
     column.find('.add-card-button').hide();
