@@ -76,7 +76,7 @@ Diariamente, o usuário receberá um quadro de tarefas organizado da seguinte fo
 ![Diagrama de Classes](https://firebasestorage.googleapis.com/v0/b/cloud-storage-33fb2.appspot.com/o/todo-db%2Fdiagrama%20de%20classe.png?alt=media&token=e79dfab6-3073-4ae7-b994-e2dff8e7f303)
 
 ### Observações
-- Inicialmente eu trabalhei com a ideia do usuário poder ter mais de um humor (ex: 'Hoje estou entre feliz e enérgico', 'Hoje estou pensativo e inspirado'...). No entanto, pra diminuir um pouco a complexidade e por questões de tempo, optei para que o usuário tivesse um único humor partindo de uma escala (Excelente, Bom, Neutro, Ruim e Péssimo).
+- Inicialmente eu trabalhei com a ideia do usuário poder ter mais de um humor (ex: 'Hoje estou entre feliz e enérgico', 'Hoje estou pensativo e inspirado'...). No entanto, pra diminuir um pouco a complexidade e por questões de tempo, optei para que o usuário tivesse um único humor partindo de uma escala (Excelente, Bom, Neutro, Ruim e Péssimo). Dessa forma, o usuário possui apenas um único humor ativo.
 
 
 ## Autores
