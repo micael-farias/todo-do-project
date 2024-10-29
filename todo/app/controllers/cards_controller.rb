@@ -12,7 +12,6 @@ class CardsController < ApplicationController
         locals: {
           card: result[:card],
           current_user: current_user, 
-          background_color: '#ffffff',
           is_last_column: result[:card].completed,
           due_info: nil,
           due_label: 'Data de Vencimento'

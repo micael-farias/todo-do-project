@@ -8,7 +8,7 @@
     <%= @board.title  %>
     <% if @board.daily_board? %>
     <i class="bi bi-question-circle-fill text-white fs-6" 
-        title="Este gráfico exibe o número de tarefas criadas e suas prioridades ao longo do tempo. A cor indica a prioridade e o preenchimento indica se a tarefa foi concluída." 
+        title="O board diário é criado a partir do seu humor diário. Pega-se primeiro as tarefas que estão a 3 dias de se vencer, em seguida pega-se as tarefas que estão marcadas no humor que você selecionou, e por último o restante de tarefas ordenadas por prioridade." 
       >
       </i>
     <%end%>

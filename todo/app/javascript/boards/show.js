@@ -1,10 +1,16 @@
 $(document).ready(function () {
 
+  $.ajaxSetup({
+    headers: {
+      'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content')
+    }
+  });
+  
   $('#duplicate-board-button').on('click', function (e) {
     e.preventDefault();
 
     if (confirm('Tem certeza que deseja duplicar este board? As colunas serão duplicadas, mas os cards não.')) {
-      var boardId = $('#kanban-board').data('board-id');
+      var boardId = $('.board-title').data('board-id');
 
       $.ajax({
         url: '/boards/' + boardId + '/duplicate',
@@ -27,7 +33,7 @@ $(document).ready(function () {
     e.preventDefault();
 
     if (confirm('Tem certeza que deseja excluir este board? Todas as colunas e cards associados também serão excluídos.')) {
-      var boardId = $('#kanban-board').data('board-id');
+      var boardId = $('.board-title').data('board-id');
 
       $.ajax({
         url: '/boards/' + boardId,
