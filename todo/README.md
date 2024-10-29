@@ -24,7 +24,7 @@ Para fazer esse projeto decidi ir além de uma simples lista de afazeres. Tendo 
 
 ## Diferenciais
 
-Diariamente, o usuário receberá um quadro de tarefas organizado da seguinte forma:
+Diariamente, o usuário poderá escolher o humor que ele está no dia corrente, e após isso, será gerado um quadro de tarefas com todas as tarefas pendentes ( não concluidas ) organizado da seguinte forma:
 
 1. **Tarefas Próximas do Prazo**: Prioriza tarefas que estão a 3 dias de vencer.
 2. **Humor do Usuário**: Seleciona tarefas com base no humor atual do usuário.
@@ -71,9 +71,56 @@ Diariamente, o usuário receberá um quadro de tarefas organizado da seguinte fo
 
 - **Organização Inteligente**: A priorização das tarefas baseada em prazos, humor e prioridade garante que o usuário foque no que realmente importa a cada dia.
 
-## Diagrama de classe
+## Informações de banco de dados
 
 ![Diagrama de Classes](https://firebasestorage.googleapis.com/v0/b/cloud-storage-33fb2.appspot.com/o/todo-db%2Fdiagrama%20de%20classe.png?alt=media&token=e79dfab6-3073-4ae7-b994-e2dff8e7f303)
+
+### Estrutura Principal
+
+1. **Usuário**
+   - **Relacionamentos:**
+     - **Boards (Quadros de Tarefa):** Cada usuário pode possuir múltiplos quadros de tarefa.
+     - **Preferências:** Cada usuário possui preferências que determinam a visibilidade de certos elementos, seja nos cards das tarefas ou na listagem dos boards.
+     - **Humor Ativo:** Cada usuário tem um humor ativo que influencia a experiência dentro do sistema.
+
+2. **Boards (Quadros de Tarefa)**
+   - **Relacionamentos:**
+     - **Board Items (Colunas):** Cada board pode conter várias colunas, conhecidas como board_items, que funciona como o status da tarefa. Caso uma tarefa esteja na última coluna do seu board, a tarefa é dita como concluida.
+
+3. **Board Items (Colunas)**
+   - **Relacionamentos:**
+     - **Cards (Tarefas):** Cada board_item pode conter múltiplas tarefas (cards).
+
+4. **Cards (Tarefas)**
+   - **Atributos:**
+     - **Tags:** Cada tarefa pode ter várias tags para categorizar.
+     - **Mood (Humor):** Cada tarefa pode opcionalmente estar associada a um humor específico, indicando o humor necessário para realizar a tarefa.
+
+5. **Preferências do Usuário**
+   - **Função:** Permitir que o usuário personalize a interface e a exibição de elementos, como a visibilidade de boards populares, boards recentes, prioridades das tarefas, datas de vencimento, humores nos cards, entre outros.
+
+### Sistema de Humores
+
+1. **Humores (Moods)**
+   - **Exemplos:** Excelente, Bom, Neutro, Ruim, Péssimo.
+   - **Função:** Representar diferentes estados emocionais que podem estar associados às tarefas.
+
+2. **Categorias de Humor (Mood Categories)**
+   - **Exemplos:** Gretchen, Shrek, Nazaré.
+   - **Função:** Representar personagens ou temas específicos que categorizam os humores.
+
+3. **Temas de Humor (Theme Moods)**
+   - **Relacionamentos:**
+     - **Humor (Mood):** Cada tema de humor está relacionado a um humor específico.
+     - **Categoria de Humor (Mood Category):** Cada tema de humor está associado a uma categoria de humor.
+     - **Mensagens:** Cada tema de humor pode ter múltiplas mensagens motivacionais.
+   - **Exemplos:**
+     - **Gretchen pra cada humor existente (Excelente, Bom, Neutro, Ruim, Péssimo)**
+     - **O mesmo para Nazaré**
+     - **O mesmo para Shrek**
+
+4. **Mensagens Motivacionais (Theme Mood Messages)**
+   - **Função:** Fornecer mensagens motivacionais que são exibidas para o usuário. Quando o usuário seleciona seu humor diário, uma mensagem aleatória do tema de humor selecionado é exibida em um card específico na interface.
 
 ### Observações
 - Inicialmente eu trabalhei com a ideia do usuário poder ter mais de um humor (ex: 'Hoje estou entre feliz e enérgico', 'Hoje estou pensativo e inspirado'...). No entanto, pra diminuir um pouco a complexidade e por questões de tempo, optei para que o usuário tivesse um único humor partindo de uma escala (Excelente, Bom, Neutro, Ruim e Péssimo). Dessa forma, o usuário possui apenas um único humor ativo.
