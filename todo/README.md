@@ -44,6 +44,7 @@ Diariamente, o usuário poderá escolher o humor que ele está no dia corrente, 
   - Alterar o status das tarefas.
   - Adicionar tags em tarefas.
   - Parametrizar o que deseja ver em uma tarefa.
+  - Visão geral de andamento de tarefas (gráfico de cards)
 
 - **Humor e Personalização**
   - Escolher o humor atual para realizar tarefas.
@@ -55,6 +56,7 @@ Diariamente, o usuário poderá escolher o humor que ele está no dia corrente, 
   - Duplicar quadros de tarefas.
   - Visualizar todos os quadros de tarefas.
   - Acessar o quadro de tarefas diário.
+  - Parametrizar quais categorias de quadro deseja ver
 
 - **Usuário e Autenticação**
   - Criar e acessar conta de usuário.

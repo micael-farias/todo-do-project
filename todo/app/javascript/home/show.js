@@ -35,7 +35,7 @@ $(document).ready(function () {
             var linkHref = '/boards/' + card.board_id + '?highlight_card=' + card.id;
             var link = $('<a></a>', {
               href: linkHref,
-              class: 'text-decoration-none list-item d-block w-100' // Adiciona d-block e w-100
+              class: 'text-decoration-none list-item d-block w-100' 
             }).text(card.title);
 
             listItem.append(link);
