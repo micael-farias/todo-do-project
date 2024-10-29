@@ -109,7 +109,10 @@ Diariamente, o usuário poderá escolher o humor que ele está no dia corrente, 
    - **Exemplos:** Gretchen, Shrek, Nazaré.
    - **Função:** Representar personagens ou temas específicos que categorizam os humores.
 
-3. **Temas de Humor (Theme Moods)**
+3. **Humores do usuário (User Moods)**
+   - **Explicação:** Inicialmente eu trabalhei com a ideia do usuário poder ter mais de um humor (ex: 'Hoje estou entre feliz e enérgico', 'Hoje estou pensativo e inspirado'...). No entanto, para poder diminuir um pouco a complexidade e por questões de tempo, optei para que o usuário tivesse um único humor ativo, que partiria de uma escala (Excelente, Bom, Neutro, Ruim e Péssimo). Dessa forma, o usuário possui apenas um único humor ativo..
+
+4. **Temas de Humor (Theme Moods)**
    - **Relacionamentos:**
      - **Humor (Mood):** Cada tema de humor está relacionado a um humor específico.
      - **Categoria de Humor (Mood Category):** Cada tema de humor está associado a uma categoria de humor.
@@ -119,11 +122,9 @@ Diariamente, o usuário poderá escolher o humor que ele está no dia corrente, 
      - **O mesmo para Nazaré**
      - **O mesmo para Shrek**
 
-4. **Mensagens Motivacionais (Theme Mood Messages)**
+5. **Mensagens Motivacionais (Theme Mood Messages)**
    - **Função:** Fornecer mensagens motivacionais que são exibidas para o usuário. Quando o usuário seleciona seu humor diário, uma mensagem aleatória do tema de humor selecionado é exibida em um card específico na interface.
 
-### Observações
-- Inicialmente eu trabalhei com a ideia do usuário poder ter mais de um humor (ex: 'Hoje estou entre feliz e enérgico', 'Hoje estou pensativo e inspirado'...). No entanto, pra diminuir um pouco a complexidade e por questões de tempo, optei para que o usuário tivesse um único humor partindo de uma escala (Excelente, Bom, Neutro, Ruim e Péssimo). Dessa forma, o usuário possui apenas um único humor ativo.
 
 
 ## Autores
