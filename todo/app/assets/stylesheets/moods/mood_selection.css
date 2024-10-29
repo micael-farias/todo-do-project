@@ -121,6 +121,7 @@
 .generate-board-legend {
   text-align: center;
   margin-top: 10px;
+  font-size: 17px;
   font-weight: bold;
   color: var(--text-color-gray-100);
 }
