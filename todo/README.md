@@ -99,6 +99,9 @@ Diariamente, o usuário poderá escolher o humor que ele está no dia corrente, 
 5. **Preferências do Usuário**
    - **Função:** Permitir que o usuário personalize a interface e a exibição de elementos, como a visibilidade de boards populares, boards recentes, prioridades das tarefas, datas de vencimento, humores nos cards, entre outros.
 
+6. **Active Storage**
+   - O **Active Storage** é usado para gerenciar o upload e armazenamento de arquivos, principalmente a foto do perfil do usuário.
+
 ### Sistema de Humores
 
 1. **Humores (Moods)**
