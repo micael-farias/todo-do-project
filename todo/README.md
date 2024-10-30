@@ -13,7 +13,7 @@
    - [Humor e Personalização](#humor-e-personalização)
    - [Quadros de Tarefas](#quadros-de-tarefas)
    - [Usuário e Autenticação](#usuário-e-autenticação)
-5. [Requisitos em Formato de Imagem e Tutorial da Aplicação](#requisitos-em-formato-de-imagem-e-tutorial-da-aplicação)
+5. [Requisitos em Formato de Imagem e Tutorial de uso da Aplicação](#requisitos-em-formato-de-imagem-e-tutorial-de-uso-da-aplicação)
    - [Tela Inicial](#tela-inicial)
    - [Tela de um Board - Tela de um Board Diário](#tela-de-um-board---tela-de-um-board-diário)
    - [Configuração de Perfil](#configuração-de-perfil)
@@ -93,14 +93,14 @@ Além do mais o usuário terá um quadro com resumo de quais tarefas ele fez ou 
   - Resumo das tarefas dos últimos 30 dias.
   - Versão mobile da aplicação com funcionalidades básicas.
 
-## Requisitos em Formato de Imagem e Tutorial da Aplicação
+## Requisitos em Formato de Imagem e Tutorial de uso da Aplicação
 A seguir, apresento as telas da aplicação. Para cada elemento, adicionei uma breve explicação através de comentários, assim como adicionei um mini "tutorial" que explica o funcionamento de cada parte da implementação.
 
 ### Tela inicial
 ![Tela inicial](https://firebasestorage.googleapis.com/v0/b/cloud-storage-33fb2.appspot.com/o/humors%2Fhumor%20card.png?alt=media&token=65b3968d-7efd-48a9-bf50-c4f4e10a9036)
 
 ### Tela de um board - Tela de um board diário
-![Boards](https://firebasestorage.googleapis.com/v0/b/cloud-storage-33fb2.appspot.com/o/humors%2Fboards.png?alt=media&token=7eff2317-49de-446a-8cfc-87d545749500)
+![Boards](https://firebasestorage.googleapis.com/v0/b/cloud-storage-33fb2.appspot.com/o/humors%2Fboards.png?alt=media&token=0fdba843-6b7c-40bd-9405-8235fd0b9226)
 
 ### Configuração de perfil
 ![Configuração](https://firebasestorage.googleapis.com/v0/b/cloud-storage-33fb2.appspot.com/o/humors%2Fconfig.png?alt=media&token=1a50db29-3d2c-43cf-9cfa-6c368be08d1b)
