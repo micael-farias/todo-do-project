@@ -194,7 +194,7 @@ A seguir, apresento as telas da aplicação. Para cada elemento, adicionei uma b
 
  5. **Uso de Helpers**
   
-      - Criei helpers para centralizar funções utilizadas em diversas partes da aplicação, como o método format_date, que formata datas em 'dd/mm/yyyy'. .
+      - Criei helpers para centralizar funções utilizadas em diversas partes da aplicação, como o método format_date, que formata datas em 'dd/mm/yyyy'.
 
  6. **Centralização de cores**
 
