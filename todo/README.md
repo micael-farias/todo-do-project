@@ -103,7 +103,7 @@ A seguir, apresento as telas da aplicação. Para cada elemento, adicionei uma b
 ![Boards](https://firebasestorage.googleapis.com/v0/b/cloud-storage-33fb2.appspot.com/o/humors%2Fboards.png?alt=media&token=7eff2317-49de-446a-8cfc-87d545749500)
 
 ### Configuração de perfil
-![Configuração](https://firebasestorage.googleapis.com/v0/b/cloud-storage-33fb2.appspot.com/o/humors%2Fconfig.png?alt=media&token=c572bebf-1e03-4a5f-92c6-69c62d47ef02)
+![Configuração](https://firebasestorage.googleapis.com/v0/b/cloud-storage-33fb2.appspot.com/o/humors%2Fconfig.png?alt=media&token=1a50db29-3d2c-43cf-9cfa-6c368be08d1b)
 
 ### Versão mobile
 ![Mobile](https://firebasestorage.googleapis.com/v0/b/cloud-storage-33fb2.appspot.com/o/humors%2Fmobile.png?alt=media&token=1296b2fd-09f4-4685-95f6-642ffede70fe)
