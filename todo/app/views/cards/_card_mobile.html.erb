@@ -1,9 +1,11 @@
 <div class="mobile-view" data-board-id="<%= @board.id %>">
-    <div class="add-card-mobile" data-board-item-id="<%= @board.board_items.first.id %>">
-        <div class="card-header-mobile">
-            <i class="bi bi-plus-lg icon"></i>
+    <% unless @board.daily_board?%>
+        <div class="add-card-mobile" data-board-item-id="<%= @board.board_items.first.id %>">
+            <div class="card-header-mobile">
+                <i class="bi bi-plus-lg icon"></i>
+            </div>
         </div>
-    </div>
+    <%%>
     <% @cards.each do |card| %>
     <div class="card-mobile" data-card-id="<%= card.id %>" data-board-item-id="<%= card.board_item_id %>">
         <div class="card-header-mobile">
