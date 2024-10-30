@@ -35,6 +35,7 @@ O desafio individual é a implementação de uma Lista de Tarefas ( TO DO ), cad
 
 Para fazer esse projeto decidi ir além de uma simples lista de afazeres. Tendo como base o Kanban, incorporei elementos de humor para tornar a experiência de realizar tarefas mais envolvente. Cada dia, o usuário poderá gerar um quadro de tarefas que prioriza as atividades com base no prazo, humor atual e prioridade.
 
+**Github Projects:** [Clique aqui para acessar o github projects](https://github.com/users/micael-farias/projects/1/views/1)
 
 ## Decisões Técnicas
 
