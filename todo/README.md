@@ -30,6 +30,12 @@ Diariamente, o usuário poderá escolher o humor que ele está no dia corrente, 
 2. **Humor do Usuário**: Seleciona tarefas com base no humor atual do usuário.
 3. **Prioridade das Tarefas**: Ordena o restante das tarefas por prioridade.
 
+
+Além do mais o usuário terá um quadro com resumo de quais tarefas ele fez ou não em forma de gráfico. Cada card representa uma tarefa, se o card está preenchido a tarefa está completa. Cada cor representa uma prioridade, sendo maior prioridade as cores mais claras.
+
+![Humor](https://firebasestorage.googleapis.com/v0/b/cloud-storage-33fb2.appspot.com/o/humors%2Fhumor%20card.png?alt=media&token=5fe4d165-4a27-4a19-82f5-1f05ddb02548)
+
+
 ## Requisitos
 
 ### Funcionalidades Principais
