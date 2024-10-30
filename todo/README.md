@@ -179,11 +179,11 @@ Além do mais o usuário terá um quadro com resumo de quais tarefas ele fez ou 
 
 2. **Uso de partials**
 
-   - Quando estava desenvolvendo a parte de frontend, percebi que alguns arquivos .html.erb estavam ficando muito extensos... Por isso tentei adotar o uso de partials (ex: `_card.html.erb`, `_header.html.erb`, `_tags.html.erb`) sempre que possível. Algo que evitou a repetição de código, e deu mais clareza na função de cada arquivo.
+      - Quando estava desenvolvendo a parte de frontend, percebi que alguns arquivos .html.erb estavam ficando muito extensos... Por isso tentei adotar o uso de partials (ex: `_card.html.erb`, `_header.html.erb`, `_tags.html.erb`) sempre que possível. Algo que evitou a repetição de código, e deu mais clareza na função de cada arquivo.
 
 3. **Uso de Services Objects**
 
-  - Ao desenvolver as rotas nos controllers, percebi que alguns controllers estavam ficando muitos extensos com a criação de novas funcionalidades. Dessa forma, adotei a prática do uso de **Services**, os quais cada um teriam sua responsabilidade. Então com a lógica complexa delegada aos serviços o código dos controllers passou a ser mais limpo.
+   - Ao desenvolver as rotas nos controllers, percebi que alguns controllers estavam ficando muitos extensos com a criação de novas funcionalidades. Dessa forma, adotei a prática do uso de **Services**, os quais cada um teriam sua responsabilidade. Então com a lógica complexa delegada aos serviços o código dos controllers passou a ser mais limpo.
 
 4. **Simplificação do código nas views**
 
@@ -192,11 +192,11 @@ Além do mais o usuário terá um quadro com resumo de quais tarefas ele fez ou 
 
  5. **Uso de Helpers**
   
-  - Criei helpers para centralizar funções utilizadas em diversas partes da aplicação, como o método format_date, que formata datas em 'dd/mm/yyyy'. .
+   - Criei helpers para centralizar funções utilizadas em diversas partes da aplicação, como o método format_date, que formata datas em 'dd/mm/yyyy'. .
 
  6. **Centralização de cores**
 
-  - Como planejava implementar a personalização do tema de de cores no projeto, criei um arquivo globals/colors.css para centralizar as definições de cores. Isso facilitou bastante alterações presentes e futuras, pois todas as cores podem ser ajustadas a partir de um único local
+   - Como planejava implementar a personalização do tema de de cores no projeto, criei um arquivo globals/colors.css para centralizar as definições de cores. Isso facilitou bastante alterações presentes e futuras, pois todas as cores podem ser ajustadas a partir de um único local
 
 ## Autores
 
