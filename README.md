@@ -192,11 +192,11 @@ Além do mais o usuário terá um quadro com resumo de quais tarefas ele fez ou 
 
  5. **Uso de Helpers**
   
-   - Criei helpers para centralizar funções utilizadas em diversas partes da aplicação, como o método format_date, que formata datas em 'dd/mm/yyyy'. .
+      - Criei helpers para centralizar funções utilizadas em diversas partes da aplicação, como o método format_date, que formata datas em 'dd/mm/yyyy'. .
 
  6. **Centralização de cores**
 
-   - Como planejava implementar a personalização do tema de de cores no projeto, criei um arquivo globals/colors.css para centralizar as definições de cores. Isso facilitou bastante alterações presentes e futuras, pois todas as cores podem ser ajustadas a partir de um único local
+      - Como planejava implementar a personalização do tema de de cores no projeto, criei um arquivo globals/colors.css para centralizar as definições de cores. Isso facilitou bastante alterações presentes e futuras, pois todas as cores podem ser ajustadas a partir de um único local
 
 ## Autores
 
@@ -209,4 +209,3 @@ Além do mais o usuário terá um quadro com resumo de quais tarefas ele fez ou 
 ## Link da Aplicação
 
 [[Clique aqui para acessar a aplicação! :)](https://todo-do-project.onrender.com/)]
-
