@@ -16,7 +16,7 @@ Para fazer esse projeto decidi ir além de uma simples lista de afazeres. Tendo 
 - **Ruby**: 3.3.5 (última versão)
 - **Rails**: 7.2.1 (última versão)
 - **Banco de Dados**: PostgreSQL
-- **Frontend**: Bootstrap, HTML/CSS
+- **Frontend**: Bootstrap, HTML/CSS, Javascript (com importmap)
 - **Cache e Filas**: Redis
 - **Autenticação**: Devise
 
@@ -131,6 +131,32 @@ Diariamente, o usuário poderá escolher o humor que ele está no dia corrente, 
    - **Função:** Fornecer mensagens motivacionais que são exibidas para o usuário. Quando o usuário seleciona seu humor diário, uma mensagem aleatória do tema de humor selecionado é exibida em um card específico na interface.
 
 
+## Decisões de projeto e práticas utilizadas
+
+1. **Modularidade do código**
+
+   - Tentei tornar o código mais modular possível fazendo com que cada arquivo fizesse uma funcionalidade específica. Para isso fiz com que as cada arquivo da view fosse organizadas por áreas funcionais do sistema (ex: `card/edit`, `cards/show`, etc.). Isso facilitou bastante a manutenção de novas features. Além disso, cada arquivo da view teria seu arquivo em javascript(js) e seu estilo(css). A separação por responsabilidades facilitou na manutenção de novas features.
+
+2. **Uso de partials**
+
+   - Quando estava desenvolvendo a parte de frontend, percebi que alguns arquivos .html.erb estavam ficando muito extensos... Por isso tentei adotar o uso de partials (ex: `_card.html.erb`, `_header.html.erb`, `_tags.html.erb`) sempre que possível. Algo que evitou a repetição de código, e deu mais clareza na função de cada arquivo.
+
+3. **Uso de Services Objects**
+
+  - Ao desenvolver as rotas nos controllers, percebi que alguns controllers estavam ficando muitos extensos com a criação de novas funcionalidades. Dessa forma, adotei a prática do uso de **Services**, os quais cada um teriam sua responsabilidade. Então com a lógica complexa delegada aos serviços o código dos controllers passou a ser mais limpo.
+
+4. **Simplificação do código nas views**
+
+   - A fim de reduzir a complexidade dos arquivos `.html.erb`, movi as lógicas para variáveis de instância no controller. Por exemplo, em vez de fazer diretamente na view:
+   "<%= if current_user.user_preference.show_daily_board && @daily_board.present? &&  !@user_uses_mobile %>" criei uma variável de instância "@show_daily_board = current_user.user_preference.show_daily_board && @daily_board.present? &&  !@user_uses_mobile" e utilizei na view "<% if @show_daily_board %>". O que trouxe mais semântica ao código.
+
+ 5. **Uso de Helpers**
+  
+  - Criei helpers para centralizar funções utilizadas em diversas partes da aplicação, como o método format_date, que formata datas em 'dd/mm/yyyy'. .
+
+ 6. **Centralização de cores**
+
+  - Como planejava implementar a personalização do tema de de cores no projeto, criei um arquivo globals/colors.css para centralizar as definições de cores. Isso facilitou bastante alterações presentes e futuras, pois todas as cores podem ser ajustadas a partir de um único local
 
 ## Autores
 
