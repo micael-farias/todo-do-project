@@ -33,7 +33,7 @@
 
 O desafio individual é a implementação de uma Lista de Tarefas ( TO DO ), cada lista pode-se adicionar várias tarefas.
 
-Para fazer esse projeto decidi ir além de uma simples lista de afazeres. Tendo como base o Kanban, incorporei elementos de humor pra tornar a experiencia de realizar tarefas mais envolvente. Cada dia, o usuário poderá gerar um quadro de tarefas que prioriza as atividades com base no prazo, humor atual e prioridade.
+Para fazer esse projeto decidi ir além de uma simples lista de afazeres. Tendo como base o Kanban, incorporei elementos de humor para tornar a experiência de realizar tarefas mais envolvente. Cada dia, o usuário poderá gerar um quadro de tarefas que prioriza as atividades com base no prazo, humor atual e prioridade.
 
 
 ## Decisões Técnicas
@@ -44,6 +44,7 @@ Para fazer esse projeto decidi ir além de uma simples lista de afazeres. Tendo 
 - **Frontend**: Bootstrap, HTML/CSS, Javascript (com importmap)
 - **Cache e Filas**: Redis
 - **Autenticação**: Devise
+- **Integração IA**: Open AI
 
 <hr>
 
@@ -88,11 +89,11 @@ Além do mais o usuário terá um quadro com resumo de quais tarefas ele fez ou 
 - **Usuário e Autenticação**
   - Criar e acessar conta de usuário.
   - Editar dados pessoais.
-  - Parametrizar categorias de quadros de tarefas.
   - Resumo das tarefas dos últimos 30 dias.
   - Versão mobile da aplicação com funcionalidades básicas.
 
 ## Requisitos em Formato de Imagem e Tutorial da Aplicação
+A seguir, apresento as telas da aplicação. Para cada elemento, adicionei uma breve explicação através de comentários, assim como adicionei um mini "tutorial" que explica o funcionamento de cada parte da implementação.
 
 ### Tela inicial
 ![Tela inicial](https://firebasestorage.googleapis.com/v0/b/cloud-storage-33fb2.appspot.com/o/humors%2Fhumor%20card.png?alt=media&token=65b3968d-7efd-48a9-bf50-c4f4e10a9036)
@@ -164,7 +165,7 @@ Além do mais o usuário terá um quadro com resumo de quais tarefas ele fez ou 
      - **Categoria de Humor (Mood Category):** Cada tema de humor está associado a uma categoria de humor.
      - **Mensagens:** Cada tema de humor pode ter múltiplas mensagens motivacionais.
    - **Exemplos:**
-     - **Gretchen pra cada humor existente (Excelente, Bom, Neutro, Ruim, Péssimo)**
+     - **Gretchen para cada humor existente (Excelente, Bom, Neutro, Ruim, Péssimo)**
      - **O mesmo para Nazaré**
      - **O mesmo para Shrek**
 
@@ -196,7 +197,7 @@ Além do mais o usuário terá um quadro com resumo de quais tarefas ele fez ou 
 
  6. **Centralização de cores**
 
-      - Como planejava implementar a personalização do tema de de cores no projeto, criei um arquivo globals/colors.css para centralizar as definições de cores. Isso facilitou bastante alterações presentes e futuras, pois todas as cores podem ser ajustadas a partir de um único local
+      - Como planejava implementar a personalização do tema de cores no projeto, criei um arquivo globals/colors.css para centralizar as definições de cores. Isso facilitou bastante alterações presentes e futuras, pois todas as cores podem ser ajustadas a partir de um único local
 
 ## Autores
 
