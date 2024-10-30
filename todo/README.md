@@ -175,7 +175,7 @@ Além do mais o usuário terá um quadro com resumo de quais tarefas ele fez ou 
 
 1. **Modularidade do código**
 
-   - Tentei tornar o código mais modular possível fazendo com que cada arquivo fizesse uma funcionalidade específica. Para isso fiz com que as cada arquivo da view fosse organizadas por áreas funcionais do sistema (ex: `card/edit`, `cards/show`, etc.). Isso facilitou bastante a manutenção de novas features. Além disso, cada arquivo da view teria seu arquivo em javascript(js) e seu estilo(css). A separação por responsabilidades facilitou na manutenção de novas features.
+   - Tentei tornar o código mais modular possível fazendo com que cada arquivo fizesse uma funcionalidade específica. Para isso fiz com que as cada arquivo da view fosse organizadas por áreas funcionais do sistema (ex: `card/edit`, `cards/show`, etc.). Além disso, cada arquivo da view teria seu arquivo em javascript(js) e seu estilo(css). A separação por responsabilidades facilitou na manutenção de novas features.
 
 2. **Uso de partials**
 
