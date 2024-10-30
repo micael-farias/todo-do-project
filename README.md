@@ -99,13 +99,13 @@ A seguir, apresento as telas da aplicação. Para cada elemento, adicionei uma b
 ![Tela inicial](https://firebasestorage.googleapis.com/v0/b/cloud-storage-33fb2.appspot.com/o/humors%2Fhumor%20card.png?alt=media&token=65b3968d-7efd-48a9-bf50-c4f4e10a9036)
 
 ### Tela de um board - Tela de um board diário
-![Boards](https://firebasestorage.googleapis.com/v0/b/cloud-storage-33fb2.appspot.com/o/humors%2Fboards.png?alt=media&token=3c3dd5d9-d5ff-4635-ab3c-c223fc8fba49)
+![Boards](https://firebasestorage.googleapis.com/v0/b/cloud-storage-33fb2.appspot.com/o/humors%2Fboards.png?alt=media&token=7eff2317-49de-446a-8cfc-87d545749500)
 
 ### Configuração de perfil
 ![Configuração](https://firebasestorage.googleapis.com/v0/b/cloud-storage-33fb2.appspot.com/o/humors%2Fconfig.png?alt=media&token=c572bebf-1e03-4a5f-92c6-69c62d47ef02)
 
 ### Versão mobile
-![Mobile](https://firebasestorage.googleapis.com/v0/b/cloud-storage-33fb2.appspot.com/o/humors%2Fmobile.png?alt=media&token=dadc49ea-bb7a-41b7-b312-516ef30365e0)
+![Mobile](https://firebasestorage.googleapis.com/v0/b/cloud-storage-33fb2.appspot.com/o/humors%2Fmobile.png?alt=media&token=1296b2fd-09f4-4685-95f6-642ffede70fe)
 
 ## Considerações
 
