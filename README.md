@@ -4,6 +4,31 @@
 
 <hr>
 
+## Sumário
+1. [Descrição](#descrição)
+2. [Decisões Técnicas](#decisões-técnicas)
+3. [Diferenciais](#diferenciais)
+4. [Requisitos](#requisitos)
+   - [Funcionalidades Principais](#funcionalidades-principais)
+   - [Humor e Personalização](#humor-e-personalização)
+   - [Quadros de Tarefas](#quadros-de-tarefas)
+   - [Usuário e Autenticação](#usuário-e-autenticação)
+5. [Requisitos em Formato de Imagem e Tutorial da Aplicação](#requisitos-em-formato-de-imagem-e-tutorial-da-aplicação)
+   - [Tela Inicial](#tela-inicial)
+   - [Tela de um Board - Tela de um Board Diário](#tela-de-um-board---tela-de-um-board-diário)
+   - [Configuração de Perfil](#configuração-de-perfil)
+   - [Versão Mobile](#versão-mobile)
+6. [Considerações](#considerações)
+7. [Informações de Banco de Dados](#informações-de-banco-de-dados)
+   - [Estrutura Principal](#estrutura-principal)
+   - [Sistema de Humores](#sistema-de-humores)
+8. [Decisões de Projeto e Práticas Utilizadas](#decisões-de-projeto-e-práticas-utilizadas)
+9. [Autores](#autores)
+10. [Agradecimentos](#agradecimentos)
+11. [Link da Aplicação](#link-da-aplicação)
+
+---
+
 ## Descrição
 
 O desafio individual é a implementação de uma Lista de Tarefas ( TO DO ), cada lista pode-se adicionar várias tarefas.
@@ -29,6 +54,8 @@ Diariamente, o usuário poderá escolher o humor que ele está no dia corrente, 
 1. **Tarefas Próximas do Prazo**: Prioriza tarefas que estão a 3 dias de vencer.
 2. **Humor do Usuário**: Seleciona tarefas com base no humor atual do usuário.
 3. **Prioridade das Tarefas**: Ordena o restante das tarefas por prioridade.
+
+Além do mais o usuário terá um quadro com resumo de quais tarefas ele fez ou não em forma de gráfico. Cada card representa uma tarefa, se o card está preenchido a tarefa está completa. Cada cor representa uma prioridade, sendo maior prioridade as cores mais claras.
 
 ## Requisitos
 
@@ -65,6 +92,20 @@ Diariamente, o usuário poderá escolher o humor que ele está no dia corrente, 
   - Resumo das tarefas dos últimos 30 dias.
   - Versão mobile da aplicação com funcionalidades básicas.
 
+## Requisitos em Formato de Imagem e Tutorial da Aplicação
+
+### Tela inicial
+![Tela inicial](https://firebasestorage.googleapis.com/v0/b/cloud-storage-33fb2.appspot.com/o/humors%2Fhumor%20card.png?alt=media&token=65b3968d-7efd-48a9-bf50-c4f4e10a9036)
+
+### Tela de um board - Tela de um board diário
+![Boards](https://firebasestorage.googleapis.com/v0/b/cloud-storage-33fb2.appspot.com/o/humors%2Fboards.png?alt=media&token=3c3dd5d9-d5ff-4635-ab3c-c223fc8fba49)
+
+### Configuração de perfil
+![Configuração](https://firebasestorage.googleapis.com/v0/b/cloud-storage-33fb2.appspot.com/o/humors%2Fconfig.png?alt=media&token=c572bebf-1e03-4a5f-92c6-69c62d47ef02)
+
+### Versão mobile
+![Mobile](https://firebasestorage.googleapis.com/v0/b/cloud-storage-33fb2.appspot.com/o/humors%2Fmobile.png?alt=media&token=dadc49ea-bb7a-41b7-b312-516ef30365e0)
+
 ## Considerações
 
 - **Integração com IA**: Ao criar uma tarefa, o aplicativo utiliza uma inteligência artificial para sugerir qual seria o humor ideal para a realização da tarefa de acordo com o titulo
@@ -73,7 +114,7 @@ Diariamente, o usuário poderá escolher o humor que ele está no dia corrente, 
 
 - **Organização Inteligente**: A priorização das tarefas baseada em prazos, humor e prioridade garante que o usuário foque no que realmente importa a cada dia.
 
-## Informações de banco de dados
+## Informações de Banco de Dados
 
 ![Diagrama de Classes](https://firebasestorage.googleapis.com/v0/b/cloud-storage-33fb2.appspot.com/o/todo-db%2Fdiagrama%20de%20classe.png?alt=media&token=e79dfab6-3073-4ae7-b994-e2dff8e7f303)
 
@@ -130,8 +171,7 @@ Diariamente, o usuário poderá escolher o humor que ele está no dia corrente, 
 5. **Mensagens Motivacionais (Theme Mood Messages)**
    - **Função:** Fornecer mensagens motivacionais que são exibidas para o usuário. Quando o usuário seleciona seu humor diário, uma mensagem aleatória do tema de humor selecionado é exibida em um card específico na interface.
 
-
-## Decisões de projeto e práticas utilizadas
+## Decisões de Projeto e Práticas Utilizadas
 
 1. **Modularidade do código**
 
@@ -165,3 +205,7 @@ Diariamente, o usuário poderá escolher o humor que ele está no dia corrente, 
 ## Agradecimentos
 
 - Espero que gostem do projeto, foi desenvolvido com muito amor :)
+
+## Link da Aplicação
+
+[[Clique aqui para acessar a aplicação! :)](https://todo-do-project.onrender.com/)]
