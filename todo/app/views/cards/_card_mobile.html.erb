@@ -1,0 +1,31 @@
+<div class="mobile-view" data-board-id="<%= @board.id %>">
+    <% unless @board.daily_board?%>
+        <div class="add-card-mobile" data-board-item-id="<%= @board.board_items.first.id %>">
+            <div class="card-header-mobile">
+                <i class="bi bi-plus-lg icon"></i>
+            </div>
+        </div>
+    <% end %>
+    <% @cards.each do |card| %>
+    <div class="card-mobile" data-card-id="<%= card.id %>" data-board-item-id="<%= card.board_item_id %>">
+        <div class="card-header-mobile">
+
+            <%= render 'cards/priority_indicator', card: card %>
+
+            <span class="card-title-mobile" data-board-id="<%= @board.id %>" data-card-id="<%= card.id %>" data-board-item-id="<%= card.board_item_id %>" > <%= card.title %>   </span>
+            
+            <div class="action-icons">
+
+                <button class="delete-card-button-mobile button-delete-card" title="Excluir">
+                    <i class="bi bi-trash icon"></i>
+                </button>
+
+                <label class="checkbox-container">
+                    <input class="complete-card-button-mobile" type="checkbox" <%= card.completed? ? 'checked' : '' %> />
+                    <span class="checkmark"></span>
+                </label>
+            </div>
+        </div>
+    </div>
+    <% end %>
+</div>

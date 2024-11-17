@@ -1,0 +1,55 @@
+
+<% if current_user.cards.exists? %>
+  <h2 class="graph-title">
+    Tarefas criadas - Intervalo <%= @days_interval %> dias
+    <i class="bi bi-question-circle-fill" 
+       title="Este gráfico exibe o número de tarefas criadas e suas prioridades ao longo do tempo. Cada coluna representa o dia nos últimos 30 dias. A cor indica a prioridade e o preenchimento indica se a tarefa foi concluída." 
+    >
+    </i>
+  </h2>
+  <div class="cards-graph-content" id="cards-graph-content">
+    <div class="cards-graph-section mb-5">
+      <div class="graph-dates">
+        <span class="start-date"><%= format_date(@first_card_date) %></span>
+        <span class="end-date"><%= format_date(@last_card_date) %></span>
+      </div>
+      <div class="cards-graph">
+        <% @cards_by_date.each do |day| %>
+          <div class="graph-day" title="<%= format_date(day[:date]) %>">
+            <% day[:cards].each do |card| %>
+              <% if card.present? %>
+                <div 
+                  class="graph-square priority-<%= card.priority || 0 %> <%= 'completed' if card.completed %>" 
+                  title="<%= card.title %>" 
+                  data-board-id="<%= card.board_item.board_id %>"
+                  data-card-id="<%= card.id %>"
+                ></div>
+              <% else %>
+                <div class="graph-square priority-nk completed"></div>
+              <% end %>
+            <% end %>
+          </div>
+        <% end %>
+      </div>
+      
+      <div class="priority-legend mt-4">
+        <div class="legend-items">
+          <span class="label-priority">Menor Prioridade</span>
+          <div class="legend-item">
+            <div class="graph-square priority-0 completed" title="Não informada"></div>
+          </div>
+          <div class="legend-item">
+            <div class="graph-square priority-1 completed" title="Baixa"></div>
+          </div>
+          <div class="legend-item">
+            <div class="graph-square priority-2 completed" title="Média"></div>
+          </div>
+          <div class="legend-item">
+            <div class="graph-square priority-3 completed" title="Alta"></div>
+          </div>
+          <span class="label-priority">Maior Prioridade</span>
+        </div>
+      </div>
+    </div>
+  </div>
+<% end %>

@@ -1,0 +1,57 @@
+<%# app/views/cards/_show.html.erb %>
+<div class="card" 
+     data-card-id="<%= card.id %>" 
+     data-title="<%= card.title.downcase %>"
+     style="background-color: <%= highlight_background_color(card, @highlight_card_id) %>">
+  
+  <%= render 'cards/priority_indicator', card: card %>
+  
+  <div class="card-content" 
+       data-card-id="<%= card.id %>" 
+       data-board-item-id="<%= card.board_item_id %>">
+    
+    <h4 class="card-title">
+      <span class="title-text"><%= card.title %></span>
+    </h4>
+    
+    <div class="card-info">
+      <% if current_user.user_preference.show_card_mood %>
+        <p>
+          <strong>Humor para realizar:</strong>
+          <%= mood_display_text(card) %>
+        </p>
+      <% end %>
+
+      <% if due_info.present? && current_user.user_preference.show_card_due_date  %>
+        <p>
+          <strong><%= due_label %></strong> <%= due_info %>
+        </p>
+      <% end %>     
+
+      <%if card.priority? && current_user.user_preference.show_card_priority %>
+        <p>
+          <strong>Prioridade:</strong>
+          <%= priority_text(card.priority) %>
+        </p>
+      <% end %>
+    </div>
+
+    <%= render 'cards/tags', card: card if card.tags.any? %>
+  </div>
+
+  <div class="card-actions">
+    <button class="complete-card-button" 
+            title="Concluir"
+            style="display: <%= is_last_column ? 'none' : 'block' %>;">
+      <i class="bi bi-check-circle icon"></i>
+    </button>
+    
+    <button class="edit-card-button" title="Editar">
+      <i class="bi bi-pencil-square icon"></i>
+    </button>
+    
+    <button class="delete-card-button" title="Excluir">
+      <i class="bi bi-trash icon"></i>
+    </button>
+  </div>
+</div>

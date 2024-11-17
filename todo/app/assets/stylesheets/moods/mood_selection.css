@@ -1,0 +1,141 @@
+.mood-selection {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin: 0 auto;
+  border-radius: 10px;
+  height: 100vh;
+  box-shadow: 0 4px 6px var(--box-shadow);
+}
+
+.moods-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 20px;
+}
+
+.mood-item.selected {
+  background-color: var(--card-mood-selected);
+  color: var(--text-color-white);
+  transform: scale(1.05);
+  box-shadow: 0 4px 8px var(--box-shadow);
+}
+
+.mood-image {
+  border-radius: 5px;
+  width: 100%;
+  height: 200px;
+  object-fit: fill;
+  object-position: center;
+  background-color: var(--card-mood-selected);
+}
+
+.moods-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  position: relative;
+  margin: 20px 0;
+}
+
+.mood-item {
+  width: 250px;
+  height: 250px;
+  background-color: var(--background-main-gray);
+  margin: 10px;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  cursor: pointer;
+  transition: transform 0.3s, border-color 0.3s;
+  padding: 10px;
+  border-radius: 10px;
+}
+
+.mood-item.selected {
+  border-color: var(--card-mood-selected);
+  transform: scale(1.1);
+}
+
+.mood-item:hover {
+  transform: scale(1.05);
+}
+
+.mood-name {
+  margin-top: 5px;
+  font-size: 14px;
+  color: var(--text-color-white);
+  font-weight: 700;
+  text-align: center;
+}
+
+.moods-container::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 10%;
+  width: 80%;
+  height: 2px;
+  background-color: var(--background-main-gray);
+  z-index: -1;
+}
+
+.btn-primary {
+  background-color: var(--background-button-primary);
+  border: none;
+  padding: 10px 20px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.btn-primary:hover {
+  background-color: var(--background-button-primary-hover);
+}
+
+.generate-board-container {
+  text-align: center;
+  margin-top: 30px;
+}
+
+.generate-board-button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 2em;
+  color: var(--text-color-gray-100);
+  transition: transform 0.3s, color 0.3s;
+  animation: float 2s infinite;
+}
+
+.generate-board-button:hover {
+  color: var(--background-button-generate-board);
+}
+
+.generate-board-button i {
+  display: inline-block;
+}
+
+.generate-board-legend {
+  text-align: center;
+  margin-top: 10px;
+  font-weight: bold;
+  font-size: 17px;
+  color: var(--text-color-gray-100);
+}
+
+@keyframes float {
+  0% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-10px);
+  }
+
+  100% {
+    transform: translateY(0);
+  }
+}

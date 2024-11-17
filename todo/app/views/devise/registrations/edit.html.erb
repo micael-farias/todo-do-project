@@ -1,0 +1,29 @@
+<div class="edit-registration-container">
+  
+  <%= link_to root_path, class: "btn btn-link back-button icon" do %>
+    <i class="bi bi-arrow-left"></i> 
+  <% end %>
+  <%= form_for(resource, as: resource_name, url: registration_path(resource_name), html: { method: :put, multipart: true, id: 'edit-profile-form' }) do |f| %>
+    <%= devise_error_messages! %>
+
+    <%= render 'user_section', f: f %>
+    <hr>
+    <%= f.fields_for :user_preference do |pref_f| %>
+
+      <%= render 'user_board_config', pref_f: pref_f %>
+      <hr>
+
+      <%= render 'user_card_config', pref_f: pref_f %>
+      <hr>
+    <% end %>
+
+    <%= render 'user_details_config', f: f %>
+    <hr>
+
+    <%= render 'mood_category_selection', f: f %>
+
+    <div class="actions">
+      <%= f.submit "Atualizar", class: "btn btn-primary" %>
+    </div>
+  <% end %>
+</div>

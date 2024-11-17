@@ -1,0 +1,15 @@
+
+<div>
+  <% if @show_mood_section %>
+    <div id="mood-section">
+      <%= render 'mood/mood_selection' %>
+      <div id="mood-message-above-section"></div>
+      <%= render 'mood/mood_message_section' %>
+    </div>
+  <% end %>
+
+  <%= render 'graph_card/graph_cards' %>
+
+  <%= render 'boards/list' %>
+  
+</div>

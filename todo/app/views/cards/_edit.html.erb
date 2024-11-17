@@ -1,0 +1,48 @@
+<!-- app/views/boards/_edit_card_modal.html.erb -->
+<div class="modal fade" id="editCardModal" tabindex="-1" aria-labelledby="editCardModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="editCardModalLabel">Editar Tarefa</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <%= form_with(model: Card.new, url: '#', method: :patch, id: 'edit-card-form', class: 'custom-card-form') do |form| %>
+          <div class="mb-3">
+            <%= form.label :title, 'Título', class: 'form-label' %>
+            <%= form.text_field :title, id: 'card_title', class: 'form-control', required: true %>
+          </div>
+          <div class="mb-3">
+            <%= form.label :description, 'Descrição', class: 'form-label' %>
+            <%= form.text_area :description, id: 'card_description', class: 'form-control' %>
+          </div>
+          <div class="mb-3">
+            <%= form.label :mood_id, 'Humor', class: 'form-label' %>
+            <%= form.collection_select :mood_id, Mood.all, :id, :name, { include_blank: 'Selecione o humor' }, class: 'form-select', id: 'card_mood_id' %>
+          </div>
+          <div class="mb-3">
+            <%= form.label :due_date, 'Data de Vencimento', class: 'form-label' %>
+            <%= form.date_field :due_date, id: 'card_due_date', class: 'form-control' %>
+          </div>
+          <div class="mb-3">
+            <%= form.label :priority, 'Prioridade', class: 'form-label' %>
+            <%= form.select :priority, [['Baixa', 1], ['Média', 2], ['Alta', 3]], { include_blank: 'Selecione a prioridade' }, class: 'form-select', id: 'card_priority' %>
+          </div>
+          <div class="mb-3">
+            <%= form.label :tags, 'Tags', class: 'form-label' %>
+            <input type="text" id="tag-input-edit" class="form-control" placeholder="Digite uma tag e pressione Enter">
+            <small class="form-label">Pressione Enter para adicionar uma tag.</small>
+            <div class="parent-container pt-3">
+              <div id="tag-container-edit" class="mb-2">
+              </div>
+            </div>
+            <%= form.hidden_field :tags, id: 'card_tags_edit', class: 'form-control', value: '' %>
+          </div>
+          <div class="text-end">
+            <%= form.submit 'Atualizar tarefa', class: 'btn btn-primary custom-submit-button' %>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>
